@@ -21,8 +21,22 @@ Replace this table only with evidence-backed status. If branch setup is not merg
 
 | WO | Issue | Branch | Worker | Base SHA | Write fence | Status | Evidence/PR |
 |---|---|---|---|---|---|---|---|
-| AR2-000 | Create at dispatch | To be recorded | TL | To be recorded | Inventory and baseline evidence only | NOT STARTED | None |
-| AR2-001 | Create after AR2-000 | To be recorded | TL | To be recorded | Contracts/state machines and architecture docs | BLOCKED | None |
+| AR2-000 | [#2](https://github.com/payswapdotorg/arena-2.0/issues/2) | To be recorded | TL | To be recorded at dispatch | Baseline inventory/evidence only | NOT STARTED | None |
+| AR2-001 | [#3](https://github.com/payswapdotorg/arena-2.0/issues/3) | To be recorded | TL | To be recorded at dispatch | Contracts/state machines only | BLOCKED BY AR2-000 | None |
+| AR2-002 | [#4](https://github.com/payswapdotorg/arena-2.0/issues/4) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-003 | [#5](https://github.com/payswapdotorg/arena-2.0/issues/5) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-004 | [#6](https://github.com/payswapdotorg/arena-2.0/issues/6) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-005 | [#7](https://github.com/payswapdotorg/arena-2.0/issues/7) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-006 | [#8](https://github.com/payswapdotorg/arena-2.0/issues/8) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-007 | [#9](https://github.com/payswapdotorg/arena-2.0/issues/9) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-008 | [#10](https://github.com/payswapdotorg/arena-2.0/issues/10) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-009 | [#11](https://github.com/payswapdotorg/arena-2.0/issues/11) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-010 | [#12](https://github.com/payswapdotorg/arena-2.0/issues/12) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-011 | [#13](https://github.com/payswapdotorg/arena-2.0/issues/13) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-012 | [#14](https://github.com/payswapdotorg/arena-2.0/issues/14) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-013 | [#15](https://github.com/payswapdotorg/arena-2.0/issues/15) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-014 | [#16](https://github.com/payswapdotorg/arena-2.0/issues/16) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
+| AR2-015 | [#17](https://github.com/payswapdotorg/arena-2.0/issues/17) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
 
 No Worker 1/2/3 assignment is active until AR2-001 is accepted.
 
@@ -47,3 +61,27 @@ For every work order, add a row and record these fields in the matching issue bo
 - A worker finding a contract gap records an interface proposal and proceeds only with independent scoped work.
 - If a worker is blocked, immediately pull the next ready independent WO from dependency-graph.md; do not invent a parallel task with unresolved interfaces.
 - Each accepted PR starts from fresh main (or merges/rebases safely using the current project policy) and repeats relevant contract/boundary tests.
+
+
+## GitHub work-order issue index
+
+All implementation Work Orders now have one matching GitHub Issue. Issues are planned, not automatically dispatched; dependencies and path fences in the canonical work-order registry govern readiness.
+
+| Work Order | Issue | Summary |
+|---|---|---|
+| AR2-000 | [#2](https://github.com/payswapdotorg/arena-2.0/issues/2) | Fork baseline and inherited surface inventory |
+| AR2-001 | [#3](https://github.com/payswapdotorg/arena-2.0/issues/3) | Freeze Arena domain/public contracts and state machines |
+| AR2-002 | [#4](https://github.com/payswapdotorg/arena-2.0/issues/4) | Arena API edge and generic lifecycle use cases |
+| AR2-003 | [#5](https://github.com/payswapdotorg/arena-2.0/issues/5) | Requester, expert and reviewer workbench |
+| AR2-004 | [#6](https://github.com/payswapdotorg/arena-2.0/issues/6) | Capsule contracts, provider seam and isolation conformance |
+| AR2-005 | [#7](https://github.com/payswapdotorg/arena-2.0/issues/7) | Durable persistence, idempotency, transactional outbox and jobs |
+| AR2-006 | [#8](https://github.com/payswapdotorg/arena-2.0/issues/8) | Bind Arena workbench to real API |
+| AR2-007 | [#9](https://github.com/payswapdotorg/arena-2.0/issues/9) | Evidence capture and proof-class validator pipeline |
+| AR2-008 | [#10](https://github.com/payswapdotorg/arena-2.0/issues/10) | Expert capability, qualification, matching and conflict checks |
+| AR2-009 | [#11](https://github.com/payswapdotorg/arena-2.0/issues/11) | Expert Arena, self-evaluation, independent review and adjudication |
+| AR2-010 | [#12](https://github.com/payswapdotorg/arena-2.0/issues/12) | Test-mode payment ledger and outcome-linked payout |
+| AR2-011 | [#13](https://github.com/payswapdotorg/arena-2.0/issues/13) | Typed SDK, MCP, signed webhooks and generic integration |
+| AR2-012 | [#14](https://github.com/payswapdotorg/arena-2.0/issues/14) | Integrated vertical end-to-end and next-expert path |
+| AR2-013 | [#15](https://github.com/payswapdotorg/arena-2.0/issues/15) | Operations, capacity, retention and observability |
+| AR2-014 | [#16](https://github.com/payswapdotorg/arena-2.0/issues/16) | Rights-gated learning and Agent Body/version marketplace |
+| AR2-015 | [#17](https://github.com/payswapdotorg/arena-2.0/issues/17) | Integrated security, resilience, accessibility and release gate |
