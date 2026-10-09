@@ -6,7 +6,7 @@ This is the canonical record of active and completed work-order dispatches. Upda
 
 | Field | Value |
 |---|---|
-| Architecture setup | Branch architecture/arena-2.0-source-of-truth |
+| Architecture setup | [PR #1 merged to main](https://github.com/payswapdotorg/arena-2.0/pull/1), merge SHA 78a64381662ed7c2c6818ed280823c57be57c7c6 |
 | Baseline source commit | 29628c9acdb81b703bbd4080c207a0e7ce5e276e |
 | Baseline inventory AR2-000 | NOT STARTED |
 | Contract freeze AR2-001 | BLOCKED BY AR2-000 |
@@ -15,7 +15,7 @@ This is the canonical record of active and completed work-order dispatches. Upda
 | Live payment mode | DISABLED |
 | Production capsule provider | NOT APPROVED / NOT VERIFIED |
 
-Replace this table only with evidence-backed status. If branch setup is not merged to main, the TL must not treat main as having the documents until GitHub reports the merge.
+Replace this table only with evidence-backed status. PR #1 and the issue-registration PR #18 are merged. The initial bootstrap documents are canonical on main; implementation status remains NOT STARTED until work orders produce accepted code/evidence.
 
 ## Active dispatch table
 
