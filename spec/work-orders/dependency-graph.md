@@ -1,12 +1,15 @@
 # Arena 2.0 Work-Order Dependency Graph
 
-The graph is normative alongside spec/work-orders/implementation-plan.md. Edges mean the downstream order cannot be accepted until the upstream contract/output is available. A worker may start test fixtures or isolated scaffolding earlier only if it cannot bake in an unapproved interface.
+The graph is normative alongside spec/work-orders/implementation-plan.md. An edge indicates a dependency for acceptance. Preparatory code/tests can begin earlier only where the API contract is frozen and the work is isolated; partial fixture-based work must never be reported as full integration.
+
+## Canonical graph
 
 ~~~text
-AR2-000 Fork baseline / inventory [TL]
+W0 (TL-owned, serialized)
+AR2-000 Fork baseline / inventory
         |
         v
-AR2-001 Contract freeze / domain state machines [TL]
+AR2-001 Contract freeze / state machines
         |
         +---------------------+---------------------+
         |                     |                     |
@@ -17,60 +20,94 @@ AR2-002 API/use cases   AR2-003 Workbench UI   AR2-004 Capsule seam
                    |                                |
                    v                                v
             AR2-005 Durable store/jobs        AR2-007 Evidence/validators
-                   ^                                ^
+                   |                                ^
                    |                                |
-                   +---------------- AR2-006 -------+
-                         UI binds API       |
-                                             AR2-004
+                   v                                |
+            AR2-006 UI/API binding  -----------------+
+            (requires API; uses fixture contract tests
+             until durable host is accepted)
                    |
         +----------+----------------+------------------+
         |                           |                  |
         v                           v                  v
-AR2-008 Matching            AR2-009 Expert Arena   AR2-010 Test payments
-        |                           ^                  |
+AR2-008 Matching            AR2-010 Test payments   AR2-011 SDK/MCP/webhooks
+        |                           |                  |
         +---------------------------+------------------+
                                     |
                                     v
-                     AR2-011 SDK/MCP/webhooks
+                          AR2-009 Expert Arena
+                      (also requires AR2-007)
                                     |
                                     v
-                       AR2-012 Vertical E2E harness
-                         |                    |
-                         v                    v
-             AR2-013 Ops/resilience    AR2-014 Rights-gated learning
-                                             /
-                                            /
-                           v                v
-                     AR2-015 Integrated acceptance
+                         AR2-012 Integrated E2E
+                  (all API, durable, capsule, evidence,
+                   matching, Expert Arena and payment paths)
+                                    |
+                         +----------+-----------+
+                         |                      |
+                         v                      v
+              AR2-013 Operations         AR2-014 Learning
+              (can begin once            (requires accepted
+               adapters exist)            E2E and rights path)
+                         \                      /
+                          \                    /
+                           v                  v
+                      AR2-015 Integrated acceptance
 ~~~
 
-## Dependency corrections and readiness rules
+## Dispatch waves (max three workers)
 
-- AR2-005 depends on the frozen persistence/outbox port and API/domain contract, not on a specific UI component. API shell and persistence can be separate branches if the interface is frozen.
-- AR2-006 can be built against documented schemas and mocks, but replacing mocks and claiming integration requires AR2-002 and AR2-005.
-- AR2-007 can implement envelope normalization and synthetic validator tests after contracts and capsule port are frozen. Real validator execution requires the capsule isolation gate.
-- AR2-008 requires accepted task/attempt state and durable budget semantics.
-- AR2-009 requires candidate/evidence schema, expert qualification and conflict checks. It must not create an independent payout or correctness authority.
-- AR2-010 requires durable budget/payment records and proof-decision contract. It does not require a live payment provider.
-- AR2-011 requires stable public API and durable outbox/job retry semantics.
-- AR2-012 is an integration gate, not an excuse to implement parallel fake versions of modules.
-- AR2-014 cannot publish customer-derived assets until provenance, rights and consent contracts are in place.
-- AR2-015 cannot run until a runnable integrated path exists, but threat-model work can begin sooner on an isolated docs-only scope.
+### W0 — TL serial lane
+AR2-000 then AR2-001. No feature worker dispatch until the baseline report exists and the contract freeze is accepted.
 
-## Three-worker governance
+### W1 — three parallel foundational lanes
+- Worker 1: AR2-002 API transport/use-case adapter.
+- Worker 2: AR2-003 workbench UI and contract-fixture tests.
+- Worker 3: AR2-004 capsule contracts/provider seam and conformance tests.
 
-Every dispatch includes:
-- branch name and exact base SHA;
-- issue number and work-order ID;
-- one-sentence scope and explicit file/path write fence;
-- upstream/downstream contract dependencies;
-- expected test commands and acceptance evidence;
-- named worker and TL integrator;
-- prohibited shared surfaces;
-- lockfile/schema integration plan.
+These lanes have separate write fences. Canonical contracts and public schemas remain TL-owned/frozen.
 
-Recompute the graph after every merge. If one worker finds a contract gap, the worker records an interface-change proposal and continues only on unaffected scoped work. TL issues a contract revision/ACR if needed; no worker silently edits another lane's contract.
+### W2 — exploit all three slots
+Dispatch concurrently:
+- Worker 1: AR2-005 durable persistence, outbox and jobs.
+- Worker 2: AR2-006 client binding to the stable AR2-002 HTTP contract. The UI tests may use contract-faithful fixtures; full durable E2E is not accepted until AR2-005 has merged.
+- Worker 3: AR2-007 evidence/validator pipeline against AR2-004 and the frozen EvidenceEnvelope.
 
-## Merge ordering
+The UI does not own canonical state. The evidence pipeline does not own payout state.
 
-Merge only after the owning worker's tests and fresh-base integration checks pass. Re-run relevant boundary/contract tests after every integration of API + persistence + capsule + verification. The first product demo is not called complete until AR2-012 proves the application can fail on attempt one, route to the next eligible expert and then produce either a validated result or an explicit terminal failure without losing audit history or exceeding budget.
+### W3 — three independent product lanes
+After the respective dependencies in implementation-plan.md are accepted, dispatch:
+- Worker 1: AR2-008 qualification, matching and next-eligible-expert routing.
+- Worker 2: AR2-010 test-mode ledger and outcome-linked payment.
+- Worker 3: AR2-011 SDK/MCP/webhooks/generic integration.
+
+These three have disjoint domain/adapter fences and can use the same frozen API, durable store, evidence and payment-operation contracts.
+
+### W4 — quality, review and integrated acceptance
+- AR2-009 Expert Arena depends on AR2-007 evidence semantics and AR2-008 expert qualification/conflict data; do not dispatch it in parallel with the still-unimplemented qualification/conflict contract it relies on.
+- AR2-013 operations can advance once durable jobs, capsule adapters and payment/test adapters exist; it can overlap AR2-009 where write fences remain disjoint.
+- AR2-012 final E2E acceptance waits for all required product paths. Harness scaffolding may be prepared earlier but must not be called integrated until the real API, store, capsule, validator, match, Expert Arena, payment and client paths are connected.
+
+### W5 — rights and release gate
+- AR2-014 learning publication requires evidence, Expert Arena decision, rights/provenance and accepted integrated path.
+- AR2-015 release acceptance is serialized by TL after applicable feature paths and the acceptance-gate evidence are available. Threat-model documentation may start earlier but cannot imply integrated acceptance.
+
+## Corrected dependency rules
+
+- AR2-005 depends on frozen persistence/outbox ports and the AR2-002 application/API contract.
+- AR2-006 can bind to the API independently of the persistence adapter. Its full durable end-to-end acceptance still depends on AR2-005.
+- AR2-007 depends on AR2-004 plus the frozen evidence envelope and proof policy.
+- AR2-008 depends on accepted request/attempt state and durable budget semantics.
+- AR2-009 depends on AR2-007 and AR2-008, not merely on an expert profile type; it must use authoritative qualification/conflict decisions.
+- AR2-010 depends on AR2-005 and AR2-007 and must not create a parallel correctness authority.
+- AR2-011 depends on stable AR2-002 public contracts and AR2-005 durable outbox/retry semantics.
+- AR2-012 integrates real paths. Mocks are allowed for unit/contract tests but not as evidence of integrated production behavior.
+- AR2-013 needs the actual adapters whose capacity/recovery/retention it observes.
+- AR2-014 cannot publish customer-derived learning before rights, consent, provenance, validation and scope are in place.
+- AR2-015 cannot be GO until the required gate evidence and residual-finding dispositions exist.
+
+## Dispatch protocol
+
+Every issue/branch/PR record includes exact base SHA, worker identity, dependency evidence, frozen write paths, acceptance scenarios, commands/tests and known limitations. TL must recompute readiness before each dispatch and merge.
+
+Never parallelize root manifests, lockfiles, canonical shared schemas, contract generation or overlapping database migrations. If a shared-surface change is needed, the TL serializes it or opens a specific coordination issue. The next ready independent work may be pulled forward, but dependencies may not be waived informally.
