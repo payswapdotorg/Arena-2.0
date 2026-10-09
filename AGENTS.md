@@ -1,3 +1,28 @@
+# Arena 2.0 repository governance
+
+The Arena source of truth is this repository. Never depend on conversation history for product decisions. Before coding, read spec/PROJECT-STATE.md, spec/architecture-lock.md, docs/architecture/ARENA-2.0-SYSTEM-ARCHITECTURE.md, the relevant contract/policy, spec/work-orders/implementation-plan.md, spec/work-orders/dependency-graph.md, spec/ownership/ownership-map.md and spec/testing/acceptance-gates.md.
+
+## Required workflow
+
+- The approved owner decisions are captured in the architecture lock and ADR. Do not ask the owner to repeat them. For a genuinely new blocking decision, create an ACR with options, impact and recommendation; continue on independent work meanwhile.
+- Start with AR2-000 baseline inventory and AR2-001 contract freeze before feature implementation dispatch.
+- Maximum three concurrent workers. One work order = one GitHub issue = one branch = one PR.
+- Every dispatch records the exact base SHA, issue, branch, worker, dependencies, acceptance criteria, and strict write-path fence.
+- TL owns root manifests, lockfiles, canonical schemas/contracts, shared migration coordination, CI/branch rules, cross-PR integration and final gate/PROJECT-STATE reconciliation.
+- Workers may not modify files outside their assigned fence. If an interface is missing, write an interface-change proposal; do not invent or silently redefine the contract.
+- Parallelize only when dependencies are satisfied and interfaces are frozen. Three workers is a ceiling, not a requirement. Never parallelize conflicting migration, schema, lockfile or same-file writes.
+- Specs precede behavior. Behavior changes include tests. Security, asynchronous state, retries, external side effects and tenant boundaries require negative/failure/concurrency tests.
+- Run checks using scripts that exist in this checkout. Report exact commands, outcomes, skips and known pre-existing failures. Never infer tests from a successful build.
+- No worker declares a feature complete; the TL verifies it against acceptance criteria on a fresh integration base.
+- Do not claim production isolation until actual OS/provider sandbox controls are exercised. Do not treat workspaces or Git worktrees as secure capsules.
+- Do not enable live payments without written commercial/release-owner gate. The author self-evaluation is not an independent review or payout trigger.
+- After every accepted PR, reconcile PROJECT-STATE, work-order status and dependency frontier. Link inspectable CI/evidence. This repository must remain fully usable by a fresh TL and three workers without asking this chat.
+
+
+---
+
+# Inherited ZCode engineering guidance (preserved)
+
 ## 核心原则
 
 - 新增或修改行为前，先更新对应 spec；目录不存在时按需创建。先明确产品规则、状态所有者、接口和验收场景，再实现代码。
