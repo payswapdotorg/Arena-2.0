@@ -50,7 +50,7 @@ Acceptance: same-key replay, same-key conflict, concurrent admission from two AP
 ### AR2-006: Bind the workbench to the real API
 Owner: Worker 2. Dependencies: AR2-002. Write fence: Arena UI client bindings, routes and E2E tests.
 Scope: replace mocks with the typed public client; implement request wizard, status and evidence timeline, submission, criterion-level self-evaluation, reviewer rubric scoring, revision/appeal and result views.
-Acceptance: UI consumes canonical server projections; role switch does not alter permissions; API errors and inconclusive decisions are legible; no duplicate UI-only lifecycle.
+Acceptance: UI consumes canonical server projections; role switch does not alter permissions; API errors and inconclusive decisions are legible; no duplicate UI-only lifecycle. UI/API contract tests may use deterministic fixtures; final durable end-to-end acceptance is gated on AR2-005.
 
 ### AR2-007: Evidence capture and verification pipeline
 Owner: Worker 3. Dependencies: AR2-004, frozen EvidenceEnvelope and proof policy. Write fence: evidence/validator orchestration and tests; do not alter payout state machine.
