@@ -67,7 +67,32 @@ Every merged work order updates PROJECT-STATE, the work-order registry and depen
 
 ## Current frontier
 
-1. Verify the architecture setup commit has been reviewed/merged to main.
-2. Run the M0 baseline inventory in full; do not begin feature implementation on uninspected modules.
-3. Freeze public contracts, escalation state machine, proof policy snapshot, evidence envelope and database boundaries.
-4. Start the first three disjoint workstreams per docs/TL-FINAL-HANDOFF.md.
+1. Architecture setup PR [#1](https://github.com/payswapdotorg/arena-2.0/pull/1) is merged to main at 78a64381662ed7c2c6818ed280823c57be57c7c6.
+2. Execute [AR2-000 / issue #2](https://github.com/payswapdotorg/arena-2.0/issues/2): baseline inventory and evidence; do not begin feature implementation on uninspected modules.
+3. After AR2-000 acceptance, execute [AR2-001 / issue #3](https://github.com/payswapdotorg/arena-2.0/issues/3) to freeze public contracts, escalation state machine, proof-policy snapshot, evidence envelope and persistence boundaries.
+4. Once AR2-001 is accepted, dispatch AR2-002, AR2-003 and AR2-004 concurrently within the disjoint path fences in spec/ownership/ownership-map.md.
+5. Track all 16 WOs through spec/work-orders/dispatch-ledger.md and their [GitHub Issues](https://github.com/payswapdotorg/arena-2.0/issues).
+
+
+## GitHub issue map
+
+The architecture setup was merged as [PR #1](https://github.com/payswapdotorg/arena-2.0/pull/1). The implementation work orders have one matching issue each; creation does not mean a work order is dispatched or its dependencies are satisfied.
+
+| Work Order | Issue |
+|---|---|
+| AR2-000 | [#2 — Fork baseline and inherited surface inventory](https://github.com/payswapdotorg/arena-2.0/issues/2) |
+| AR2-001 | [#3 — Freeze Arena domain/public contracts and state machines](https://github.com/payswapdotorg/arena-2.0/issues/3) |
+| AR2-002 | [#4 — Arena API edge and generic lifecycle use cases](https://github.com/payswapdotorg/arena-2.0/issues/4) |
+| AR2-003 | [#5 — Requester, expert and reviewer workbench](https://github.com/payswapdotorg/arena-2.0/issues/5) |
+| AR2-004 | [#6 — Capsule contracts, provider seam and isolation conformance](https://github.com/payswapdotorg/arena-2.0/issues/6) |
+| AR2-005 | [#7 — Durable persistence, idempotency, transactional outbox and jobs](https://github.com/payswapdotorg/arena-2.0/issues/7) |
+| AR2-006 | [#8 — Bind Arena workbench to real API](https://github.com/payswapdotorg/arena-2.0/issues/8) |
+| AR2-007 | [#9 — Evidence capture and proof-class validator pipeline](https://github.com/payswapdotorg/arena-2.0/issues/9) |
+| AR2-008 | [#10 — Expert capability, qualification, matching and conflict checks](https://github.com/payswapdotorg/arena-2.0/issues/10) |
+| AR2-009 | [#11 — Expert Arena, self-evaluation, independent review and adjudication](https://github.com/payswapdotorg/arena-2.0/issues/11) |
+| AR2-010 | [#12 — Test-mode payment ledger and outcome-linked payout](https://github.com/payswapdotorg/arena-2.0/issues/12) |
+| AR2-011 | [#13 — Typed SDK, MCP, signed webhooks and generic integration](https://github.com/payswapdotorg/arena-2.0/issues/13) |
+| AR2-012 | [#14 — Integrated vertical end-to-end and next-expert path](https://github.com/payswapdotorg/arena-2.0/issues/14) |
+| AR2-013 | [#15 — Operations, capacity, retention and observability](https://github.com/payswapdotorg/arena-2.0/issues/15) |
+| AR2-014 | [#16 — Rights-gated learning and Agent Body/version marketplace](https://github.com/payswapdotorg/arena-2.0/issues/16) |
+| AR2-015 | [#17 — Integrated security, resilience, accessibility and release gate](https://github.com/payswapdotorg/arena-2.0/issues/17) |
