@@ -37,13 +37,13 @@ This repository was forked from [zai-org/ZCode](https://github.com/zai-org/ZCode
 
 Use the exact Node and pnpm versions in mise.toml. From a fresh clone:
 
-~~~bash
+```bash
 pnpm bootstrap
 pnpm typecheck
 pnpm lint
 pnpm fmt:check
 pnpm architecture:check -- --changed
-~~~
+```
 
 Run relevant package tests and end-to-end tests as discovered from actual package scripts; do not assume every test suite has one root command. Record the exact SHA, environment, commands and results in the baseline evidence. A build/test result on the inherited ZCode shell is not proof that Arena features have been implemented.
 

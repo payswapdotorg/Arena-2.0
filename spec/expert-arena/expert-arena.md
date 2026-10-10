@@ -27,6 +27,7 @@ The reviewer must score each required dimension, explain each nontrivial score, 
 ## 2. Expert self-evaluation must work well
 
 Self-evaluation is a required, ergonomic first-class step for relevant tasks—not a dead-end text box. The workbench should let the author:
+
 - Translate every acceptance criterion into a testable claim.
 - Mark each claim met, partially met, not met, or not verifiable.
 - Attach artifact/evidence references to each claim.
@@ -51,6 +52,7 @@ For P0/P1 work, validator results are the primary correctness evidence; human re
 ## 4. Quorum and disagreements
 
 Default review policy:
+
 - P0/P1: automated validators plus one independent qualified review for materiality/causal concerns; risk policy may require more.
 - P2: at least two independent reviewers. High-impact or disputed tasks default to three.
 - P3 and regulated/safety-critical work: task-specific professional and field-evidence quorum defined before assignment; do not use the generic minimum as a substitute.
@@ -62,6 +64,7 @@ If reviewer quorum is not reached, the system must request a replacement or esca
 ## 5. Rating system
 
 Keep distinct measures for:
+
 - Candidate task outcome, based on proof class and rubric.
 - Expert delivery reliability: timeliness, communication, scope adherence and revision handling.
 - Evidence quality and claim calibration.

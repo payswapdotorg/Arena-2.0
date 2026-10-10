@@ -40,6 +40,7 @@ If anything conflicts, stop only the affected work and raise an ACR. Do not ask 
 A generic, non-Epoch application calls a real Arena API with a versioned task, constraints, budget, acceptance criteria and proof policy. Arena persists the accepted request; matches and assigns an eligible expert; provisions a bounded isolated capsule; records observable changes and evidence; evaluates the submission under the correct proof class; returns a typed result; and changes payment eligibility only when its proof policy is satisfied.
 
 Use a test payment adapter only. The initial end-to-end demonstration must include:
+
 1. A controlled software task whose baseline does not compile or fails an exact agreed test.
 2. An expert intervention that changes a versioned candidate.
 3. A trusted, task-bound validator rerun that passes the predefined acceptance condition.
@@ -54,6 +55,7 @@ A successful compile establishes the compile/test criteria actually specified. I
 ## 4. Do not skip the baseline / contract freeze
 
 AR2-000 and AR2-001 are TL-owned and serialized. Do not dispatch implementation workers until:
+
 - the actual ZCode baseline is measured;
 - app/domain boundaries and path owners are verified;
 - request, acceptance-criteria, proof-policy snapshot, attempt, capsule manifest, evidence, result and event schemas are frozen;
@@ -80,6 +82,7 @@ The TL may pull a ready independent task forward only if the dependency graph re
 ## 6. Payment rule: do not improvise
 
 Follow spec/verification/proof-and-payment-policy.md without exceptions:
+
 - P0 deterministic application proof: pinned baseline plus task-bound post-intervention verification; only accepted criteria become payment-eligible.
 - P1 variable application-observable proof: apply the prespecified repetitions and aggregate thresholds; flaky or inconclusive results do not pass.
 - P2 Arena-adjudicated work: versioned rubric, independent qualified reviewers, conflict checks, quorum and adjudication thresholds.
@@ -96,6 +99,7 @@ Independent reviewers must be qualified and conflict-checked. Blind candidate ID
 ## 8. Must-pass resilience/security conditions
 
 Do not call the vertical slice complete until tests cover:
+
 - same idempotency key + same digest returns a durable replay;
 - same key + different digest returns typed conflict;
 - concurrent request to two API processes creates one logical task;
