@@ -52,7 +52,7 @@ jobs:
 
       - name: Unit tests — arena-capsule (node:test via tsx)
         working-directory: packages/arena-capsule
-        run: ../../node_modules/.bin/tsx --test test/capsule.test.ts
+        run: ../../node_modules/.bin/tsx --test test/capsule.test.ts test/synthetic-provider.test.ts
 
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
