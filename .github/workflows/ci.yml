@@ -1,0 +1,38 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  battery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install pinned pnpm
+        run: npm install -g pnpm@10.33.2
+
+      - name: Install dependencies (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (tsc -b, 11 projects)
+        run: pnpm typecheck
+
+      - name: Lint (oxlint)
+        run: pnpm lint
+
+      - name: Architecture guard
+        run: pnpm architecture:check
+
+      - name: Unit tests (node:test via tsx loader)
+        run: node_modules/.bin/tsx --test packages/services/test/providerConfigMigration.test.ts packages/services/test/nonCliAcpRetirement.test.ts packages/services/test/importedClaudeRecovery.test.ts packages/ui/test/nonCliAcpRetirement.test.ts
