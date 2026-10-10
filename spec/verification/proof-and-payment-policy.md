@@ -21,6 +21,7 @@ Use when a deterministic, independently rerunnable validator establishes the exa
 Examples: build and tests pass in a pinned toolchain; a schema migration passes a defined test suite; a deterministic CAD validation or formal constraint check passes a specified predicate where that predicate is the acceptance criterion.
 
 Required evidence:
+
 - Baseline result and exact environment manifest before intervention.
 - Immutable intervention/change manifest, including file/artifact hashes and approved tool action records.
 - Post-intervention result from an isolated trusted runner or an authenticated application runner.
@@ -43,6 +44,7 @@ Payment requires the predefined aggregate threshold to pass. A single lucky run 
 Use where application-level evidence cannot establish correctness, including many forms of legal analysis, professional judgment, business strategy, design quality, diagnosis/recommendation, and domain-specific work whose true outcome is uncertain or delayed.
 
 Arena is responsible for obtaining enough evidence for the claim. Required controls are:
+
 - Task-specific, versioned rubric established before candidate review.
 - Qualification and conflict-of-interest checks for evaluators.
 - Structured expert self-evaluation separated from independent reviews.
@@ -73,6 +75,7 @@ When proof capability is unavailable, caller evidence is untrusted, the validato
 ## 4. Payout state machine
 
 Proposed payment states:
+
 - NOT_APPLICABLE
 - RESERVED
 - PENDING_EVIDENCE
@@ -87,6 +90,7 @@ Proposed payment states:
 - CANCELLED
 
 Rules:
+
 - Escalation acceptance, intervention submission, proof evaluation and payment settlement are separate state machines linked by IDs.
 - A validation pass records an immutable evidence decision. A retry creates a new attempt; it does not overwrite the failed attempt.
 - EVIDENCE_ACCEPTED and READY_TO_RELEASE are not equivalent to SETTLED. The provider acknowledgement and ledger reconciliation establish settlement.
@@ -112,6 +116,7 @@ Bound retries by the authorized budget, deadline and maximum number of attempts.
 Trusted runner evidence must be signed or authenticated, bound to tenant, escalation, attempt, environment and validator version, and protected against replay. Do not trust a client-provided boolean such as successful=true by itself.
 
 Support evidence issuers with explicit assurance tiers:
+
 - Arena-controlled runner.
 - Registered application runner with registered verifier key and attested configuration.
 - External evidence source accepted by named policy.

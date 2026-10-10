@@ -35,19 +35,19 @@ Copy this file to a dated, commit-addressed report for AR2-000. Do not mark chec
 
 Record each command separately. Include exit code, duration, test count where applicable, log/evidence link, whether result came from a clean state, and any pre-existing failure.
 
-| Check | Exact command | Exit/result | Evidence path/URL | Notes |
-|---|---|---|---|---|
-| Dependency install | | NOT RUN | | |
-| Workspace freshness | | NOT RUN | | |
-| Build/bootstrap | | NOT RUN | | |
-| Typecheck | | NOT RUN | | |
-| Lint | | NOT RUN | | |
-| Format | | NOT RUN | | |
-| Architecture guard | | NOT RUN | | |
-| Package/unit tests | | NOT RUN | | |
-| E2E/desktop/web smoke | | NOT RUN | | |
-| Secret/dependency/license scan | | NOT RUN | | |
-| Fresh-clone smoke | | NOT RUN | | |
+| Check                          | Exact command | Exit/result | Evidence path/URL | Notes |
+| ------------------------------ | ------------- | ----------- | ----------------- | ----- |
+| Dependency install             |               | NOT RUN     |                   |       |
+| Workspace freshness            |               | NOT RUN     |                   |       |
+| Build/bootstrap                |               | NOT RUN     |                   |       |
+| Typecheck                      |               | NOT RUN     |                   |       |
+| Lint                           |               | NOT RUN     |                   |       |
+| Format                         |               | NOT RUN     |                   |       |
+| Architecture guard             |               | NOT RUN     |                   |       |
+| Package/unit tests             |               | NOT RUN     |                   |       |
+| E2E/desktop/web smoke          |               | NOT RUN     |                   |       |
+| Secret/dependency/license scan |               | NOT RUN     |                   |       |
+| Fresh-clone smoke              |               | NOT RUN     |                   |       |
 
 ## Architecture/path map
 

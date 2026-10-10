@@ -7,6 +7,7 @@ Arena 2.0 is built on the public fork of zai-org/ZCode. The initial upstream/bas
 Upstream version reported by its package manifest: ZCode 3.14.3. Upstream Node/pnpm versions and commands should be checked against mise.toml and package.json in the checked-out repository.
 
 Relevant inherited areas:
+
 - packages/desktop: Electron main/host/renderer and packaging.
 - packages/web: web client.
 - packages/server: HTTP/WebSocket and remote connectivity.

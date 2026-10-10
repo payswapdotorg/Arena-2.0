@@ -3,6 +3,7 @@
 Version: SA1.0
 Status: architecture approved; implementation not yet verified.
 Companion normative documents:
+
 - spec/architecture-lock.md
 - spec/verification/proof-and-payment-policy.md
 - spec/expert-arena/expert-arena.md
@@ -28,7 +29,7 @@ Learning plane: immutable intervention sources, rights/provenance checks, propos
 
 Start as a modular monolith in one repository. The API and worker should be separately runnable processes because request latency and worker lifetimes differ. The capsule host is a separate trust boundary, not just another service object. Local development may use one process and a synthetic capsule, but it must visibly identify this mode and must never claim production-grade tenant isolation.
 
-~~~text
+```text
 Client / SDK / MCP
        |
        v
@@ -60,7 +61,7 @@ PostgreSQL-compatible store <-> Transactional outbox
                      result decision + payment eligibility
                                       |
                    caller notification and ledger reconciliation
-~~~
+```
 
 ## 4. Module boundaries and dependency direction
 
@@ -127,6 +128,7 @@ Each attempt has its own immutable work baseline, assigned expert, capsule, cand
 ## 8. Durable commands, jobs, and events
 
 API request handling:
+
 1. Authenticate principal and derive tenant.
 2. Validate idempotency key and canonical request digest.
 3. In one relational transaction, create or replay the durable idempotency result, write the aggregate change, append audit/event facts and create an outbox record.
@@ -143,6 +145,7 @@ At-least-once delivery is assumed. Every consumer is idempotent. Exactly-once ex
 Evidence is a versioned envelope bound to tenant, escalation, attempt, capsule, intervention version, criterion, validator/reviewer, toolchain and policy. It records origin and trust tier. Hash large files and store them in object storage; keep integrity metadata and ownership in the database. The evidence service ensures immutable references, scoped reads, retention policy and verified downloads.
 
 The system must distinguish:
+
 - Original artifact.
 - Validator invocation and raw structured result.
 - Normalized validator decision.
@@ -171,6 +174,7 @@ Preserve the upstream license, third-party manifests, NOTICE disclosures, attrib
 ## 12. Operability
 
 Required health and metrics:
+
 - API availability, auth denials, p95/p99 latency and rate-limit actions.
 - Accepted job age, queue lag, lease expiry, retry/failure/dead-letter rates.
 - Matching time, eligible candidate count, offer acceptance and reassignment reasons.

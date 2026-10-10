@@ -4,7 +4,7 @@ The graph is normative alongside spec/work-orders/implementation-plan.md. An edg
 
 ## Canonical graph
 
-~~~text
+```text
 W0 (TL-owned, serialized)
 AR2-000 Fork baseline / inventory
         |
@@ -53,14 +53,16 @@ AR2-008 Matching            AR2-010 Test payments   AR2-011 SDK/MCP/webhooks
                           \                    /
                            v                  v
                       AR2-015 Integrated acceptance
-~~~
+```
 
 ## Dispatch waves (max three workers)
 
 ### W0 — TL serial lane
+
 AR2-000 then AR2-001. No feature worker dispatch until the baseline report exists and the contract freeze is accepted.
 
 ### W1 — three parallel foundational lanes
+
 - Worker 1: AR2-002 API transport/use-case adapter.
 - Worker 2: AR2-003 workbench UI and contract-fixture tests.
 - Worker 3: AR2-004 capsule contracts/provider seam and conformance tests.
@@ -68,7 +70,9 @@ AR2-000 then AR2-001. No feature worker dispatch until the baseline report exist
 These lanes have separate write fences. Canonical contracts and public schemas remain TL-owned/frozen.
 
 ### W2 — exploit all three slots
+
 Dispatch concurrently:
+
 - Worker 1: AR2-005 durable persistence, outbox and jobs.
 - Worker 2: AR2-006 client binding to the stable AR2-002 HTTP contract. The UI tests may use contract-faithful fixtures; full durable E2E is not accepted until AR2-005 has merged.
 - Worker 3: AR2-007 evidence/validator pipeline against AR2-004 and the frozen EvidenceEnvelope.
@@ -76,7 +80,9 @@ Dispatch concurrently:
 The UI does not own canonical state. The evidence pipeline does not own payout state.
 
 ### W3 — three independent product lanes
+
 After the respective dependencies in implementation-plan.md are accepted, dispatch:
+
 - Worker 1: AR2-008 qualification, matching and next-eligible-expert routing.
 - Worker 2: AR2-010 test-mode ledger and outcome-linked payment.
 - Worker 3: AR2-011 SDK/MCP/webhooks/generic integration.
@@ -84,11 +90,13 @@ After the respective dependencies in implementation-plan.md are accepted, dispat
 These three have disjoint domain/adapter fences and can use the same frozen API, durable store, evidence and payment-operation contracts.
 
 ### W4 — quality, review and integrated acceptance
+
 - AR2-009 Expert Arena depends on AR2-007 evidence semantics and AR2-008 expert qualification/conflict data; do not dispatch it in parallel with the still-unimplemented qualification/conflict contract it relies on.
 - AR2-013 operations can advance once durable jobs, capsule adapters and payment/test adapters exist; it can overlap AR2-009 where write fences remain disjoint.
 - AR2-012 final E2E acceptance waits for all required product paths. Harness scaffolding may be prepared earlier but must not be called integrated until the real API, store, capsule, validator, match, Expert Arena, payment and client paths are connected.
 
 ### W5 — rights and release gate
+
 - AR2-014 learning publication requires evidence, Expert Arena decision, rights/provenance and accepted integrated path.
 - AR2-015 release acceptance is serialized by TL after applicable feature paths and the acceptance-gate evidence are available. Threat-model documentation may start earlier but cannot imply integrated acceptance.
 

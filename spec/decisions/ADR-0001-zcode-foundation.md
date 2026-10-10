@@ -17,12 +17,14 @@ The first implementation is a modular monolith with API, worker and capsule host
 ## Consequences
 
 Positive:
+
 - Existing desktop/web and runtime foundation is reused.
 - Third-party apps use stable Arena contracts without adopting ZCode internals.
 - Security boundaries remain explicit and independently testable.
 - One repository supports parallel work with local tests.
 
 Negative / obligations:
+
 - Upstream internal module boundaries must be inspected; paths in architecture docs are logical boundaries until verified against source.
 - Upstream NOTICE/security/license material must be preserved.
 - Sandbox is a new responsibility and cannot be hand-waved by a worktree or UI boundary.

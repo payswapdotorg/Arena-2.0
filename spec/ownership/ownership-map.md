@@ -15,27 +15,33 @@ TL owns this file and the right to assign workers. Replace role labels with live
 ## Wave 1 fixed lanes
 
 Worker 1 / AR2-002:
+
 - Arena-specific API transport, route handlers, request/response validation adapter, auth-context adapter, application use-case adapter and API tests.
 - No changes to root manifests, canonical domain contract, DB migrations, capsule provider, or UI.
 
 Worker 2 / AR2-003:
+
 - Arena requester/expert/reviewer UI routes and components, Arena UI client/hooks, UI E2E tests, isolated CSS/design assets.
 - May use frozen mock client during parallel work.
 - No API/domain/persistence state writes, no permissions implemented only in UI, and no root manifest.
 
 Worker 3 / AR2-004:
+
 - Capsule interfaces, environment manifest, provider adapters, conformance/security tests, capsule-specific documentation.
 - No arbitrary host execution exposure, no public API route implementation, no payout state machine, no root manifest.
 
 ## Wave 2 ownership extensions
 
 Worker 1 / AR2-005:
+
 - Database migrations, durable repositories, transaction/outbox/job adapters and persistence/resilience tests. Coordinate any required dependency or root manifest change with TL; do not rewrite API routes without agreement.
 
 Worker 2 / AR2-006:
+
 - UI API integration, status/evidence screens, self-evaluation/review/appeal and UX tests. Does not own API schema or server authorization.
 
 Worker 3 / AR2-007:
+
 - Evidence envelope, validator registry/orchestration, proof-decision engine and tests. Does not own payment state or modify capsule isolation assumptions; coordinate through the capsule port.
 
 ## Subsequent assignments

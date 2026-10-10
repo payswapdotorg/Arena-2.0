@@ -18,7 +18,6 @@ The Arena source of truth is this repository. Never depend on conversation histo
 - Do not enable live payments without written commercial/release-owner gate. The author self-evaluation is not an independent review or payout trigger.
 - After every accepted PR, reconcile PROJECT-STATE, work-order status and dependency frontier. Link inspectable CI/evidence. This repository must remain fully usable by a fresh TL and three workers without asking this chat.
 
-
 ---
 
 # Inherited ZCode engineering guidance (preserved)

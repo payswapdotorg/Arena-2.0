@@ -6,6 +6,7 @@ Normative sources: spec/architecture-lock.md and spec/verification/proof-and-pay
 ## 1. Request envelope
 
 Every request requires:
+
 - contract_version;
 - client_application_id and tenant derived from authenticated context;
 - caller_idempotency_key and a canonical request digest;
@@ -45,6 +46,7 @@ No two modules can independently write the same authoritative state field. Cross
 ## 4. Result envelope
 
 A final result contains:
+
 - result_id, escalation_id, attempt_id and tenant binding;
 - status: ACCEPTED, PARTIALLY_ACCEPTED, REJECTED, INCONCLUSIVE, EXPIRED or FAILED;
 - structured outputs conforming to the frozen schema;

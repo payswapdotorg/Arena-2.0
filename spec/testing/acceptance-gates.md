@@ -3,6 +3,7 @@
 These gates are required for feature completion; the production launch gate is stricter. Test names and command paths should be added when implementation locations are verified. No blank or not-applicable row may be assumed passed.
 
 ## G0 — Fork baseline and supply chain
+
 - Record upstream base SHA, OS/runtime/package manager, exact commands, results and known pre-existing failures.
 - Perform fresh clone install and clean build/test on Linux; schedule macOS/Windows install proof before cross-platform release claims.
 - Review dependency licenses, upstream notices, secrets, build scripts, plugins, MCP startup and execution modes.
@@ -10,6 +11,7 @@ These gates are required for feature completion; the production launch gate is s
 - Pin a reproducible toolchain and identify every build/runtime asset downloaded dynamically.
 
 ## G1 — Contracts, architecture and governance
+
 - Validate request/result/event schemas at runtime.
 - State machines reject invalid transitions and preserve immutable history.
 - Dependency direction has no cycles; public exports only; no deep imports.
@@ -17,6 +19,7 @@ These gates are required for feature completion; the production launch gate is s
 - Any architecture change has an approved ACR and contract/migration/test impact plan.
 
 ## G2 — Security and tenant boundaries
+
 - API and worker enforce tenant-scoped object access; guessing another tenant's ID fails closed.
 - Authn and authz are distinct; role/lens and expert qualification never authorize an operation by themselves.
 - Capsule filesystem, process, tool and network boundaries are tested at the actual OS/runtime isolation layer.
@@ -27,6 +30,7 @@ These gates are required for feature completion; the production launch gate is s
 - Retention/deletion and access audits match the stated policy.
 
 ## G3 — Durability, idempotency and resilience
+
 - Duplicate same-key/same-payload commands replay the stored outcome.
 - Same-key/different-payload requests return a typed conflict.
 - Concurrent admission from at least two API processes creates one logical accepted task.
@@ -37,6 +41,7 @@ These gates are required for feature completion; the production launch gate is s
 - No critical correctness depends only on process memory or Redis.
 
 ## G4 — Application-level proof and payments
+
 - P0 baseline fails and post-intervention validator passes; the accepted proof is cryptographically/authentically task-bound and payout becomes eligible once.
 - A failed or inconclusive validator never automatically pays; routing attempts remain within budget.
 - P1 repeated/aggregate evaluation follows configured sample size and thresholds.
@@ -47,6 +52,7 @@ These gates are required for feature completion; the production launch gate is s
 - Live-money operations are unavailable without production configuration and approved release gate.
 
 ## G5 — Arena adjudication and Expert Arena
+
 - P2 requires the predeclared rubric, minimum independent reviewer quorum and all hard-stop checks.
 - P3 waits for its field evidence/observation gate.
 - Self-evaluation is criterion-level and can reference evidence; never counts as independent review.
@@ -57,6 +63,7 @@ These gates are required for feature completion; the production launch gate is s
 - Reviewer calibration, collusion/brigading detection, retaliation controls and explanations are tested.
 
 ## G6 — Product end-to-end
+
 - A generic external client calls a real local or deployed API, creates an escalation, observes status, and receives a schema-valid result.
 - At least one expert can accept, work in a bounded environment, submit evidence and see validation.
 - P0 software example: known compile/test failure before intervention, patch intervention, trusted rerun passes, result returns and payout simulator releases once.
@@ -66,6 +73,7 @@ These gates are required for feature completion; the production launch gate is s
 - Demo mode is visibly labelled and cannot be confused with customer/provider state.
 
 ## G7 — Observability, cost, capacity and operations
+
 - Capacity and quota exhaustion are visible and fail closed; no hidden paid fallback.
 - Health/readiness endpoints distinguish API health, dependency health and queue lag.
 - Logs/metrics/events include correlation and reason codes but no secrets or prohibited payloads.
