@@ -197,7 +197,6 @@ Production: dedicated configuration and secrets, verified capsule provider, data
 
 No profile may silently fall back from a failed paid provider to an unapproved paid resource. Capacity exhaustion must be visible and fail closed.
 
-
 ## 14. Capability-acquisition extension (ACR-0002)
 
 The acquisition router and Scraper Factory are specified in `spec/capability-acquisition/scraper-factory-and-capability-routing.md`. They add a separate versioned contract family and do not mutate frozen CF1.0 envelopes. Supported source kinds are SCRAPER, EXTERNAL_API and HUMAN_EXPERT; explicit modes are PINNED_PROVIDER, ANY_COMPATIBLE_PROVIDER and AUTO.

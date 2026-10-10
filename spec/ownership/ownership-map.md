@@ -53,17 +53,19 @@ Matching/qualification, Expert Arena, payment ledger, SDK/MCP/webhooks, operatio
 These are future lanes, not active worker assignments. TL must confirm dependencies and exact base SHAs before opening worker branches.
 
 AR2-016 — capability acquisition contracts/router:
+
 - New acquisition-specific contract/router modules and their vectors only.
 - No silent edits to CF1.0 frozen schemas; any shared schema/version/migration change is TL-owned through an ACR.
 
 AR2-017 — Scraper Factory/runtime/API adapters:
+
 - Scraper definitions/builds, connector adapters and scraper-specific tests/docs.
 - No root manifests/lockfile, persistence schema or capsule isolation weakening. All execution calls the CapsuleProvider port; never run generated code inside the API host.
 
 AR2-018 — dataset-to-capability pipeline/evaluation:
+
 - Dataset validation, provenance/transformation lineage, capability-upgrade proposal and gap-specific evaluation modules.
 - Must use AR2-007 evidence semantics and AR2-014 rights/version publication ports; may not create an alternate source of truth for BodyVersion or rights.
-
 
 ## Shared integration rules
 

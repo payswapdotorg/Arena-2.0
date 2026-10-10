@@ -51,7 +51,7 @@ If these documents conflict, halt the affected implementation and update them in
 | M6: Test-mode financial workflow                                                    | NOT STARTED                                                                                                                                                                                                                                                                                         | ledger, duplicate release, reconciliation and refund/dispute tests                                                                             |
 | M7: Rights-gated learning and Body marketplace                                      | NOT STARTED                                                                                                                                                                                                                                                                                         | provenance, rights, evaluation, immutable versions and rejection paths                                                                         |
 | M8: Production-readiness decision                                                   | NOT STARTED                                                                                                                                                                                                                                                                                         | every gate classified, live evidence where necessary, explicit release owner approval                                                          |
-| M9: Capability-gap acquisition (scrapers + API providers + learning) | PLANNED — ACR-0002 and AR2-016–018 registered; not implemented | Versioned route contracts, secure isolated scraper runs, source provenance/rights, external API tests and gap-specific before/after evaluation |
+| M9: Capability-gap acquisition (scrapers + API providers + learning)                | PLANNED — ACR-0002 and AR2-016–018 registered; not implemented                                                                                                                                                                                                                                      | Versioned route contracts, secure isolated scraper runs, source provenance/rights, external API tests and gap-specific before/after evaluation |
 
 ## Known inherited risks and constraints
 
@@ -78,7 +78,7 @@ Every merged work order updates PROJECT-STATE, the work-order registry and depen
 6. [AR2-003 / issue #5](https://github.com/payswapdotorg/arena-2.0/issues/5) ACCEPTED and closed (TL-direct; worker brain outage continues — OpenRouter 402): PR #29 (d08a3a7 — workbench foundation: typed mock client + CF1.0-validated requester cockpit + presentation-only role/lens + frozen state views) + PR #30 (dfb1b90 — expert flow: frozen-machine candidate submission + structured self-evaluation carrying `never_an_independent_vote: true` + reviewer/adjudicator decks with redaction partition and verification trail); `packages/arena-workbench` 50-test suite; acceptance record on the issue (comment 6099174698). **Wave 1 complete (AR2-002/003/004 all ACCEPTED).**
 7. Core frontier: AR2-005 durable runtime remains in progress after slice 1; finish persistence/application rewiring, then progress AR2-006/007 and the dependent waves. Worker dispatch must follow each issue's gates and the live dispatch ledger.
 8. Capability acquisition: ACR-0002 and AR2-016/017/018 are registered as a post-core extension. They are NOT DISPATCHABLE until the ACR/spec is merged and dependencies (AR2-002/004/005/007/008/014 as appropriate) are accepted. They do not silently expand AR2-012 core acceptance.
-8. Track all 19 WOs (AR2-000 through AR2-018) through spec/work-orders/dispatch-ledger.md and their [GitHub Issues](https://github.com/payswapdotorg/arena-2.0/issues).
+9. Track all 19 WOs (AR2-000 through AR2-018) through spec/work-orders/dispatch-ledger.md and their [GitHub Issues](https://github.com/payswapdotorg/arena-2.0/issues).
 
 ## GitHub issue map
 
@@ -102,6 +102,6 @@ The architecture setup was merged as [PR #1](https://github.com/payswapdotorg/ar
 | AR2-013    | [#15 — Operations, capacity, retention and observability](https://github.com/payswapdotorg/arena-2.0/issues/15)                  |
 | AR2-014    | [#16 — Rights-gated learning and Agent Body/version marketplace](https://github.com/payswapdotorg/arena-2.0/issues/16)           |
 | AR2-015    | [#17 — Integrated security, resilience, accessibility and release gate](https://github.com/payswapdotorg/arena-2.0/issues/17)    |
-| AR2-016    | [#32 — Capability-gap acquisition contract and provider router](https://github.com/payswapdotorg/Arena-2.0/issues/32) |
-| AR2-017    | [#33 — Scraper Factory, crawler runtime and external API adapters](https://github.com/payswapdotorg/Arena-2.0/issues/33) |
-| AR2-018    | [#34 — Evidence-to-capability packaging and controlled learning](https://github.com/payswapdotorg/Arena-2.0/issues/34)
+| AR2-016    | [#32 — Capability-gap acquisition contract and provider router](https://github.com/payswapdotorg/Arena-2.0/issues/32)            |
+| AR2-017    | [#33 — Scraper Factory, crawler runtime and external API adapters](https://github.com/payswapdotorg/Arena-2.0/issues/33)         |
+| AR2-018    | [#34 — Evidence-to-capability packaging and controlled learning](https://github.com/payswapdotorg/Arena-2.0/issues/34)           |

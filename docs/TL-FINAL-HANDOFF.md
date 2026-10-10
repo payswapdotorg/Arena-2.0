@@ -132,7 +132,6 @@ The production gate cannot be GO until applicable acceptance gates are evidenced
 
 Architecture branch/document setup and successful CI on documentation do not mean the product is implemented or production-ready.
 
-
 ## 11. Capability-gap acquisition and Scraper Factory extension (ACR-0002)
 
 Owner-requested product extension, documented in `spec/capability-acquisition/scraper-factory-and-capability-routing.md`. Registered work orders: AR2-016 (#32) provider routing/contracts, AR2-017 (#33) Scraper Factory and external API adapters, AR2-018 (#34) dataset-to-capability packaging/evaluation.

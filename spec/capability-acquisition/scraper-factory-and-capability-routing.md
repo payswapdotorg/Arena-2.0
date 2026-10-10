@@ -54,7 +54,7 @@ Arena chooses among scraper, external API, human expert or a policy-approved com
 
 ### End-to-end flow
 
-~~~text
+```text
 Client agent detects repeatable capability gap
   -> submit CapabilityGapReport / CapabilityAcquisitionRequest
   -> validate schema, tenant, rights, scope, risk, budget and deadline
@@ -73,7 +73,7 @@ Client agent detects repeatable capability gap
   -> publish a versioned, scoped CapabilityUpgradeProposal if accepted
   -> client app evaluates/adopts and records its result
   -> fail/inconclusive => no capability-complete claim; explain next step
-~~~
+```
 
 Every arrow is a durable, observable transition with idempotent command semantics and retriable/fenced jobs. The agent's report is enough to state a testable capability gap, not to prove the gap was fixed.
 
@@ -140,6 +140,7 @@ The evaluation compares the pre-upgrade agent against a versioned test suite: ta
 ## 8. UX and observability requirements
 
 Requester UI should expose:
+
 - the detected gap and proposed acceptance test;
 - source choice: a named scraper/provider, any compatible provider, or automatic routing;
 - source scope and permission, output format, quality target, privacy/retention, cost cap, deadline and allowed fallback;

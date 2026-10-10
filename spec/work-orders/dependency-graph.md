@@ -120,12 +120,11 @@ Every issue/branch/PR record includes exact base SHA, worker identity, dependenc
 
 Never parallelize root manifests, lockfiles, canonical shared schemas, contract generation or overlapping database migrations. If a shared-surface change is needed, the TL serializes it or opens a specific coordination issue. The next ready independent work may be pulled forward, but dependencies may not be waived informally.
 
-
 ## Capability-acquisition extension — AR2-016 through AR2-018
 
 This is an explicit post-core extension. It does not redefine completion of the core Arena vertical slice and it does not silently add fields to frozen CF1.0.
 
-~~~text
+```text
 AR2-002 API accepted -----------+
 AR2-005 durable runtime accepted+--> AR2-016 contracts/provider router
 AR2-008 matching accepted ------+              |
@@ -138,7 +137,7 @@ AR2-007 evidence accepted --------------------+  AR2-018 Dataset-to-
 AR2-014 rights-gated learning accepted -------+-> capability pipeline
 AR2-016 router accepted ----------------------+     + before/after evaluation
 AR2-017 scraper runtime accepted -------------+
-~~~
+```
 
 - AR2-016: a new versioned acquisition contract and router. Existing CF1.0 requests/envelopes remain frozen; any shared-contract change requires a reviewed ACR, compatibility vectors and an explicit migration/version decision.
 - AR2-017: use Crawlee as the initial open-source runtime substrate, plus an optional Apify API adapter and provider-neutral external API connectors. No scraper runs in the API process or an unverified synthetic capsule.
@@ -146,4 +145,3 @@ AR2-017 scraper runtime accepted -------------+
 - Modes are explicit: PINNED_PROVIDER, ANY_COMPATIBLE_PROVIDER, AUTO. Candidate eligibility checks for authorization, rights, output schema, budget, quotas and deadline precede ranking. AUTO may choose scraper, API or human only within policy.
 - Worker fences are recorded per issue before dispatch. Shared contract, persistence, root manifest, lockfile and migration changes stay TL-owned.
 - Security/quality blockers (SSRF, untrusted page prompt injection, restricted sources, unclear rights, cross-tenant access, quota exhaustion or failed evaluation) fail closed; they never become an implicit paid/human fallback.
-
