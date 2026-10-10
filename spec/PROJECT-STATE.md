@@ -1,6 +1,6 @@
 # Arena 2.0 Project State
 
-Last reconciled: 2026-10-09
+Last reconciled: 2026-10-10
 Repository: https://github.com/payswapdotorg/arena-2.0
 Base: fork of zai-org/ZCode
 Pinned base commit: 29628c9acdb81b703bbd4080c207a0e7ce5e276e
@@ -40,8 +40,8 @@ If these documents conflict, halt the affected implementation and update them in
 
 | Milestone | Status | Evidence required |
 |---|---|---|
-| M0: Fork baseline inventory and reproducible checks | NOT STARTED | Exact SHA, clean install/build/test baseline, source/license inventory, CI evidence |
-| M1: Contract freeze and architecture governance | DOCUMENTED / VERIFY ON MAIN | Reviewed contracts, state machines, work orders, ownership map and dependency gate |
+| M0: Fork baseline inventory and reproducible checks | EXECUTED — evidence PR pending acceptance | Clean-install battery recorded at docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md; CI/protection absence verified |
+| M1: Contract freeze and architecture governance | ACCEPTANCE RUBRIC DEFINED (spec/work-orders/ar2-001-acceptance.md); execution next | Reviewed contracts, state machines, work orders, ownership map and dependency gate |
 | M2: Vertical slice: real generic client → API → expert attempt → validator → result | NOT STARTED | End-to-end trace using real process/network path and durable records |
 | M3: Durable multi-instance runtime | NOT STARTED | restart/concurrency/outage/recovery evidence |
 | M4: Secure capsule execution and evidence provenance | NOT STARTED | isolation and tenant-boundary proofs |
@@ -68,8 +68,8 @@ Every merged work order updates PROJECT-STATE, the work-order registry and depen
 ## Current frontier
 
 1. Architecture setup PR [#1](https://github.com/payswapdotorg/arena-2.0/pull/1) is merged to main at 78a64381662ed7c2c6818ed280823c57be57c7c6.
-2. Execute [AR2-000 / issue #2](https://github.com/payswapdotorg/arena-2.0/issues/2): baseline inventory and evidence; do not begin feature implementation on uninspected modules.
-3. After AR2-000 acceptance, execute [AR2-001 / issue #3](https://github.com/payswapdotorg/arena-2.0/issues/3) to freeze public contracts, escalation state machine, proof-policy snapshot, evidence envelope and persistence boundaries.
+2. [AR2-000 / issue #2](https://github.com/payswapdotorg/arena-2.0/issues/2) baseline evidence is EXECUTED: full battery on a clean clone at 96e3edf recorded in [docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md](../docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md). Classification PASS WITH EXISTING FAILURES (format drift; sandbox-OOM build legs). Verified findings: no `.github/` CI exists at all; `main` branch protection absent — both are TL-owned follow-ups before Wave 1.
+3. Execute [AR2-001 / issue #3](https://github.com/payswapdotorg/arena-2.0/issues/3): acceptance rubric frozen at [spec/work-orders/ar2-001-acceptance.md](work-orders/ar2-001-acceptance.md); freeze public contracts, escalation state machine, proof-policy snapshot, evidence envelope and persistence boundaries, then close the five contract questions listed in the baseline report's Outcome.
 4. Once AR2-001 is accepted, dispatch AR2-002, AR2-003 and AR2-004 concurrently within the disjoint path fences in spec/ownership/ownership-map.md.
 5. Track all 16 WOs through spec/work-orders/dispatch-ledger.md and their [GitHub Issues](https://github.com/payswapdotorg/arena-2.0/issues).
 
