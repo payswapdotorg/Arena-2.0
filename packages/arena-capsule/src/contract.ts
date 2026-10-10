@@ -27,6 +27,22 @@ export {
   type BindingCheck,
 } from "./tenant-binding.js";
 
+export { SyntheticLocalProvider, type SyntheticProviderOptions } from "./synthetic-provider.js";
+
+export {
+  PRODUCTION_ENABLED,
+  SYNTHETIC_PROVIDER_IDENTITY,
+  type CapsuleProviderIdentity,
+  type CommandExecutionRequest,
+  type ExecuteOutcome,
+} from "./execution.js";
+
+export {
+  CAPSULE_LIFECYCLE_TRANSITIONS,
+  capsuleLifecycleAllows,
+  capsuleLifecycleIsTerminal,
+} from "./lifecycle.js";
+
 export {
   redactCredential,
   ScopedCredentialLedger,

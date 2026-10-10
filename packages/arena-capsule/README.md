@@ -29,29 +29,29 @@ scoped credentials and verified teardown are explicit, typed and testable.
 | Scoped credentials | `ScopedCredentialLedger`, `redactCredential`           | short-TTL issuance (≤ manifest ceiling ≤ 24h); structured state keeps digest only; the only safe display form is `redactCredential`; teardown revokes and verifies all manifest credentials |
 | Disclosure         | `CAPSULE_SYNTHETIC_PROVIDER_DISCLOSURE`                | the mandatory NON-PRODUCTION labelling constant                                                                                                                                             |
 
-## Slice 2 (pending)
+## Slice 2 (delivered)
 
-Synthetic local provider implementation (lifecycle state machine, command
-allowlist / duration / artifact-size enforcement, subprocess workspace), the
-OS-level isolation conformance suite **design document** for real providers, and
-the `productionEnabled` flag (default `false`, no code path flips it).
+| Area                    | Export                                                    | Semantics                                                                                                                                                                                                                                      |
+| ----------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Synthetic provider      | `SyntheticLocalProvider`                                  | `CapsuleProviderPort` reference implementation: subprocess/workspace-based, dependency-injected (clock / ledger / registry / workspace root); typed refusals preserve binding codes (cross-tenant indistinguishable, aggregate mismatch typed) |
+| Session execution       | `executeCommand` → `ExecuteOutcome`                       | command allowlist, session duration cap (`SESSION_DURATION_EXCEEDED`), remaining-budget kill (`EXEC_TIMEOUT`), minimal env subprocess in the capsule workspace                                                                                 |
+| Artifact enforcement    | `transferArtifact`                                        | `max_artifact_bytes` cap (`OVERSIZE`); pull→`artifacts/`, push→`outbox/`; flat-id guard against path injection                                                                                                                                 |
+| Verified teardown       | `teardown`                                                | revokes all manifest credentials and verifies; failure retains the workspace as evidence (`TEARDOWN_FAILED` + `unrevoked`); success removes the workspace and closes the capsule                                                               |
+| Lifecycle state machine | `CAPSULE_LIFECYCLE_TRANSITIONS`, `capsuleLifecycleAllows` | PROVISIONING → ENVIRONMENT_READY → TEARDOWN_REQUESTED → TERMINATED; no skip over teardown; TERMINATED is terminal                                                                                                                              |
+| Production flag         | `PRODUCTION_ENABLED: false`                               | `false` **literal type** — the type system forbids any assignment flipping it; no env/config code path touches it                                                                                                                              |
+| Provider identity       | `identity: CapsuleProviderIdentity`                       | name, disclosure string, engine, `production_enabled: false` — the visible NON-PRODUCTION label on every runtime surface                                                                                                                       |
 
-## Conformance suite design (preview — full document in slice 2)
+Credentials are issued clipped to the session bound (`max_duration_seconds`) so
+they never outlive the capsule; secrets appear once at issuance and only as
+digests in structured state.
 
-A production provider must pass, at the **actual isolation layer** (process /
-container / microVM boundary — not inside the guest):
+## Conformance suite design (full document)
 
-1. **Process boundary**: guest cannot see host process list, ptrace host
-   processes, or signal host processes.
-2. **Filesystem boundary**: guest cannot read host paths outside its declared
-   workspace; writes outside the workspace fail closed.
-3. **Network boundary**: default-deny egress actually drops non-allowlisted
-   traffic at the enforcement point (verified by packet-level probes, not by
-   guest-side observation).
-4. **Credential scoping**: credentials issued to capsule A are unusable from
-   capsule B; revocation takes effect at the enforcement point.
-5. **Teardown assurance**: after teardown, no guest processes/sockets/mounts
-   survive; the teardown record carries the verified revocation list.
+The OS-level isolation conformance suite that gates any **real** provider is
+specified in [`docs/conformance-suite-design.md`](docs/conformance-suite-design.md)
+(v1.0.0): five check classes (process / filesystem / network / credential /
+teardown), probe-at-the-enforcement-point principles, evidence classification
+(Class A–D), and the digest binding into `isolationAssuranceSchema`.
 
 The synthetic provider's results on any of these are **NON-EVIDENCE**.
 
