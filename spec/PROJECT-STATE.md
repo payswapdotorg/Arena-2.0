@@ -12,7 +12,7 @@ Maximum implementation workers: three plus Tech Lead
 
 **Architecture approved. Product implementation has not yet been verified.** This fork currently contains the upstream ZCode v3.14.3 code foundation. Creating these documents does not mean Arena's API, tenant isolation, database, capsules, payments, verification, expert marketplace or learning pipeline already exist.
 
-The branch architecture/arena-2.0-source-of-truth is the initial architecture setup under review. The TL must reconcile this baseline with actual main and current CI before dispatching code work.
+The initial architecture setup PR #1 is merged. Treat the milestone table, current frontier, accepted work-order records and linked CI/evidence as the live implementation state; do not use historical setup-branch notes as current dispatch authority.
 
 ## Product definition
 
@@ -34,6 +34,7 @@ Read in order:
 10. spec/testing/acceptance-gates.md — mandatory verification and release gates.
 11. docs/TL-FINAL-HANDOFF.md — executable TL dispatch and final acceptance instructions.
 12. Code, tests, migrations and CI — implementation truth, not a reason to leave a spec contradiction unresolved.
+13. spec/decisions/ACR-0002-capability-acquisition.md and spec/capability-acquisition/scraper-factory-and-capability-routing.md — scope, safety rules and work-order dependencies for the scraper/provider-routing extension.
 
 If these documents conflict, halt the affected implementation and update them in one reviewed Architecture Change Request. Do not ask the owner to repeat a decision already present here. This repository, not conversation history, is the sole source of truth.
 
