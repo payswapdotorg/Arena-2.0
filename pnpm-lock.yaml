@@ -655,6 +655,16 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
 
+  packages/arena-persistence:
+    dependencies:
+      '@arena/contracts':
+        specifier: workspace:*
+        version: link:../arena-contracts
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+
   packages/arena-workbench:
     dependencies:
       '@arena/contracts':

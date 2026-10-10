@@ -85,6 +85,12 @@ modules:
     requires: [arena-contracts]
     publicEntrypoints: [packages/arena-workbench/src/contract.ts]
     owner: arena-tl
+  - id: arena-persistence
+    roots: [packages/arena-persistence/src]
+    managed: true
+    requires: [arena-contracts]
+    publicEntrypoints: [packages/arena-persistence/src/contract.ts]
+    owner: arena-tl
 
 global:
   maxFileLines: 400
