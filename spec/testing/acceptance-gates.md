@@ -81,6 +81,22 @@ These gates are required for feature completion; the production launch gate is s
 - Operational runbooks exist for stuck jobs, replay, provider outage, data restore, suspected tenant leak, payment mismatch and capsule escape.
 - Release evidence states which tests are automated, which paths were exercised live and which claims remain unproven.
 
+## G8 — Capability acquisition, scraper execution and learning
+
+- CapabilityGapReport/CapabilityAcquisitionRequest schemas are versioned independently; CF1.0 remains green and no unknown field silently changes frozen contracts.
+- PINNED_PROVIDER, ANY_COMPATIBLE_PROVIDER and AUTO route modes have positive/negative tests; candidate policy, tenant, rights, schema, deadline and budget filters run before ranking.
+- Scraper build and run versions, dependency locks, source policy and output schemas are immutable and pinned per run.
+- Scraper code executes only through a validated real-isolation CapsuleProvider; synthetic provider tests are not production isolation evidence.
+- SSRF, redirects, DNS rebinding, IPv4/IPv6 private/metadata ranges, secret exfiltration and unauthorized egress fail closed.
+- API/provider credentials are server-side, narrowly scoped and redacted; retries/timeouts/cancellation/quota exhaustion cannot create unbounded or unbudgeted paid work.
+- Public source policies, robots directives, terms, privacy, rights/licences and rate limits are recorded; no login/access-control/paywall/CAPTCHA/anti-bot bypass is allowed.
+- Fetched pages and API output are untrusted data. Prompt-injection fixtures cannot alter tools, provider selection, egress policy or reveal secrets.
+- Dataset items retain source, timestamp, content digest, rights assessment, transformations, redaction class and deletion/retention lineage; unknown rights block reuse/publication.
+- Raw extraction or schema validity alone never proves capability improvement. A gap-specific before/after evaluation, regression suite, prompt-injection tests and exact target composition/version must pass.
+- Default upgrade path uses scoped retrieval/index, knowledge pack or validated tool where suitable. Model fine-tuning requires explicit approval, documented rights and pinned dataset/model/config/rollback metadata.
+- Optional Apify adapter tests use mock fixtures by default; any real call is explicitly configured, credential-scoped, quota/cost-bounded and observable.
+- Client application explicitly adopts or rolls back an immutable capability version; past evidence and versions are not rewritten.
+
 ## Evidence policy
 
 A passing unit test proves only the tested unit. A mock proves a contract/test fixture. A live provider connectivity check does not prove the application uses that provider correctly. A cached build is not independent evidence of a fresh build. Record evidence class, exact SHA, command, environment, result, limitations and reviewer. High/critical unresolved findings block release unless an authorized release owner formally accepts them in writing where policy permits.

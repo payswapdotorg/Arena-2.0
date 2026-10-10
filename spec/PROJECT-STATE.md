@@ -12,11 +12,11 @@ Maximum implementation workers: three plus Tech Lead
 
 **Architecture approved. Product implementation has not yet been verified.** This fork currently contains the upstream ZCode v3.14.3 code foundation. Creating these documents does not mean Arena's API, tenant isolation, database, capsules, payments, verification, expert marketplace or learning pipeline already exist.
 
-The branch architecture/arena-2.0-source-of-truth is the initial architecture setup under review. The TL must reconcile this baseline with actual main and current CI before dispatching code work.
+The initial architecture setup PR #1 is merged. Treat the milestone table, current frontier, accepted work-order records and linked CI/evidence as the live implementation state; do not use historical setup-branch notes as current dispatch authority.
 
 ## Product definition
 
-Arena is the Stripe of human expert escalation for AI automation. A third-party app submits a versioned task with constraints, budget and proof policy. Arena matches an eligible expert, runs a bounded isolated session, captures evidence, validates the submitted intervention, returns a typed result and—if policy permits—unlocks an idempotent payment operation. Optional reusable learning is a separate rights- and validation-gated flow.
+Arena is the Stripe of capability escalation/acquisition for AI automation. A third-party app submits a versioned task or capability-gap request with constraints, budget and proof policy. Arena can route to a qualified human expert, compatible scraper/data provider, approved external API or a policy-permitted combination; it records evidence, validates results and returns a typed outcome. Any reusable data/learning is a separate rights-, provenance- and evaluation-gated flow. The scraper/capability-acquisition extension is specified by ACR-0002 but is not implemented yet.
 
 ## Canonical authority
 
@@ -34,6 +34,7 @@ Read in order:
 10. spec/testing/acceptance-gates.md — mandatory verification and release gates.
 11. docs/TL-FINAL-HANDOFF.md — executable TL dispatch and final acceptance instructions.
 12. Code, tests, migrations and CI — implementation truth, not a reason to leave a spec contradiction unresolved.
+13. spec/decisions/ACR-0002-capability-acquisition.md and spec/capability-acquisition/scraper-factory-and-capability-routing.md — scope, safety rules and work-order dependencies for the scraper/provider-routing extension.
 
 If these documents conflict, halt the affected implementation and update them in one reviewed Architecture Change Request. Do not ask the owner to repeat a decision already present here. This repository, not conversation history, is the sole source of truth.
 
@@ -50,6 +51,7 @@ If these documents conflict, halt the affected implementation and update them in
 | M6: Test-mode financial workflow                                                    | NOT STARTED                                                                                                                                                                                                                                                                                         | ledger, duplicate release, reconciliation and refund/dispute tests                                                                             |
 | M7: Rights-gated learning and Body marketplace                                      | NOT STARTED                                                                                                                                                                                                                                                                                         | provenance, rights, evaluation, immutable versions and rejection paths                                                                         |
 | M8: Production-readiness decision                                                   | NOT STARTED                                                                                                                                                                                                                                                                                         | every gate classified, live evidence where necessary, explicit release owner approval                                                          |
+| M9: Capability-gap acquisition (scrapers + API providers + learning)                | PLANNED — ACR-0002 and AR2-016–018 registered; not implemented                                                                                                                                                                                                                                      | Versioned route contracts, secure isolated scraper runs, source provenance/rights, external API tests and gap-specific before/after evaluation |
 
 ## Known inherited risks and constraints
 
@@ -74,8 +76,9 @@ Every merged work order updates PROJECT-STATE, the work-order registry and depen
 4. [AR2-002 / issue #4](https://github.com/payswapdotorg/arena-2.0/issues/4) ACCEPTED and closed (TL-direct; worker brain outage — OpenRouter 402, recorded on the issue): PR #25 (a452e9d — API edge + application use cases + TL harvest wiring) + PR #26 (2f6b8fd — ES2.0 §2 query surface 8/8 via typed transport stubs); acceptance record on the issue.
 5. [AR2-004 / issue #6](https://github.com/payswapdotorg/arena-2.0/issues/6) ACCEPTED and closed (TL-direct; worker brain outage continues — OpenRouter 402): PR #27 (3a6b9a4 — CapsuleProvider port + fail-closed manifest gate + tenant binding + scoped credentials) + PR #28 (df1f374 — synthetic local provider with allowlist/duration/artifact enforcement + verified teardown + lifecycle state machine + `PRODUCTION_ENABLED: false` frozen literal + conformance suite design v1.0.0 at packages/arena-capsule/docs/); acceptance record on the issue (comment 6097567345).
 6. [AR2-003 / issue #5](https://github.com/payswapdotorg/arena-2.0/issues/5) ACCEPTED and closed (TL-direct; worker brain outage continues — OpenRouter 402): PR #29 (d08a3a7 — workbench foundation: typed mock client + CF1.0-validated requester cockpit + presentation-only role/lens + frozen state views) + PR #30 (dfb1b90 — expert flow: frozen-machine candidate submission + structured self-evaluation carrying `never_an_independent_vote: true` + reviewer/adjudicator decks with redaction partition and verification trail); `packages/arena-workbench` 50-test suite; acceptance record on the issue (comment 6099174698). **Wave 1 complete (AR2-002/003/004 all ACCEPTED).**
-7. Next: AR2-005 (durable store, [#7](https://github.com/payswapdotorg/arena-2.0/issues/7)) is the unblocked Wave-2 frontier (dependencies = AR2-002 ✅); then AR2-007 (evidence, [#9](https://github.com/payswapdotorg/arena-2.0/issues/9)). Worker dispatch re-arms when OpenRouter credits allow worker-grade max_tokens.
-8. Track all 16 WOs through spec/work-orders/dispatch-ledger.md and their [GitHub Issues](https://github.com/payswapdotorg/arena-2.0/issues).
+7. Core frontier: AR2-005 durable runtime remains in progress after slice 1; finish persistence/application rewiring, then progress AR2-006/007 and the dependent waves. Worker dispatch must follow each issue's gates and the live dispatch ledger.
+8. Capability acquisition: ACR-0002 and AR2-016/017/018 are registered as a post-core extension. They are NOT DISPATCHABLE until the ACR/spec is merged and dependencies (AR2-002/004/005/007/008/014 as appropriate) are accepted. They do not silently expand AR2-012 core acceptance.
+9. Track all 19 WOs (AR2-000 through AR2-018) through spec/work-orders/dispatch-ledger.md and their [GitHub Issues](https://github.com/payswapdotorg/arena-2.0/issues).
 
 ## GitHub issue map
 
@@ -99,3 +102,6 @@ The architecture setup was merged as [PR #1](https://github.com/payswapdotorg/ar
 | AR2-013    | [#15 — Operations, capacity, retention and observability](https://github.com/payswapdotorg/arena-2.0/issues/15)                  |
 | AR2-014    | [#16 — Rights-gated learning and Agent Body/version marketplace](https://github.com/payswapdotorg/arena-2.0/issues/16)           |
 | AR2-015    | [#17 — Integrated security, resilience, accessibility and release gate](https://github.com/payswapdotorg/arena-2.0/issues/17)    |
+| AR2-016    | [#32 — Capability-gap acquisition contract and provider router](https://github.com/payswapdotorg/Arena-2.0/issues/32)            |
+| AR2-017    | [#33 — Scraper Factory, crawler runtime and external API adapters](https://github.com/payswapdotorg/Arena-2.0/issues/33)         |
+| AR2-018    | [#34 — Evidence-to-capability packaging and controlled learning](https://github.com/payswapdotorg/Arena-2.0/issues/34)           |

@@ -11,7 +11,7 @@ Companion normative documents:
 
 ## 1. Goals and non-goals
 
-Arena procures human capability for AI applications. It accepts a versioned task contract, makes capability demand explicit, routes to an eligible expert, supplies a bounded working environment, records observable interventions, verifies the outcome using the correct proof regime, returns a structured result, and optionally settles payment or proposes rights-cleared reusable learning.
+Arena procures and acquires capability for AI applications. It accepts versioned task and capability-gap contracts, makes capability demand explicit, and can route to an eligible human expert, scraper/data provider, approved external API or policy-permitted composite plan. Bounded execution, source provenance, evidence and evaluation gates govern the result. It returns a structured outcome and optionally settles payment or proposes rights-cleared reusable learning.
 
 V1 is not a general-purpose replacement for customer applications, an autonomous authority over customer systems, a microservice collection, or a marketplace where star ratings alone define correctness.
 
@@ -80,6 +80,9 @@ Names below are logical boundaries. Before implementing them, inspect the actual
 - arena-payments: provider-neutral ledger and payout eligibility; provider APIs remain in adapters.
 - arena-experts: onboarding, capability profiles, qualification evidence, availability, conflicts and reviewer quality.
 - arena-learning: rights-gated artifact proposals, provenance graph, evaluation, publication and version lifecycle.
+- arena-capability-acquisition: versioned capability-gap request, provider registry/router, route decisions, budget-aware fallback and capability-upgrade proposals; contracts remain provider-neutral.
+- arena-scraper-runtime: versioned scraper definitions/builds and durable acquisition-run orchestration; calls only through the validated capsule and connector ports.
+- arena-connectors: provider-specific data/API adapters (including optional Apify Actor/task API) behind provider-neutral ports; tokens remain in secret storage.
 - arena-ui: projections of canonical API data. UI role/lens is not an authorization primitive.
 - arena-sdk: typed client and examples; generated contracts or shared schemas are the source of type generation, not handwritten duplications.
 - adapters/: integrations for database, object storage, queue/coordination, payments, email/notifications, identity and domain tools.
@@ -93,6 +96,7 @@ All IDs are opaque stable identifiers; all tenant-owned objects carry a tenant b
 - Tenant, Principal, Membership, PermissionGrant, ApiCredential.
 - ClientApplication, SigningKey, WebhookEndpoint, WebhookDelivery.
 - EscalationRequest, EscalationVersion, CapabilityDemand, AcceptanceCriterion, ProofPolicySnapshot.
+- CapabilityGapReport, CapabilityAcquisitionRequest, CapabilityProviderDescriptor, RouteDecision, ScraperDefinition/Version, AcquisitionRun, DatasetArtifact, CapabilityUpgradeProposal, AcquisitionEvaluation.
 - ExpertProfile, CapabilityClaim, QualificationEvidence, AvailabilityWindow, ConflictDeclaration.
 - MatchDecision, Offer, Assignment, Attempt, Revision, BudgetReservation.
 - Capsule, CapsuleManifest, CapsuleAction, Artifact, ArtifactVersion, EvidenceEnvelope, ValidatorRun.
@@ -192,3 +196,11 @@ Preview: isolated database/schema, strict test credentials, fake payment by defa
 Production: dedicated configuration and secrets, verified capsule provider, database backups and restore tests, durable worker recovery, webhook signing, object-store lifecycle, monitoring, incident runbooks, commercial/legal approval and live acceptance evidence.
 
 No profile may silently fall back from a failed paid provider to an unapproved paid resource. Capacity exhaustion must be visible and fail closed.
+
+## 14. Capability-acquisition extension (ACR-0002)
+
+The acquisition router and Scraper Factory are specified in `spec/capability-acquisition/scraper-factory-and-capability-routing.md`. They add a separate versioned contract family and do not mutate frozen CF1.0 envelopes. Supported source kinds are SCRAPER, EXTERNAL_API and HUMAN_EXPERT; explicit modes are PINNED_PROVIDER, ANY_COMPATIBLE_PROVIDER and AUTO.
+
+Crawlee (Apache-2.0) is the default reuse-first Node/TypeScript substrate. Apify is an optional external API provider; Arena owns capability routing, policy, quotas, durable run records, evidence and evaluation. Generated/user-authored scraper code runs only inside a genuinely isolated CapsuleProvider, never in the API process or an unverified workspace.
+
+Acquired data is untrusted and is not automatically training data. Source rights, tenant privacy, provenance, schema validation and prompt-injection controls must pass. A capability-upgrade claim requires a reproducible before/after evaluation of the target gap. Retrieval/indexes, structured knowledge packs or bounded tools are preferred when suitable; fine-tuning requires explicit rights/policy approval and a reproducible training record.
