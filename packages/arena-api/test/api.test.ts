@@ -335,3 +335,97 @@ test("route not found returns typed 404", async () => {
     await server.close();
   }
 });
+
+test("scenario 6 (slice 2): GetResult stub — escalation-scoped, fail-closed, typed disclosure", async () => {
+  const server = await startServer();
+  try {
+    const created = await call(server.base, "POST", "/v1/escalations", VALID_REQUEST, {
+      "x-idempotency-key": "key-result-1",
+    });
+    const escalationId = String(created.body.escalation_id);
+    // 对象存在于本租户：typed stub 404 + AR2-007 披露。
+    const stub = await call(server.base, "GET", `/v1/escalations/${escalationId}/result`);
+    assert.equal(stub.status, 404);
+    assert.equal(stub.body.code, "ARENA_RESOURCE_NOT_FOUND");
+    const details = stub.body.details as { disclosure: string };
+    assert.ok(details.disclosure.includes("AR2-007"));
+    // 不存在的 escalation：失败关闭（与跨租户不可区分）。
+    const missing = await call(server.base, "GET", "/v1/escalations/esc_missing/result");
+    assert.equal(missing.status, 404);
+    assert.equal(missing.body.code, "ARENA_ESCALATION_NOT_FOUND");
+    // 跨租户：同样失败关闭。
+    const cross = await fetch(server.base + `/v1/escalations/${escalationId}/result`, {
+      headers: { authorization: "Bearer demo-token-requester-beta" },
+    });
+    assert.equal(cross.status, 404);
+    const crossBody = (await cross.json()) as Record<string, unknown>;
+    assert.equal(crossBody.code, "ARENA_ESCALATION_NOT_FOUND");
+  } finally {
+    await server.close();
+  }
+});
+
+test("scenario 6 (slice 2): GetPaymentStatus stub — typed disclosure references AR2-010", async () => {
+  const server = await startServer();
+  try {
+    const created = await call(server.base, "POST", "/v1/escalations", VALID_REQUEST, {
+      "x-idempotency-key": "key-pay-1",
+    });
+    const escalationId = String(created.body.escalation_id);
+    const stub = await call(server.base, "GET", `/v1/escalations/${escalationId}/payment-status`);
+    assert.equal(stub.status, 404);
+    assert.equal(stub.body.code, "ARENA_RESOURCE_NOT_FOUND");
+    const details = stub.body.details as { disclosure: string };
+    assert.ok(details.disclosure.includes("AR2-010"));
+    // 不存在的 escalation 同样失败关闭。
+    const missing = await call(server.base, "GET", "/v1/escalations/esc_missing/payment-status");
+    assert.equal(missing.status, 404);
+    assert.equal(missing.body.code, "ARENA_ESCALATION_NOT_FOUND");
+  } finally {
+    await server.close();
+  }
+});
+
+test("scenario 6 (slice 2): GetEvidence stub — typed 404 with AR2-007 disclosure", async () => {
+  const server = await startServer();
+  try {
+    const stub = await call(server.base, "GET", "/v1/evidence/evd_anything");
+    assert.equal(stub.status, 404);
+    assert.equal(stub.body.code, "ARENA_RESOURCE_NOT_FOUND");
+    const details = stub.body.details as { disclosure: string };
+    assert.ok(details.disclosure.includes("AR2-007"));
+  } finally {
+    await server.close();
+  }
+});
+
+test("scenario 6 (slice 2): GetLearningProposals stub — tenant-scoped empty list with disclosure", async () => {
+  const server = await startServer();
+  try {
+    const list = await call(server.base, "GET", "/v1/learning-proposals");
+    assert.equal(list.status, 200);
+    assert.deepEqual(list.body.items, []);
+    assert.equal(list.body.tenant_scope, "tnt_00000001");
+    const disclosures = list.body.disclosures as string[];
+    assert.ok(disclosures[0]?.includes("AR2-014"));
+    // 未认证：401。
+    const anon = await fetch(server.base + "/v1/learning-proposals");
+    assert.equal(anon.status, 401);
+  } finally {
+    await server.close();
+  }
+});
+
+test("scenario 6 (slice 2): /v1/contract discloses the 8/8 query surface posture", async () => {
+  const server = await startServer();
+  try {
+    const contract = await call(server.base, "GET", "/v1/contract", undefined, {});
+    assert.equal(contract.status, 200);
+    const disclosures = contract.body.disclosures as string[];
+    assert.equal(disclosures.length, 2);
+    assert.ok(disclosures[1]?.includes("8/8"));
+    assert.ok(disclosures[1]?.includes("transport stubs"));
+  } finally {
+    await server.close();
+  }
+});

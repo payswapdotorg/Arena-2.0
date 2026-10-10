@@ -31,6 +31,22 @@ import { errorResponseBody } from "./errors-mapping.js";
 export const API_DISCLOSURE =
   `${DEMO_AUTH_DISCLOSURE}; persistence is the NON-DURABLE in-memory runtime for this WO` as const;
 
+/**
+ * ES2.0 §2 查询面补全（AR2-002 slice 2）：四个 typed 传输层 stub 的披露。
+ * 端点、鉴租户作用域与错误信封已冻结在 CF1.0 形状上；
+ * 背后的存储/服务随后续 WO 落地（见各自字段）。
+ */
+export const STUB_QUERY_DISCLOSURES = {
+  result:
+    "GetResult transport stub: result records arrive with AR2-007 (evidence capture and verification pipeline)",
+  payment:
+    "GetPaymentStatus transport stub: payment eligibility and ledger arrive with AR2-010 (test-mode payments)",
+  evidence:
+    "GetEvidence transport stub: evidence store arrives with AR2-007 (evidence capture and verification pipeline)",
+  learning:
+    "GetLearningProposals transport stub: learning service arrives with AR2-014 (rights-gated learning)",
+} as const;
+
 export interface ArenaServerOptions {
   runtime: InMemoryRuntime;
 }
@@ -77,7 +93,10 @@ async function handle(
       corpus: CONTRACT_CORPUS_VERSION,
       proof_policy: PROOF_POLICY_VERSION,
       event_schema: EVENT_SCHEMA_VERSION,
-      disclosures: [API_DISCLOSURE],
+      disclosures: [
+        API_DISCLOSURE,
+        "ES2.0 §2 query surface 8/8 wired: 4 backed by in-WO stores, 4 are typed transport stubs (see STUB_QUERY_DISCLOSURES)",
+      ],
     });
   }
 
@@ -143,6 +162,55 @@ async function handle(
   if (timelineMatch !== null && method === "GET") {
     return respondJson(response, 200, {
       events: getTimeline(runtime, timelineMatch[1] ?? "", tenant.tenant_id),
+    });
+  }
+
+  // ---- ES2.0 §2 查询面补全（slice 2）：typed stub 端点 ----
+  // GetResult / GetPaymentStatus 为 escalation 作用域：先验证对象存在且在租户范围内
+  // （失败关闭：不存在与跨租户不可区分，均为 ARENA_ESCALATION_NOT_FOUND 404），
+  // 再返回带披露的 ARENA_RESOURCE_NOT_FOUND。GetEvidence / GetLearningProposals
+  // 的背后存储向未存在，同样以 typed 信封 + 披露响应。
+
+  const resultMatch = /^\/v1\/escalations\/([^/]+)\/result$/.exec(path);
+  if (resultMatch !== null && method === "GET") {
+    getEscalation(runtime, resultMatch[1] ?? "", tenant.tenant_id);
+    return respondJson(response, 404, {
+      code: "ARENA_RESOURCE_NOT_FOUND",
+      message: "result store not implemented in this work order",
+      correlation_id: correlationId,
+      request_id: requestId,
+      details: { disclosure: STUB_QUERY_DISCLOSURES.result },
+    });
+  }
+
+  const paymentStatusMatch = /^\/v1\/escalations\/([^/]+)\/payment-status$/.exec(path);
+  if (paymentStatusMatch !== null && method === "GET") {
+    getEscalation(runtime, paymentStatusMatch[1] ?? "", tenant.tenant_id);
+    return respondJson(response, 404, {
+      code: "ARENA_RESOURCE_NOT_FOUND",
+      message: "payment domain not implemented in this work order",
+      correlation_id: correlationId,
+      request_id: requestId,
+      details: { disclosure: STUB_QUERY_DISCLOSURES.payment },
+    });
+  }
+
+  const evidenceMatch = /^\/v1\/evidence\/([^/]+)$/.exec(path);
+  if (evidenceMatch !== null && method === "GET") {
+    return respondJson(response, 404, {
+      code: "ARENA_RESOURCE_NOT_FOUND",
+      message: "evidence store not implemented in this work order",
+      correlation_id: correlationId,
+      request_id: requestId,
+      details: { disclosure: STUB_QUERY_DISCLOSURES.evidence },
+    });
+  }
+
+  if (method === "GET" && path === "/v1/learning-proposals") {
+    return respondJson(response, 200, {
+      items: [] as unknown[],
+      tenant_scope: tenant.tenant_id,
+      disclosures: [STUB_QUERY_DISCLOSURES.learning],
     });
   }
 
