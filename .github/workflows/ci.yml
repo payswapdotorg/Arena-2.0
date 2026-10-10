@@ -58,6 +58,10 @@ jobs:
         working-directory: packages/arena-workbench
         run: ../../node_modules/.bin/tsx --test test/workbench.test.ts test/render.test.tsx test/expert-review.test.ts test/expert-review-render.test.tsx
 
+      - name: Unit tests — arena-persistence (node:test via tsx, node:sqlite)
+        working-directory: packages/arena-persistence
+        run: ../../node_modules/.bin/tsx --test test/durable.test.ts test/jobs.test.ts
+
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
         run: ../../node_modules/.bin/tsx --test test/nonCliAcpRetirement.test.ts
