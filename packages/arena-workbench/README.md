@@ -2,9 +2,12 @@
 
 AR2-003 — Requester, expert and reviewer workbench. This package is the
 Arena-specific UI surface: **typed mock client**, **requester cockpit form**
-(client-side validated against the frozen CF1.0 zod schemas), **role/lens
-switcher** (presentation only), **state views** for the four frozen state
-machines, and React presentational screens.
+(client-side validated against the frozen CF1.0 zod schemas), **expert flow**
+(candidate submission + structured self-evaluation driven by the frozen
+attempt state machine), **reviewer/adjudicator decks** (criterion outcomes +
+verification trail + redaction partition), **role/lens switcher**
+(presentation only), **state views** for the four frozen state machines, and
+React presentational screens.
 
 > **DEMO — deterministic fixtures, never customer state** (architecture-lock
 > 23). Every mock record carries a `DemoTag`; the disclosure banner is rendered
@@ -19,7 +22,7 @@ derivation) and **never receives the UI role**. Authorization itself lives on
 the server side (AR2-002 surface); binding the workbench to the real API is
 AR2-006.
 
-## Slice 1 surface (this delivery)
+## Slice 1 surface
 
 | Area           | Export                                                           | Semantics                                                                                                                                                                                                                                       |
 | -------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -30,6 +33,19 @@ AR2-006.
 | Demo fixtures  | `DEMO_PROOF_POLICY_PRESET`, `DEMO_ACCEPTANCE_CRITERIA`           | deterministic, CF1.0-valid snapshot fixtures (PVP1.0 literal, rubric review policy, payout gate with `dispute_blocks_release: true`)                                                                                                            |
 | Screens        | `RequesterCockpit`, `StateBadge`, `DemoBanner`, `FieldErrorList` | pure presentational React components (SSR-renderable); loading/empty/error/inconclusive states surfaced                                                                                                                                         |
 
+## Slice 2 surface
+
+| Area                  | Export                                                                                 | Semantics                                                                                                                                                                                                                                                                      |
+| --------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Expert flow           | `validateCandidateDraft`, `validateSelfEvaluationDraft`, `evaluateCandidateSubmission` | candidate draft → immutable candidate version (`candidateVersionSchema`, unknown-key rejection); self-evaluation is criterion-level, evidence-referencing, covers every criterion, and carries `never_an_independent_vote: true` + the frozen rule text (architecture-lock 17) |
+| Frozen-machine wiring | `evaluateSelfEvaluationSubmission`, `evaluateExpertTransition`                         | ENVIRONMENT_READY → SUBMITTED (`SubmitIntervention` + candidate guards) and SUBMITTED → VERIFYING (`SubmitSelfEvaluation` + `self_evaluation_structured`) only via `evaluateTransition` — no hand-written state assignments, `INVALID_TRANSITION` surfaced as typed outcome    |
+| Mock client (expert)  | `listAssignments`, `getAttempt`, `submitCandidate`, `submitSelfEvaluation`             | tenant-scoped; cross-tenant = `NOT_FOUND` (indistinguishable); seeds are fail-closed validated (schema + semantics) and instance-isolated via `structuredClone`; live transitions mutate only the instance copy                                                                |
+| Reviewer deck         | `buildReviewDeck`, `ReviewerCriterionRow`, `VerificationTrail`                         | criterion rows merge `criterionOutcomeSchema` decisions with frozen criterion statements; trail exposes validators/versions/reviewers/adjudicator/outcomes/policy_version; `independent_review_count` counts only `trail.reviewer_ids` (self-evaluation never counted)         |
+| Redaction             | `partitionByRedactionClass`, `RedactionBoundary`                                       | public/tenant → shared area; `reviewer_private` → visually separated boundary (`data-redaction-class`); `operator` → withheld from the reviewer surface (count only, no evidence ids rendered)                                                                                 |
+| Adjudication          | `adjudicationView`, `AdjudicatorDeckScreen`                                            | divergence = differing rubric outcome bands or a hard-stop dispute; adjudicator presence and trigger from the frozen review policy                                                                                                                                             |
+| Screens (expert)      | `ExpertQueue`, `ExpertWorkspace`, `SelfEvaluationPanel`                                | pure presentational; empty state for the queue; non-vote rule text rendered on the workspace and the panel (`data-never-vote="true"`)                                                                                                                                          |
+| Screens (reviewer)    | `ReviewerDeckScreen`, `AdjudicatorDeckScreen`, `VerificationTrailView`                 | SSR smoke-tested; result statuses that are not frozen attempt states (e.g. `PARTIALLY_ACCEPTED`) render as plain text — no invented state badges                                                                                                                               |
+
 ## Tests
 
 - `test/workbench.test.ts` — UI-logic: form validation (valid / unknown field /
@@ -39,6 +55,19 @@ AR2-006.
 - `test/render.test.tsx` — SSR smoke via `renderToStaticMarkup`: demo banner,
   lens switcher accessibility, state badges (frozen + unknown), typed field
   errors, cockpit form + empty tracking + summaries.
+- `test/expert-review.test.ts` — slice 2 UI-logic: candidate draft validation
+  (immutable version, strict unknown-key rejection), frozen-machine
+  transitions (ENVIRONMENT_READY → SUBMITTED; SUBMITTED → VERIFYING only when
+  structured; refusals as `INVALID_TRANSITION`), self-evaluation validation
+  (unknown criterion / dangling evidence / incomplete coverage all rejected),
+  mock-client expert surface (queue, tenant isolation, seed isolation),
+  reviewer deck assembly (criterion merge, redaction partition, trail fields,
+  self-evaluation never counted), adjudication divergence flags.
+- `test/expert-review-render.test.tsx` — slice 2 SSR smoke: expert queue +
+  workspace + self-evaluation panel (non-vote labelling), reviewer deck
+  (criterion rows, redaction boundary, withheld operator count, verification
+  trail, separated self-evaluation), adjudicator deck (divergence + trigger),
+  PARTIALLY_ACCEPTED rendered without invented attempt states.
 
 ## Manual smoke script (documented — acceptance scenario 6 minimum)
 
@@ -47,7 +76,9 @@ Run locally from the repo root:
 ```
 pnpm --filter @arena/workbench exec ../../node_modules/.bin/tsx --test \
   packages/arena-workbench/test/workbench.test.ts \
-  packages/arena-workbench/test/render.test.tsx
+  packages/arena-workbench/test/render.test.tsx \
+  packages/arena-workbench/test/expert-review.test.ts \
+  packages/arena-workbench/test/expert-review-render.test.tsx
 ```
 
 Manual pass/fail checklist (a reviewer walks the SSR markup or mounts
@@ -64,13 +95,21 @@ Manual pass/fail checklist (a reviewer walks the SSR markup or mounts
    value renders as `unknown (no invented states)`, never an invented label.
 5. Keyboard accessibility: every control is a native `button`/`input`/
    `textarea` with an explicit `label`/`aria-label`.
+6. Expert queue → workspace: submit a candidate on the open attempt; the
+   second submission is refused as `INVALID_TRANSITION` (no invented edges).
+7. Self-evaluation panel: rendered apart from criterion outcomes, labelled
+   "visible evidence, not a vote"; the independent-review count never moves.
+8. Reviewer deck: reviewer-private evidence sits inside the redaction
+   boundary; operator evidence shows only a withheld count; the adjudicator
+   deck flags divergence with the frozen trigger text.
 
-## Slice 2 (pending)
+## Later work
 
-Expert queue/workbench, candidate submission + structured self-evaluation,
-reviewer/adjudicator screens with reviewer-private redaction classes, evidence
-timeline, and Playwright-grade E2E when the runner lands (this WO's minimum is
-node:test UI-logic + the documented smoke script above).
+- Bind the workbench to the real API (AR2-006) — the mock client and its
+  outcome types are the replacement seam.
+- Attempt/evidence timeline view and Playwright-grade E2E when the runner
+  lands (this WO's minimum is node:test UI-logic + the documented smoke
+  script above).
 
 ## House notes
 
