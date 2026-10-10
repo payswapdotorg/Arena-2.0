@@ -52,3 +52,12 @@ D. Treat fetched data as automatically training the model: rejected; data proven
 ## Decision to record at merge
 
 Record reviewer, merge SHA, CI evidence, contract compatibility result, and whether any shared contract version bump is needed. The new feature is not considered implemented by merging this specification alone.
+
+## Merge decision record (2026-10-10)
+
+- Reviewer: arena-TL (C1–C3 gate record posted as PR review comment 5480217781; self-approval blocked by GitHub in the single-identity org — documented tradeoff, branch protection enforces the `battery` check only).
+- Merge: PR #35 squash-merged as `e3091fe` (TL-reconciled head `4bfb714`; content-identical fmt normalize — table alignment + ordered-list renumbering).
+- CI evidence: battery success on `0891d3a` (run 38072589291) and on `4bfb714` (run 38073948139).
+- Contract compatibility: CF1.0 corpus untouched (docs-only diff); existing contract suite remains authoritative.
+- Shared contract version bump: **none needed** — the acquisition family is a separate versioned contract space per §1.
+- Dispatch status: AR2-016 (#32), AR2-017 (#33), AR2-018 (#34) remain PLANNED / DEPENDENCIES NOT MET; the core frontier (AR2-005 durable rewiring) is unchanged. Merging this specification does not implement the feature.
