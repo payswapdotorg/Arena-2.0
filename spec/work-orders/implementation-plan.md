@@ -41,7 +41,7 @@ Acceptance: role is presentation only; all mutations use typed client/services a
 
 ### AR2-004: Capsule contract and isolation adapter seam
 
-Owner: Worker 3. Dependencies: AR2-001. Write fence: capsule contract/provider adapter, capsule conformance tests and security documentation.
+Owner: Worker 3. Dependencies: AR2-001. State: ACCEPTED 2026-10-10 (TL-direct after worker brain outage; slice 1 PR #27 → 3a6b9a4 + slice 2 PR #28 → df1f374, CI run 38052459005; issue #6 closed with acceptance record comment 6097567345; `packages/arena-capsule` 32-test suite; synthetic provider labelled NON-PRODUCTION with `PRODUCTION_ENABLED: false` literal type; OS-level isolation conformance suite DESIGN at packages/arena-capsule/docs/conformance-suite-design.md v1.0.0 — synthetic results are NON-EVIDENCE). Write fence: capsule contract/provider adapter, capsule conformance tests and security documentation.
 Scope: CapsuleProvider port, task environment manifest, allowed actions/tools, scoped credentials, resource and egress policy, artifact transfer, lifecycle, heartbeat, teardown and assurance record. Provide a synthetic local provider for development and tests, visibly marked non-production.
 Acceptance: invalid or over-scoped manifest fails closed; authorization and cleanup paths tested; synthetic provider makes no system-isolation claim; production provider remains disabled until a system-level isolation conformance suite passes.
 
