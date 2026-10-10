@@ -131,3 +131,14 @@ Do not call the vertical slice complete until tests cover:
 The production gate cannot be GO until applicable acceptance gates are evidenced, critical/high findings are closed or formally accepted by an authorized owner where allowed, isolation is proven, real persistence and recovery are proven, application/Expert Arena paths pass, payment reconciliation is tested, and commercial/legal release responsibilities are written down.
 
 Architecture branch/document setup and successful CI on documentation do not mean the product is implemented or production-ready.
+
+
+## 11. Capability-gap acquisition and Scraper Factory extension (ACR-0002)
+
+Owner-requested product extension, documented in `spec/capability-acquisition/scraper-factory-and-capability-routing.md`. Registered work orders: AR2-016 (#32) provider routing/contracts, AR2-017 (#33) Scraper Factory and external API adapters, AR2-018 (#34) dataset-to-capability packaging/evaluation.
+
+This extension is planned, not implemented or dispatched. It adds a separate versioned acquisition contract family; CF1.0 remains immutable. Modes: pinned provider, any compatible provider, or policy-bounded automatic routing among scraper, external API and human expert. Prefer Crawlee (Apache-2.0) as a reuse-first scraper substrate and make Apify an optional external provider rather than a hard dependency or a clone target.
+
+All generated scraper jobs require real capsule isolation, bounded/allowlisted egress, durable queues, quotas, scoped API credentials, source/rights/provenance records and adversarial-content handling. Raw scraping does not prove capability improvement. AR2-018 requires a measurable before/after evaluation and explicit rights/policy for data reuse or model training.
+
+Do not dispatch these work orders until ACR-0002/spec merge and the dependencies recorded in the work-order registry are satisfied. This is an extension to the core vertical slice, not an implicit change to AR2-012 acceptance.
