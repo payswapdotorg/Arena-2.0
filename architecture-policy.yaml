@@ -73,6 +73,12 @@ modules:
     requires: [arena-contracts, arena-application]
     publicEntrypoints: [packages/arena-api/src/contract.ts]
     owner: arena-tl
+  - id: arena-capsule
+    roots: [packages/arena-capsule/src]
+    managed: true
+    requires: [arena-contracts]
+    publicEntrypoints: [packages/arena-capsule/src/contract.ts]
+    owner: arena-tl
 
 global:
   maxFileLines: 400

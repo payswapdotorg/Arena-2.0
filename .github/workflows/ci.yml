@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies (frozen lockfile)
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck (tsc -b, 14 projects incl. arena family)
+      - name: Typecheck (tsc -b, 15 projects incl. arena family)
         run: pnpm typecheck
 
       - name: Lint (oxlint)
@@ -49,6 +49,10 @@ jobs:
       - name: Unit tests — arena-api (node:test via tsx)
         working-directory: packages/arena-api
         run: ../../node_modules/.bin/tsx --test test/api.test.ts
+
+      - name: Unit tests — arena-capsule (node:test via tsx)
+        working-directory: packages/arena-capsule
+        run: ../../node_modules/.bin/tsx --test test/capsule.test.ts
 
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
