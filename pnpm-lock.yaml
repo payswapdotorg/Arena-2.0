@@ -655,6 +655,28 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
 
+  packages/arena-workbench:
+    dependencies:
+      '@arena/contracts':
+        specifier: workspace:*
+        version: link:../arena-contracts
+      react:
+        specifier: 19.2.7
+        version: 19.2.7
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.14)
+      react-dom:
+        specifier: 19.2.7
+        version: 19.2.7(react@19.2.7)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+
   packages/client:
     dependencies:
       '@zcode/rpc':
