@@ -35,7 +35,7 @@ Acceptance: real HTTP listener locally callable; tenant scoping tested; contract
 
 ### AR2-003: Workbench and multi-role UI shell
 
-Owner: Worker 2. Dependencies: AR2-001. Write fence: Arena-specific UI routes, components and UI tests; may use frozen mocks until API integration; do not write domain/persistence contracts or root manifests without TL approval.
+Owner: Worker 2. Dependencies: AR2-001. State: ACCEPTED 2026-10-10 (TL-direct after worker brain outage; slice 1 PR #29 → d08a3a7 + slice 2 PR #30 → dfb1b90, CI green; issue #5 closed with acceptance record comment 6099174698; `packages/arena-workbench` 50-test suite: typed mock client + CF1.0-validated requester form + frozen-machine expert flow with `never_an_independent_vote` self-evaluation + redaction-partitioned reviewer/adjudicator decks). Write fence: Arena-specific UI routes, components and UI tests; may use frozen mocks until API integration; do not write domain/persistence contracts or root manifests without TL approval.
 Scope: requester cockpit, expert queue/workbench, candidate submission/self-evaluation, reviewer/adjudicator screens, persistent role/lens switcher, loading/empty/error/inconclusive states and responsive accessible design.
 Acceptance: role is presentation only; all mutations use typed client/services and server authorization; responsive keyboard-accessible E2E smoke tests; demo data visibly labelled.
 
