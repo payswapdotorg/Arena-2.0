@@ -3,6 +3,7 @@ export {
   JobFencedOutError,
   type SqliteRuntime,
   type SqliteRuntimeOptions,
+  type StoredAggregateRow,
 } from "./sqlite-runtime.js";
 
 export { openEngine, type SqliteEngine, type Statement, type EngineOptions } from "./engine.js";

@@ -11,12 +11,14 @@ import {
   type EscalationRequest,
   type EventEnvelope,
 } from "@arena/contracts";
-import type { InMemoryRuntime } from "./inmemory-runtime.js";
+import type { ArenaRuntime } from "./runtime.js";
 
 /**
  * CreateEscalation 用例：信任边界之后的完整校验（结构 + 语义）、
  * 幂等预留/重放/冲突、聚合创建与 EscalationCreated 事件（同事务 outbox）。
  * 租户永远来自认证上下文，绝不来自请求体。
+ * 运行时依赖为 ArenaRuntime 结构（runtime.ts）：AR2-005 起默认 durable 引擎，
+ * in-memory 为披露的测试夹具 —— 用例代码对两者无感知。
  */
 
 export type CreateEscalationOutcome =
@@ -60,7 +62,7 @@ export class DomainError extends Error {
 }
 
 export async function createEscalation(
-  runtime: InMemoryRuntime,
+  runtime: ArenaRuntime,
   input: CreateEscalationInput,
   now: () => string = () => new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
 ): Promise<CreateEscalationOutcome> {
@@ -94,7 +96,9 @@ export async function createEscalation(
   if (reservation.kind === "REPLAY") {
     return {
       kind: "REPLAY",
-      response: runtime.readIdempotentResponse(
+      // IN_PROGRESS 的并发重放下响应体尚未写入（null）——冻结端口语义：
+      // 第二个进程绝不二次执行命令；COMPLETED 后的重放返回完整响应体。
+      response: runtime.idempotency.readResponse(
         tenant.data.tenant_id,
         input.command.idempotency_key,
       ),
@@ -197,7 +201,7 @@ export async function createEscalation(
     response_digest: input.command.request_digest,
     completed_at: timestamp,
   });
-  runtime.storeResponse(tenant.data.tenant_id, input.command.idempotency_key, response);
+  runtime.idempotency.storeResponse(tenant.data.tenant_id, input.command.idempotency_key, response);
 
   return response;
 }

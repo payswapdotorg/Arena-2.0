@@ -422,9 +422,11 @@ test("scenario 6 (slice 2): /v1/contract discloses the 8/8 query surface posture
     const contract = await call(server.base, "GET", "/v1/contract", undefined, {});
     assert.equal(contract.status, 200);
     const disclosures = contract.body.disclosures as string[];
-    assert.equal(disclosures.length, 2);
-    assert.ok(disclosures[1]?.includes("8/8"));
-    assert.ok(disclosures[1]?.includes("transport stubs"));
+    // AR2-005 slice 2: disclosures now also carry the active persistence mode
+    // (+ optional composition disclosure) — assert substance, not exact length.
+    assert.ok(disclosures.length >= 2);
+    assert.ok(disclosures.some((line) => line.includes("8/8") && line.includes("transport stubs")));
+    assert.ok(disclosures.some((line) => line.includes("active persistence mode:")));
   } finally {
     await server.close();
   }

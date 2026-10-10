@@ -5,6 +5,13 @@ export {
 } from "./inmemory-runtime.js";
 
 export {
+  IN_MEMORY_RUNTIME_FIXTURE_DISCLOSURE,
+  type ArenaRuntime,
+  type IdempotencyResponseStore,
+  type StoredAggregateRow,
+} from "./runtime.js";
+
+export {
   createEscalation,
   DomainError,
   randomId,

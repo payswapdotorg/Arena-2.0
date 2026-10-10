@@ -14,22 +14,23 @@ import {
   getEscalation,
   getTimeline,
   listEscalations,
-  type InMemoryRuntime,
+  type ArenaRuntime,
 } from "@arena/application";
 import { DEMO_AUTH_DISCLOSURE, deriveTenantContext, roleIsPresentationOnly } from "./auth.js";
 import { errorResponseBody } from "./errors-mapping.js";
 
 /**
- * Arena API edge（AR2-002，TL-direct 执行）。
+ * Arena API edge（AR2-002，TL-direct 执行；AR2-005 slice 2 起 durable 组装）。
  * 新的兄弟包 —— 绝不修改 packages/server（冻结决策 ar2-001-freeze.md §2.1）。
- * 组装：DEMO 认证适配器 + NON-DURABLE 进程内运行时（同一端口形状，
- * AR2-005 替换实现）。启动：
+ * 组合根（main.ts）决定运行时：默认 @arena/persistence 的 node:sqlite 参考引擎
+ * （ADR-0001；本地监听可用 ARENA_DB_PATH 指定数据库文件）；in-memory 为
+ * 披露的测试夹具。启动：
  *   node --experimental-strip-types packages/arena-api/src/main.ts
  * 或 tsx。默认端口 3901（ARENA_API_PORT 可覆盖）。
  */
 
 export const API_DISCLOSURE =
-  `${DEMO_AUTH_DISCLOSURE}; persistence is the NON-DURABLE in-memory runtime for this WO` as const;
+  `${DEMO_AUTH_DISCLOSURE}; runtime composition is chosen by the entrypoint (main.ts wires the durable engine by default; see readiness and /v1/contract disclosures for the active mode)` as const;
 
 /**
  * ES2.0 §2 查询面补全（AR2-002 slice 2）：四个 typed 传输层 stub 的披露。
@@ -47,15 +48,31 @@ export const STUB_QUERY_DISCLOSURES = {
     "GetLearningProposals transport stub: learning service arrives with AR2-014 (rights-gated learning)",
 } as const;
 
+export interface PersistenceDescriptor {
+  /** 运行时模式标识（readiness / 契约披露用）。 */
+  mode: string;
+  ready: boolean;
+  /** 附加披露（如引擎 ADR / 数据库路径策略）。 */
+  disclosure?: string;
+}
+
 export interface ArenaServerOptions {
-  runtime: InMemoryRuntime;
+  runtime: ArenaRuntime;
+  /** 缺省为 in-memory（AR2-002 兼容）；durable 组装由 main.ts 传入。 */
+  persistence?: PersistenceDescriptor;
 }
 
 export function createArenaServer(options: ArenaServerOptions): Server {
-  const { runtime } = options;
+  const runtime = options.runtime;
+  const persistence: PersistenceDescriptor = options.persistence ?? {
+    mode: "in_memory_non_durable",
+    ready: true,
+    disclosure:
+      "AR2-002 test fixture (NON-DURABLE); the durable composition is the default entrypoint since AR2-005",
+  };
 
   return createServer((request, response) => {
-    void handle(request, response, runtime).catch((error: unknown) => {
+    void handle(request, response, runtime, persistence).catch((error: unknown) => {
       const mapped = errorResponseBody(error, "cor_serverfail", null);
       respondJson(response, mapped.status, mapped.body);
     });
@@ -65,7 +82,8 @@ export function createArenaServer(options: ArenaServerOptions): Server {
 async function handle(
   request: IncomingMessage,
   response: ServerResponse,
-  runtime: InMemoryRuntime,
+  runtime: ArenaRuntime,
+  persistence: PersistenceDescriptor,
 ): Promise<void> {
   const url = new URL(request.url ?? "/", "http://arena.local");
   const path = url.pathname;
@@ -79,24 +97,27 @@ async function handle(
   }
   if (method === "GET" && path === "/readyz") {
     return respondJson(response, 200, {
-      status: "ready",
+      status: persistence.ready ? "ready" : "degraded",
       process: "arena-api",
       dependencies: {
-        persistence: { mode: "in_memory_non_durable", ready: true },
+        persistence: { mode: persistence.mode, ready: persistence.ready },
         auth: { mode: "demo_registry", ready: true },
       },
     });
   }
   if (method === "GET" && path === "/v1/contract") {
+    const disclosures = [
+      API_DISCLOSURE,
+      `active persistence mode: ${persistence.mode}`,
+      "ES2.0 §2 query surface 8/8 wired: 4 backed by in-WO stores, 4 are typed transport stubs (see STUB_QUERY_DISCLOSURES)",
+    ];
+    if (persistence.disclosure !== undefined) disclosures.push(persistence.disclosure);
     return respondJson(response, 200, {
       contract_version: CONTRACT_VERSION,
       corpus: CONTRACT_CORPUS_VERSION,
       proof_policy: PROOF_POLICY_VERSION,
       event_schema: EVENT_SCHEMA_VERSION,
-      disclosures: [
-        API_DISCLOSURE,
-        "ES2.0 §2 query surface 8/8 wired: 4 backed by in-WO stores, 4 are typed transport stubs (see STUB_QUERY_DISCLOSURES)",
-      ],
+      disclosures,
     });
   }
 
@@ -141,7 +162,7 @@ async function handle(
 
   const escalationMatch = /^\/v1\/escalations\/([^/]+)$/.exec(path);
   if (escalationMatch !== null && method === "GET") {
-    const record = getEscalation(runtime, escalationMatch[1] ?? "", tenant.tenant_id);
+    const record = await getEscalation(runtime, escalationMatch[1] ?? "", tenant.tenant_id);
     return respondJson(response, 200, {
       escalation_id: record.escalation_id,
       status: record.status,
@@ -161,7 +182,7 @@ async function handle(
   const timelineMatch = /^\/v1\/escalations\/([^/]+)\/timeline$/.exec(path);
   if (timelineMatch !== null && method === "GET") {
     return respondJson(response, 200, {
-      events: getTimeline(runtime, timelineMatch[1] ?? "", tenant.tenant_id),
+      events: await getTimeline(runtime, timelineMatch[1] ?? "", tenant.tenant_id),
     });
   }
 
@@ -173,7 +194,7 @@ async function handle(
 
   const resultMatch = /^\/v1\/escalations\/([^/]+)\/result$/.exec(path);
   if (resultMatch !== null && method === "GET") {
-    getEscalation(runtime, resultMatch[1] ?? "", tenant.tenant_id);
+    await getEscalation(runtime, resultMatch[1] ?? "", tenant.tenant_id);
     return respondJson(response, 404, {
       code: "ARENA_RESOURCE_NOT_FOUND",
       message: "result store not implemented in this work order",
@@ -185,7 +206,7 @@ async function handle(
 
   const paymentStatusMatch = /^\/v1\/escalations\/([^/]+)\/payment-status$/.exec(path);
   if (paymentStatusMatch !== null && method === "GET") {
-    getEscalation(runtime, paymentStatusMatch[1] ?? "", tenant.tenant_id);
+    await getEscalation(runtime, paymentStatusMatch[1] ?? "", tenant.tenant_id);
     return respondJson(response, 404, {
       code: "ARENA_RESOURCE_NOT_FOUND",
       message: "payment domain not implemented in this work order",

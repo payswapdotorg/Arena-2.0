@@ -9,7 +9,7 @@ import {
   type TransitionCommand,
 } from "@arena/contracts";
 import { DomainError, randomId, type EscalationRecord } from "./create-escalation.js";
-import type { InMemoryRuntime } from "./inmemory-runtime.js";
+import type { ArenaRuntime } from "./runtime.js";
 
 /**
  * 状态机命令执行器：全部迁移来自 @arena/contracts 的冻结状态机
@@ -19,6 +19,7 @@ import type { InMemoryRuntime } from "./inmemory-runtime.js";
  *
  * 守卫事实必须由服务端派生（本 WO 的演示组装由 API 层提供并标注 DEMO；
  * 匹配引擎/预算检查/capsule host 的真实接线属于后续 WO）。
+ * 运行时依赖为 ArenaRuntime 结构（runtime.ts）：durable / in-memory 无感知。
  */
 
 export interface ExecuteCommandInput {
@@ -43,7 +44,7 @@ export interface ExecuteCommandOutcome {
 }
 
 export async function executeCommand(
-  runtime: InMemoryRuntime,
+  runtime: ArenaRuntime,
   input: ExecuteCommandInput,
   now: () => string = () => new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
 ): Promise<ExecuteCommandOutcome> {

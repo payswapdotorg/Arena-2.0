@@ -12,6 +12,7 @@
   "dependencies": {
     "@arena/application": "workspace:*",
     "@arena/contracts": "workspace:*",
+    "@arena/persistence": "workspace:*",
     "zod": "4.6.5"
   },
   "devDependencies": {
