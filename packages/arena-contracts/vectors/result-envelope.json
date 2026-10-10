@@ -1,0 +1,404 @@
+{
+  "envelope": "result-envelope",
+  "cases": [
+    {
+      "id": "rs-valid-1",
+      "kind": "valid",
+      "payload": {
+        "result_id": "res_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "tenant_id": "tnt_00000001",
+        "status": "ACCEPTED",
+        "structured_outputs": {
+          "schema_id": "sch_00000001",
+          "schema_version": "1.0.0",
+          "data": {
+            "build": "green",
+            "tests": "16/16"
+          }
+        },
+        "criterion_decisions": [
+          {
+            "criterion_id": "crt_00000001",
+            "decision": "PASS",
+            "proof_class": "P0",
+            "evidence_ids": ["evd_00000001"],
+            "hard_stop_triggered": false
+          }
+        ],
+        "proof_class": "P0",
+        "evidence_references": [
+          {
+            "evidence_id": "evd_00000001",
+            "integrity_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef"
+          }
+        ],
+        "verification": {
+          "validator_ids": ["val_00000001"],
+          "validator_versions": ["1.2.0"],
+          "reviewer_ids": [],
+          "adjudicator_id": null,
+          "outcomes": ["rerun1 pass", "rerun2 pass"],
+          "policy_version": "PVP1.0"
+        },
+        "limitations": ["validator covers compile/test predicates only"],
+        "assumptions": ["pinned toolchain faithfully reflects the production build"],
+        "residual_risk": "none within the measured predicate",
+        "follow_up_recommendations": ["refresh the toolchain pin quarterly"],
+        "artifact": {
+          "artifact_version": "v1",
+          "lineage": ["dededededededededededededededededededededededededededededededede"]
+        },
+        "payment_eligibility_reference": {
+          "eligibility_id": "elp_00000001",
+          "is_reference_only": true
+        },
+        "correlation_id": "cor_00000001",
+        "created_at": "2026-10-10T06:00:00Z",
+        "contract_version": "ES2.0"
+      }
+    },
+    {
+      "id": "rs-neg-missing-status",
+      "kind": "negative",
+      "payload": {
+        "result_id": "res_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "tenant_id": "tnt_00000001",
+        "structured_outputs": {
+          "schema_id": "sch_00000001",
+          "schema_version": "1.0.0",
+          "data": {
+            "build": "green",
+            "tests": "16/16"
+          }
+        },
+        "criterion_decisions": [
+          {
+            "criterion_id": "crt_00000001",
+            "decision": "PASS",
+            "proof_class": "P0",
+            "evidence_ids": ["evd_00000001"],
+            "hard_stop_triggered": false
+          }
+        ],
+        "proof_class": "P0",
+        "evidence_references": [
+          {
+            "evidence_id": "evd_00000001",
+            "integrity_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef"
+          }
+        ],
+        "verification": {
+          "validator_ids": ["val_00000001"],
+          "validator_versions": ["1.2.0"],
+          "reviewer_ids": [],
+          "adjudicator_id": null,
+          "outcomes": ["rerun1 pass", "rerun2 pass"],
+          "policy_version": "PVP1.0"
+        },
+        "limitations": ["validator covers compile/test predicates only"],
+        "assumptions": ["pinned toolchain faithfully reflects the production build"],
+        "residual_risk": "none within the measured predicate",
+        "follow_up_recommendations": ["refresh the toolchain pin quarterly"],
+        "artifact": {
+          "artifact_version": "v1",
+          "lineage": ["dededededededededededededededededededededededededededededededede"]
+        },
+        "payment_eligibility_reference": {
+          "eligibility_id": "elp_00000001",
+          "is_reference_only": true
+        },
+        "correlation_id": "cor_00000001",
+        "created_at": "2026-10-10T06:00:00Z",
+        "contract_version": "ES2.0"
+      }
+    },
+    {
+      "id": "rs-neg-wrong-type-decisions",
+      "kind": "negative",
+      "payload": {
+        "result_id": "res_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "tenant_id": "tnt_00000001",
+        "status": "ACCEPTED",
+        "structured_outputs": {
+          "schema_id": "sch_00000001",
+          "schema_version": "1.0.0",
+          "data": {
+            "build": "green",
+            "tests": "16/16"
+          }
+        },
+        "criterion_decisions": "all pass",
+        "proof_class": "P0",
+        "evidence_references": [
+          {
+            "evidence_id": "evd_00000001",
+            "integrity_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef"
+          }
+        ],
+        "verification": {
+          "validator_ids": ["val_00000001"],
+          "validator_versions": ["1.2.0"],
+          "reviewer_ids": [],
+          "adjudicator_id": null,
+          "outcomes": ["rerun1 pass", "rerun2 pass"],
+          "policy_version": "PVP1.0"
+        },
+        "limitations": ["validator covers compile/test predicates only"],
+        "assumptions": ["pinned toolchain faithfully reflects the production build"],
+        "residual_risk": "none within the measured predicate",
+        "follow_up_recommendations": ["refresh the toolchain pin quarterly"],
+        "artifact": {
+          "artifact_version": "v1",
+          "lineage": ["dededededededededededededededededededededededededededededededede"]
+        },
+        "payment_eligibility_reference": {
+          "eligibility_id": "elp_00000001",
+          "is_reference_only": true
+        },
+        "correlation_id": "cor_00000001",
+        "created_at": "2026-10-10T06:00:00Z",
+        "contract_version": "ES2.0"
+      }
+    },
+    {
+      "id": "rs-neg-unknown-field",
+      "kind": "negative",
+      "payload": {
+        "result_id": "res_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "tenant_id": "tnt_00000001",
+        "status": "ACCEPTED",
+        "structured_outputs": {
+          "schema_id": "sch_00000001",
+          "schema_version": "1.0.0",
+          "data": {
+            "build": "green",
+            "tests": "16/16"
+          }
+        },
+        "criterion_decisions": [
+          {
+            "criterion_id": "crt_00000001",
+            "decision": "PASS",
+            "proof_class": "P0",
+            "evidence_ids": ["evd_00000001"],
+            "hard_stop_triggered": false
+          }
+        ],
+        "proof_class": "P0",
+        "evidence_references": [
+          {
+            "evidence_id": "evd_00000001",
+            "integrity_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef"
+          }
+        ],
+        "verification": {
+          "validator_ids": ["val_00000001"],
+          "validator_versions": ["1.2.0"],
+          "reviewer_ids": [],
+          "adjudicator_id": null,
+          "outcomes": ["rerun1 pass", "rerun2 pass"],
+          "policy_version": "PVP1.0"
+        },
+        "limitations": ["validator covers compile/test predicates only"],
+        "assumptions": ["pinned toolchain faithfully reflects the production build"],
+        "residual_risk": "none within the measured predicate",
+        "follow_up_recommendations": ["refresh the toolchain pin quarterly"],
+        "artifact": {
+          "artifact_version": "v1",
+          "lineage": ["dededededededededededededededededededededededededededededededede"]
+        },
+        "payment_eligibility_reference": {
+          "eligibility_id": "elp_00000001",
+          "is_reference_only": true
+        },
+        "correlation_id": "cor_00000001",
+        "created_at": "2026-10-10T06:00:00Z",
+        "contract_version": "ES2.0",
+        "settled": "true"
+      }
+    },
+    {
+      "id": "rs-neg-bad-status",
+      "kind": "negative",
+      "payload": {
+        "result_id": "res_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "tenant_id": "tnt_00000001",
+        "status": "DONE",
+        "structured_outputs": {
+          "schema_id": "sch_00000001",
+          "schema_version": "1.0.0",
+          "data": {
+            "build": "green",
+            "tests": "16/16"
+          }
+        },
+        "criterion_decisions": [
+          {
+            "criterion_id": "crt_00000001",
+            "decision": "PASS",
+            "proof_class": "P0",
+            "evidence_ids": ["evd_00000001"],
+            "hard_stop_triggered": false
+          }
+        ],
+        "proof_class": "P0",
+        "evidence_references": [
+          {
+            "evidence_id": "evd_00000001",
+            "integrity_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef"
+          }
+        ],
+        "verification": {
+          "validator_ids": ["val_00000001"],
+          "validator_versions": ["1.2.0"],
+          "reviewer_ids": [],
+          "adjudicator_id": null,
+          "outcomes": ["rerun1 pass", "rerun2 pass"],
+          "policy_version": "PVP1.0"
+        },
+        "limitations": ["validator covers compile/test predicates only"],
+        "assumptions": ["pinned toolchain faithfully reflects the production build"],
+        "residual_risk": "none within the measured predicate",
+        "follow_up_recommendations": ["refresh the toolchain pin quarterly"],
+        "artifact": {
+          "artifact_version": "v1",
+          "lineage": ["dededededededededededededededededededededededededededededededede"]
+        },
+        "payment_eligibility_reference": {
+          "eligibility_id": "elp_00000001",
+          "is_reference_only": true
+        },
+        "correlation_id": "cor_00000001",
+        "created_at": "2026-10-10T06:00:00Z",
+        "contract_version": "ES2.0"
+      }
+    },
+    {
+      "id": "rs-neg-semantics-rejected-with-eligibility",
+      "kind": "semantic-negative",
+      "payload": {
+        "result_id": "res_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "tenant_id": "tnt_00000001",
+        "status": "REJECTED",
+        "structured_outputs": {
+          "schema_id": "sch_00000001",
+          "schema_version": "1.0.0",
+          "data": {
+            "build": "green",
+            "tests": "16/16"
+          }
+        },
+        "criterion_decisions": [
+          {
+            "criterion_id": "crt_00000001",
+            "decision": "PASS",
+            "proof_class": "P0",
+            "evidence_ids": ["evd_00000001"],
+            "hard_stop_triggered": false
+          }
+        ],
+        "proof_class": "P0",
+        "evidence_references": [
+          {
+            "evidence_id": "evd_00000001",
+            "integrity_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef"
+          }
+        ],
+        "verification": {
+          "validator_ids": ["val_00000001"],
+          "validator_versions": ["1.2.0"],
+          "reviewer_ids": [],
+          "adjudicator_id": null,
+          "outcomes": ["rerun1 pass", "rerun2 pass"],
+          "policy_version": "PVP1.0"
+        },
+        "limitations": ["validator covers compile/test predicates only"],
+        "assumptions": ["pinned toolchain faithfully reflects the production build"],
+        "residual_risk": "none within the measured predicate",
+        "follow_up_recommendations": ["refresh the toolchain pin quarterly"],
+        "artifact": {
+          "artifact_version": "v1",
+          "lineage": ["dededededededededededededededededededededededededededededededede"]
+        },
+        "payment_eligibility_reference": {
+          "eligibility_id": "elp_00000001",
+          "is_reference_only": true
+        },
+        "correlation_id": "cor_00000001",
+        "created_at": "2026-10-10T06:00:00Z",
+        "contract_version": "ES2.0"
+      }
+    },
+    {
+      "id": "result-envelope-neg-tenant-override",
+      "kind": "negative",
+      "payload": {
+        "result_id": "res_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "tenant_id": "tnt_00000001",
+        "status": "ACCEPTED",
+        "structured_outputs": {
+          "schema_id": "sch_00000001",
+          "schema_version": "1.0.0",
+          "data": {
+            "build": "green",
+            "tests": "16/16"
+          }
+        },
+        "criterion_decisions": [
+          {
+            "criterion_id": "crt_00000001",
+            "decision": "PASS",
+            "proof_class": "P0",
+            "evidence_ids": ["evd_00000001"],
+            "hard_stop_triggered": false
+          }
+        ],
+        "proof_class": "P0",
+        "evidence_references": [
+          {
+            "evidence_id": "evd_00000001",
+            "integrity_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef"
+          }
+        ],
+        "verification": {
+          "validator_ids": ["val_00000001"],
+          "validator_versions": ["1.2.0"],
+          "reviewer_ids": [],
+          "adjudicator_id": null,
+          "outcomes": ["rerun1 pass", "rerun2 pass"],
+          "policy_version": "PVP1.0"
+        },
+        "limitations": ["validator covers compile/test predicates only"],
+        "assumptions": ["pinned toolchain faithfully reflects the production build"],
+        "residual_risk": "none within the measured predicate",
+        "follow_up_recommendations": ["refresh the toolchain pin quarterly"],
+        "artifact": {
+          "artifact_version": "v1",
+          "lineage": ["dededededededededededededededededededededededededededededededede"]
+        },
+        "payment_eligibility_reference": {
+          "eligibility_id": "elp_00000001",
+          "is_reference_only": true
+        },
+        "correlation_id": "cor_00000001",
+        "created_at": "2026-10-10T06:00:00Z",
+        "contract_version": "ES2.0",
+        "tenant": "tnt_99999999"
+      }
+    }
+  ]
+}

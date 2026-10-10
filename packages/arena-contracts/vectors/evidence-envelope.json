@@ -1,0 +1,230 @@
+{
+  "envelope": "evidence-envelope",
+  "cases": [
+    {
+      "id": "ev-valid-1",
+      "kind": "valid",
+      "payload": {
+        "evidence_id": "evd_00000001",
+        "object": {
+          "content_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+          "size_bytes": 4096,
+          "media_type": "application/json",
+          "storage_ref": "arena-evidence://tnt_00000001/esc_00000001/att_00000001/evd_00000001.json"
+        },
+        "provenance": {
+          "issuer_tier": "arena_runner",
+          "issuer_id": "run_00000001",
+          "signature_algorithm": "ed25519",
+          "signature": "sig_2f9c41ab77e0",
+          "issued_at": "2026-10-10T05:10:00Z",
+          "replay_protection": "nonce"
+        },
+        "binding": {
+          "tenant_id": "tnt_00000001",
+          "escalation_id": "esc_00000001",
+          "attempt_id": "att_00000001",
+          "environment_digest": "9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a",
+          "validator_id": "val_00000001",
+          "validator_version": "1.2.0"
+        },
+        "redaction_class": "tenant",
+        "immutable": true,
+        "correction": null,
+        "recorded_at": "2026-10-10T05:11:00Z"
+      }
+    },
+    {
+      "id": "ev-neg-missing-binding",
+      "kind": "negative",
+      "payload": {
+        "evidence_id": "evd_00000001",
+        "object": {
+          "content_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+          "size_bytes": 4096,
+          "media_type": "application/json",
+          "storage_ref": "arena-evidence://tnt_00000001/esc_00000001/att_00000001/evd_00000001.json"
+        },
+        "provenance": {
+          "issuer_tier": "arena_runner",
+          "issuer_id": "run_00000001",
+          "signature_algorithm": "ed25519",
+          "signature": "sig_2f9c41ab77e0",
+          "issued_at": "2026-10-10T05:10:00Z",
+          "replay_protection": "nonce"
+        },
+        "redaction_class": "tenant",
+        "immutable": true,
+        "correction": null,
+        "recorded_at": "2026-10-10T05:11:00Z"
+      }
+    },
+    {
+      "id": "ev-neg-wrong-type-immutable",
+      "kind": "negative",
+      "payload": {
+        "evidence_id": "evd_00000001",
+        "object": {
+          "content_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+          "size_bytes": 4096,
+          "media_type": "application/json",
+          "storage_ref": "arena-evidence://tnt_00000001/esc_00000001/att_00000001/evd_00000001.json"
+        },
+        "provenance": {
+          "issuer_tier": "arena_runner",
+          "issuer_id": "run_00000001",
+          "signature_algorithm": "ed25519",
+          "signature": "sig_2f9c41ab77e0",
+          "issued_at": "2026-10-10T05:10:00Z",
+          "replay_protection": "nonce"
+        },
+        "binding": {
+          "tenant_id": "tnt_00000001",
+          "escalation_id": "esc_00000001",
+          "attempt_id": "att_00000001",
+          "environment_digest": "9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a",
+          "validator_id": "val_00000001",
+          "validator_version": "1.2.0"
+        },
+        "redaction_class": "tenant",
+        "immutable": "yes",
+        "correction": null,
+        "recorded_at": "2026-10-10T05:11:00Z"
+      }
+    },
+    {
+      "id": "ev-neg-unknown-field",
+      "kind": "negative",
+      "payload": {
+        "evidence_id": "evd_00000001",
+        "object": {
+          "content_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+          "size_bytes": 4096,
+          "media_type": "application/json",
+          "storage_ref": "arena-evidence://tnt_00000001/esc_00000001/att_00000001/evd_00000001.json"
+        },
+        "provenance": {
+          "issuer_tier": "arena_runner",
+          "issuer_id": "run_00000001",
+          "signature_algorithm": "ed25519",
+          "signature": "sig_2f9c41ab77e0",
+          "issued_at": "2026-10-10T05:10:00Z",
+          "replay_protection": "nonce"
+        },
+        "binding": {
+          "tenant_id": "tnt_00000001",
+          "escalation_id": "esc_00000001",
+          "attempt_id": "att_00000001",
+          "environment_digest": "9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a",
+          "validator_id": "val_00000001",
+          "validator_version": "1.2.0"
+        },
+        "redaction_class": "tenant",
+        "immutable": true,
+        "correction": null,
+        "recorded_at": "2026-10-10T05:11:00Z",
+        "chain_of_thought": "let me think..."
+      }
+    },
+    {
+      "id": "ev-neg-bad-issuer-tier",
+      "kind": "negative",
+      "payload": {
+        "evidence_id": "evd_00000001",
+        "object": {
+          "content_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+          "size_bytes": 4096,
+          "media_type": "application/json",
+          "storage_ref": "arena-evidence://tnt_00000001/esc_00000001/att_00000001/evd_00000001.json"
+        },
+        "provenance": {
+          "issuer_tier": "anonymous",
+          "issuer_id": "run_00000001",
+          "signature_algorithm": "ed25519",
+          "signature": "sig_2f9c41ab77e0",
+          "issued_at": "2026-10-10T05:10:00Z",
+          "replay_protection": "nonce"
+        },
+        "binding": {
+          "tenant_id": "tnt_00000001",
+          "escalation_id": "esc_00000001",
+          "attempt_id": "att_00000001",
+          "environment_digest": "9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a",
+          "validator_id": "val_00000001",
+          "validator_version": "1.2.0"
+        },
+        "redaction_class": "tenant",
+        "immutable": true,
+        "correction": null,
+        "recorded_at": "2026-10-10T05:11:00Z"
+      }
+    },
+    {
+      "id": "ev-neg-semantics-unsigned-trusted",
+      "kind": "semantic-negative",
+      "payload": {
+        "evidence_id": "evd_00000001",
+        "object": {
+          "content_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+          "size_bytes": 4096,
+          "media_type": "application/json",
+          "storage_ref": "arena-evidence://tnt_00000001/esc_00000001/att_00000001/evd_00000001.json"
+        },
+        "provenance": {
+          "issuer_tier": "arena_runner",
+          "issuer_id": "run_00000001",
+          "signature_algorithm": null,
+          "signature": null,
+          "issued_at": "2026-10-10T05:10:00Z",
+          "replay_protection": "nonce"
+        },
+        "binding": {
+          "tenant_id": "tnt_00000001",
+          "escalation_id": "esc_00000001",
+          "attempt_id": "att_00000001",
+          "environment_digest": "9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a",
+          "validator_id": "val_00000001",
+          "validator_version": "1.2.0"
+        },
+        "redaction_class": "tenant",
+        "immutable": true,
+        "correction": null,
+        "recorded_at": "2026-10-10T05:11:00Z"
+      }
+    },
+    {
+      "id": "evidence-envelope-neg-tenant-override",
+      "kind": "negative",
+      "payload": {
+        "evidence_id": "evd_00000001",
+        "object": {
+          "content_digest": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+          "size_bytes": 4096,
+          "media_type": "application/json",
+          "storage_ref": "arena-evidence://tnt_00000001/esc_00000001/att_00000001/evd_00000001.json"
+        },
+        "provenance": {
+          "issuer_tier": "arena_runner",
+          "issuer_id": "run_00000001",
+          "signature_algorithm": "ed25519",
+          "signature": "sig_2f9c41ab77e0",
+          "issued_at": "2026-10-10T05:10:00Z",
+          "replay_protection": "nonce"
+        },
+        "binding": {
+          "tenant_id": "tnt_00000001",
+          "escalation_id": "esc_00000001",
+          "attempt_id": "att_00000001",
+          "environment_digest": "9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a",
+          "validator_id": "val_00000001",
+          "validator_version": "1.2.0"
+        },
+        "redaction_class": "tenant",
+        "immutable": true,
+        "correction": null,
+        "recorded_at": "2026-10-10T05:11:00Z",
+        "tenant": "tnt_99999999"
+      }
+    }
+  ]
+}

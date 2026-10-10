@@ -1,0 +1,90 @@
+{
+  "envelope": "command-envelope",
+  "cases": [
+    {
+      "id": "ce-valid-1",
+      "kind": "valid",
+      "payload": {
+        "command": "CreateEscalation",
+        "actor": {
+          "type": "requester",
+          "id": "usr_00000001"
+        },
+        "authorization_policy_id": "pol_00000001",
+        "request_id": "req_00000001",
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "correlation_id": "cor_00000001",
+        "causation_id": null
+      }
+    },
+    {
+      "id": "ce-neg-missing-idempotency-key",
+      "kind": "negative",
+      "payload": {
+        "command": "CreateEscalation",
+        "actor": {
+          "type": "requester",
+          "id": "usr_00000001"
+        },
+        "authorization_policy_id": "pol_00000001",
+        "request_id": "req_00000001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "correlation_id": "cor_00000001",
+        "causation_id": null
+      }
+    },
+    {
+      "id": "ce-neg-wrong-type-request-id",
+      "kind": "negative",
+      "payload": {
+        "command": "CreateEscalation",
+        "actor": {
+          "type": "requester",
+          "id": "usr_00000001"
+        },
+        "authorization_policy_id": "pol_00000001",
+        "request_id": 42,
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "correlation_id": "cor_00000001",
+        "causation_id": null
+      }
+    },
+    {
+      "id": "ce-neg-unknown-field-tenant-override",
+      "kind": "negative",
+      "payload": {
+        "command": "CreateEscalation",
+        "actor": {
+          "type": "requester",
+          "id": "usr_00000001"
+        },
+        "authorization_policy_id": "pol_00000001",
+        "request_id": "req_00000001",
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "correlation_id": "cor_00000001",
+        "causation_id": null,
+        "tenant": "tnt_99999999"
+      }
+    },
+    {
+      "id": "ce-neg-bad-command",
+      "kind": "negative",
+      "payload": {
+        "command": "DoEverything",
+        "actor": {
+          "type": "requester",
+          "id": "usr_00000001"
+        },
+        "authorization_policy_id": "pol_00000001",
+        "request_id": "req_00000001",
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "correlation_id": "cor_00000001",
+        "causation_id": null
+      }
+    }
+  ]
+}

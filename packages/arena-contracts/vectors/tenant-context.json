@@ -1,0 +1,70 @@
+{
+  "envelope": "tenant-context",
+  "cases": [
+    {
+      "id": "tc-valid-1",
+      "kind": "valid",
+      "payload": {
+        "tenant_id": "tnt_00000001",
+        "derived_from": "authenticated_credentials",
+        "client_application_id": "app_00000001",
+        "principal_id": "usr_00000001",
+        "acting_identity_id": null,
+        "role": "requester",
+        "authorization_scope_ids": ["scp_00000001"]
+      }
+    },
+    {
+      "id": "tc-neg-missing-derived-from",
+      "kind": "negative",
+      "payload": {
+        "tenant_id": "tnt_00000001",
+        "client_application_id": "app_00000001",
+        "principal_id": "usr_00000001",
+        "acting_identity_id": null,
+        "role": "requester",
+        "authorization_scope_ids": ["scp_00000001"]
+      }
+    },
+    {
+      "id": "tc-neg-wrong-type-scopes",
+      "kind": "negative",
+      "payload": {
+        "tenant_id": "tnt_00000001",
+        "derived_from": "authenticated_credentials",
+        "client_application_id": "app_00000001",
+        "principal_id": "usr_00000001",
+        "acting_identity_id": null,
+        "role": "requester",
+        "authorization_scope_ids": "all"
+      }
+    },
+    {
+      "id": "tc-neg-unknown-field-tenant-override",
+      "kind": "negative",
+      "payload": {
+        "tenant_id": "tnt_00000001",
+        "derived_from": "authenticated_credentials",
+        "client_application_id": "app_00000001",
+        "principal_id": "usr_00000001",
+        "acting_identity_id": null,
+        "role": "requester",
+        "authorization_scope_ids": ["scp_00000001"],
+        "tenant": "tnt_99999999"
+      }
+    },
+    {
+      "id": "tc-neg-bad-derived-from",
+      "kind": "negative",
+      "payload": {
+        "tenant_id": "tnt_00000001",
+        "derived_from": "caller_assertion",
+        "client_application_id": "app_00000001",
+        "principal_id": "usr_00000001",
+        "acting_identity_id": null,
+        "role": "requester",
+        "authorization_scope_ids": ["scp_00000001"]
+      }
+    }
+  ]
+}

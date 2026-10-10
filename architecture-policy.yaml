@@ -55,6 +55,12 @@ modules:
   - id: zcode-cli
     roots: [apps/zcode-cli]
     managed: false
+  - id: arena-contracts
+    roots: [packages/arena-contracts/src]
+    managed: true
+    requires: []
+    publicEntrypoints: [packages/arena-contracts/src/contract.ts]
+    owner: arena-tl
 
 global:
   maxFileLines: 400

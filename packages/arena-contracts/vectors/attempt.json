@@ -1,0 +1,203 @@
+{
+  "envelope": "attempt",
+  "cases": [
+    {
+      "id": "at-valid-1",
+      "kind": "valid",
+      "payload": {
+        "attempt_id": "att_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_number": 1,
+        "status": "ENVIRONMENT_READY",
+        "expert": {
+          "expert_id": "exp_00000001",
+          "capability_profile_digest": "3434343434343434343434343434343434343434343434343434343434343434",
+          "qualification_digest": "5656565656565656565656565656565656565656565656565656565656565656",
+          "conflict_check_digest": "7878787878787878787878787878787878787878787878787878787878787878",
+          "assigned_at": "2026-10-10T05:00:00Z"
+        },
+        "budget": {
+          "authorized_amount": 200.0,
+          "currency": "USD",
+          "consumed_amount": 50.0,
+          "remaining_amount": 150.0
+        },
+        "capsule": {
+          "capsule_id": "cap_00000001",
+          "manifest_digest": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+          "environment_ready": true,
+          "teardown_verified": false
+        },
+        "candidates": [],
+        "failure": null,
+        "created_at": "2026-10-10T04:00:00Z",
+        "updated_at": "2026-10-10T05:00:00Z"
+      }
+    },
+    {
+      "id": "at-neg-missing-attempt-id",
+      "kind": "negative",
+      "payload": {
+        "escalation_id": "esc_00000001",
+        "attempt_number": 1,
+        "status": "ENVIRONMENT_READY",
+        "expert": {
+          "expert_id": "exp_00000001",
+          "capability_profile_digest": "3434343434343434343434343434343434343434343434343434343434343434",
+          "qualification_digest": "5656565656565656565656565656565656565656565656565656565656565656",
+          "conflict_check_digest": "7878787878787878787878787878787878787878787878787878787878787878",
+          "assigned_at": "2026-10-10T05:00:00Z"
+        },
+        "budget": {
+          "authorized_amount": 200.0,
+          "currency": "USD",
+          "consumed_amount": 50.0,
+          "remaining_amount": 150.0
+        },
+        "capsule": {
+          "capsule_id": "cap_00000001",
+          "manifest_digest": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+          "environment_ready": true,
+          "teardown_verified": false
+        },
+        "candidates": [],
+        "failure": null,
+        "created_at": "2026-10-10T04:00:00Z",
+        "updated_at": "2026-10-10T05:00:00Z"
+      }
+    },
+    {
+      "id": "at-neg-wrong-type-number",
+      "kind": "negative",
+      "payload": {
+        "attempt_id": "att_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_number": "one",
+        "status": "ENVIRONMENT_READY",
+        "expert": {
+          "expert_id": "exp_00000001",
+          "capability_profile_digest": "3434343434343434343434343434343434343434343434343434343434343434",
+          "qualification_digest": "5656565656565656565656565656565656565656565656565656565656565656",
+          "conflict_check_digest": "7878787878787878787878787878787878787878787878787878787878787878",
+          "assigned_at": "2026-10-10T05:00:00Z"
+        },
+        "budget": {
+          "authorized_amount": 200.0,
+          "currency": "USD",
+          "consumed_amount": 50.0,
+          "remaining_amount": 150.0
+        },
+        "capsule": {
+          "capsule_id": "cap_00000001",
+          "manifest_digest": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+          "environment_ready": true,
+          "teardown_verified": false
+        },
+        "candidates": [],
+        "failure": null,
+        "created_at": "2026-10-10T04:00:00Z",
+        "updated_at": "2026-10-10T05:00:00Z"
+      }
+    },
+    {
+      "id": "at-neg-unknown-field",
+      "kind": "negative",
+      "payload": {
+        "attempt_id": "att_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_number": 1,
+        "status": "ENVIRONMENT_READY",
+        "expert": {
+          "expert_id": "exp_00000001",
+          "capability_profile_digest": "3434343434343434343434343434343434343434343434343434343434343434",
+          "qualification_digest": "5656565656565656565656565656565656565656565656565656565656565656",
+          "conflict_check_digest": "7878787878787878787878787878787878787878787878787878787878787878",
+          "assigned_at": "2026-10-10T05:00:00Z"
+        },
+        "budget": {
+          "authorized_amount": 200.0,
+          "currency": "USD",
+          "consumed_amount": 50.0,
+          "remaining_amount": 150.0
+        },
+        "capsule": {
+          "capsule_id": "cap_00000001",
+          "manifest_digest": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+          "environment_ready": true,
+          "teardown_verified": false
+        },
+        "candidates": [],
+        "failure": null,
+        "created_at": "2026-10-10T04:00:00Z",
+        "updated_at": "2026-10-10T05:00:00Z",
+        "tenant": "tnt_99999999"
+      }
+    },
+    {
+      "id": "at-neg-bad-status",
+      "kind": "negative",
+      "payload": {
+        "attempt_id": "att_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_number": 1,
+        "status": "RUNNING",
+        "expert": {
+          "expert_id": "exp_00000001",
+          "capability_profile_digest": "3434343434343434343434343434343434343434343434343434343434343434",
+          "qualification_digest": "5656565656565656565656565656565656565656565656565656565656565656",
+          "conflict_check_digest": "7878787878787878787878787878787878787878787878787878787878787878",
+          "assigned_at": "2026-10-10T05:00:00Z"
+        },
+        "budget": {
+          "authorized_amount": 200.0,
+          "currency": "USD",
+          "consumed_amount": 50.0,
+          "remaining_amount": 150.0
+        },
+        "capsule": {
+          "capsule_id": "cap_00000001",
+          "manifest_digest": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+          "environment_ready": true,
+          "teardown_verified": false
+        },
+        "candidates": [],
+        "failure": null,
+        "created_at": "2026-10-10T04:00:00Z",
+        "updated_at": "2026-10-10T05:00:00Z"
+      }
+    },
+    {
+      "id": "at-neg-semantics-failed-without-record",
+      "kind": "semantic-negative",
+      "payload": {
+        "attempt_id": "att_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_number": 1,
+        "status": "FAILED",
+        "expert": {
+          "expert_id": "exp_00000001",
+          "capability_profile_digest": "3434343434343434343434343434343434343434343434343434343434343434",
+          "qualification_digest": "5656565656565656565656565656565656565656565656565656565656565656",
+          "conflict_check_digest": "7878787878787878787878787878787878787878787878787878787878787878",
+          "assigned_at": "2026-10-10T05:00:00Z"
+        },
+        "budget": {
+          "authorized_amount": 200.0,
+          "currency": "USD",
+          "consumed_amount": 50.0,
+          "remaining_amount": 150.0
+        },
+        "capsule": {
+          "capsule_id": "cap_00000001",
+          "manifest_digest": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+          "environment_ready": true,
+          "teardown_verified": false
+        },
+        "candidates": [],
+        "failure": null,
+        "created_at": "2026-10-10T04:00:00Z",
+        "updated_at": "2026-10-10T05:00:00Z"
+      }
+    }
+  ]
+}
