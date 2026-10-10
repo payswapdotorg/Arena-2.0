@@ -11,6 +11,8 @@ This is the canonical record of active and completed work-order dispatches. Upda
 | Baseline inventory AR2-000 | EVIDENCE EXECUTED 2026-10-10 — [report](../docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md), classification PASS WITH EXISTING FAILURES; [PR #21](https://github.com/payswapdotorg/arena-2.0/pull/21) awaiting merge |
 | Contract freeze AR2-001 | UNBLOCKED PENDING AR2-000 MERGE — acceptance rubric defined in [ar2-001-acceptance.md](ar2-001-acceptance.md) |
 | Feature dispatch | NOT AUTHORIZED UNTIL AR2-001 ACCEPTED |
+| CI on main | ACTIVE — workflow `ci` / job `battery` (install+typecheck+lint+architecture+unit tests), first green run on PR #22 head; required check on main since 2026-10-10 |
+| Branch protection on main | ACTIVE — required check `battery` (strict), force-push blocked; admin bypass allowed for TL integration commits (single-identity org, recorded) |
 | Concurrent worker slots | 3 maximum; currently none assigned |
 | Live payment mode | DISABLED |
 | Production capsule provider | NOT APPROVED / NOT VERIFIED |
