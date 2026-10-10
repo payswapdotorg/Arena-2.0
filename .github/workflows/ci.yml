@@ -54,6 +54,10 @@ jobs:
         working-directory: packages/arena-capsule
         run: ../../node_modules/.bin/tsx --test test/capsule.test.ts test/synthetic-provider.test.ts
 
+      - name: Unit tests — arena-workbench (node:test via tsx)
+        working-directory: packages/arena-workbench
+        run: ../../node_modules/.bin/tsx --test test/workbench.test.ts test/render.test.tsx
+
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
         run: ../../node_modules/.bin/tsx --test test/nonCliAcpRetirement.test.ts
