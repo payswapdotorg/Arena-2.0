@@ -24,6 +24,15 @@ export interface SqliteRuntimeOptions {
   busyTimeoutMs?: number;
 }
 
+export interface StoredAggregateRow {
+  aggregate_type: string;
+  aggregate_id: string;
+  version: number;
+  record: unknown;
+  tenant_id: string;
+  recorded_at: string;
+}
+
 export interface SqliteRuntime {
   engine: SqliteEngine;
   aggregates: import("@arena/contracts").AggregateStorePort;
@@ -34,6 +43,8 @@ export interface SqliteRuntime {
   outbox: import("@arena/contracts").OutboxPort & OutboxRowWriter;
   jobs: import("@arena/contracts").JobPort;
   migrations: import("@arena/contracts").MigrationPort;
+  /** 实现内部（非端口契约）：按类型（+可选租户，引擎侧过滤）枚举聚合。 */
+  listAggregates(aggregate_type: string, tenant_id?: string): StoredAggregateRow[];
   close(): void;
 }
 
@@ -52,6 +63,27 @@ export function createSqliteRuntime(options: SqliteRuntimeOptions): SqliteRuntim
   });
   const idempotency = createIdempotencyStore(engine);
   const jobs = createJobStore(engine, { now });
+  const listAggregates = (aggregate_type: string, tenant_id?: string): StoredAggregateRow[] => {
+    const sql =
+      "SELECT aggregate_type, aggregate_id, version, tenant_id, record_json, recorded_at " +
+      "FROM arena_aggregates WHERE aggregate_type = ?" +
+      (tenant_id === undefined ? "" : " AND tenant_id = ?") +
+      " ORDER BY recorded_at, aggregate_id";
+    const rows =
+      tenant_id === undefined
+        ? (engine.statement(sql).all(aggregate_type) as unknown as Array<StoredAggregateSqlRow>)
+        : (engine
+            .statement(sql)
+            .all(aggregate_type, tenant_id) as unknown as Array<StoredAggregateSqlRow>);
+    return rows.map((row) => ({
+      aggregate_type: row.aggregate_type,
+      aggregate_id: row.aggregate_id,
+      version: Number(row.version),
+      record: JSON.parse(String(row.record_json)) as unknown,
+      tenant_id: row.tenant_id,
+      recorded_at: String(row.recorded_at),
+    }));
+  };
   return {
     engine,
     aggregates,
@@ -59,8 +91,18 @@ export function createSqliteRuntime(options: SqliteRuntimeOptions): SqliteRuntim
     outbox,
     jobs,
     migrations,
+    listAggregates,
     close: () => engine.close(),
   };
+}
+
+interface StoredAggregateSqlRow {
+  aggregate_type: string;
+  aggregate_id: string;
+  version: number | string;
+  tenant_id: string;
+  record_json: string;
+  recorded_at: string;
 }
 
 export { JobFencedOutError };

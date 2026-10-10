@@ -48,7 +48,7 @@ jobs:
 
       - name: Unit tests — arena-api (node:test via tsx)
         working-directory: packages/arena-api
-        run: ../../node_modules/.bin/tsx --test test/api.test.ts
+        run: ../../node_modules/.bin/tsx --test test/api.test.ts test/durable.test.ts test/durable-edge.test.ts
 
       - name: Unit tests — arena-capsule (node:test via tsx)
         working-directory: packages/arena-capsule

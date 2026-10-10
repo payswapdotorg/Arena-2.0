@@ -614,6 +614,9 @@ importers:
       '@arena/contracts':
         specifier: workspace:*
         version: link:../arena-contracts
+      '@arena/persistence':
+        specifier: workspace:*
+        version: link:../arena-persistence
       zod:
         specifier: 4.6.5
         version: 4.6.5
