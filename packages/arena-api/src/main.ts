@@ -1,5 +1,5 @@
 import { createInMemoryRuntime } from "@arena/application";
-import { createArenaServer } from "../src/index.js";
+import { createArenaServer } from "./contract.js";
 
 /** 本地监听入口：node --experimental-strip-types packages/arena-api/src/main.ts */
 const port = Number(process.env.ARENA_API_PORT ?? 3901);

@@ -3,7 +3,7 @@ import test from "node:test";
 import { once } from "node:events";
 import { AddressInfo } from "node:net";
 import { createInMemoryRuntime } from "@arena/application";
-import { createArenaServer } from "../src/index.js";
+import { createArenaServer } from "../src/contract.js";
 
 /**
  * AR2-002 验收场景（真实 HTTP 监听器上的端到端）：

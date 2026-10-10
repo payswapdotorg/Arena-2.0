@@ -4,8 +4,8 @@ import {
   createInMemoryRuntime,
   IN_MEMORY_RUNTIME_DISCLOSURE,
   executeCommand,
-} from "../src/index.js";
-import { createEscalation } from "../src/index.js";
+} from "../src/contract.js";
+import { createEscalation } from "../src/contract.js";
 import type { TenantContext } from "@arena/contracts";
 
 /**
