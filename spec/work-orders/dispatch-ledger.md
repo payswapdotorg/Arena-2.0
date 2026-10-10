@@ -8,7 +8,7 @@ This is the canonical record of active and completed work-order dispatches. Upda
 |---|---|
 | Architecture setup | [PR #1 merged to main](https://github.com/payswapdotorg/arena-2.0/pull/1), merge SHA 78a64381662ed7c2c6818ed280823c57be57c7c6 |
 | Baseline source commit | 29628c9acdb81b703bbd4080c207a0e7ce5e276e |
-| Baseline inventory AR2-000 | EVIDENCE EXECUTED 2026-10-10 — [report](../docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md), classification PASS WITH EXISTING FAILURES; acceptance PR in flight |
+| Baseline inventory AR2-000 | EVIDENCE EXECUTED 2026-10-10 — [report](../docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md), classification PASS WITH EXISTING FAILURES; [PR #21](https://github.com/payswapdotorg/arena-2.0/pull/21) awaiting merge |
 | Contract freeze AR2-001 | UNBLOCKED PENDING AR2-000 MERGE — acceptance rubric defined in [ar2-001-acceptance.md](ar2-001-acceptance.md) |
 | Feature dispatch | NOT AUTHORIZED UNTIL AR2-001 ACCEPTED |
 | Concurrent worker slots | 3 maximum; currently none assigned |
@@ -21,7 +21,7 @@ Replace this table only with evidence-backed status. PR #1 and the issue-registr
 
 | WO | Issue | Branch | Worker | Base SHA | Write fence | Status | Evidence/PR |
 |---|---|---|---|---|---|---|---|
-| AR2-000 | [#2](https://github.com/payswapdotorg/arena-2.0/issues/2) | ar2/000-baseline-evidence | TL | 96e3edf48f76987b6682b74fc8d1e8669ca5cfd4 | Baseline inventory/evidence only | EVIDENCE EXECUTED — PR in flight | [AR2-000-baseline-report-2026-10-10.md](../docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md) |
+| AR2-000 | [#2](https://github.com/payswapdotorg/arena-2.0/issues/2) | ar2/000-baseline-evidence | TL | 96e3edf48f76987b6682b74fc8d1e8669ca5cfd4 | Baseline inventory/evidence only | EVIDENCE EXECUTED — PR #21 awaiting merge | [AR2-000-baseline-report-2026-10-10.md](../docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md) |
 | AR2-001 | [#3](https://github.com/payswapdotorg/arena-2.0/issues/3) | To be recorded | TL | After AR2-000 acceptance | Contracts/state machines only | RUBRIC DEFINED — execution next | [ar2-001-acceptance.md](ar2-001-acceptance.md) |
 | AR2-002 | [#4](https://github.com/payswapdotorg/arena-2.0/issues/4) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |
 | AR2-003 | [#5](https://github.com/payswapdotorg/arena-2.0/issues/5) | To be recorded | Available worker | Current main at dispatch | Work-order fence in issue | PLANNED / DEPENDENCIES NOT MET | None |

@@ -14,7 +14,7 @@ Parallel work is permitted only when contract versions are frozen and write surf
 ## W0 — Serialized bootstrap and contract freeze
 
 ### AR2-000: Fork baseline and inherited surface inventory
-Owner: TL. Dependencies: none. State: EVIDENCE EXECUTED 2026-10-10 (clean-clone battery at 96e3edf; report at docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md; classification PASS WITH EXISTING FAILURES; acceptance PR in flight).
+Owner: TL. Dependencies: none. State: EVIDENCE EXECUTED 2026-10-10 (clean-clone battery at 96e3edf; report at docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md; classification PASS WITH EXISTING FAILURES; [PR #21](https://github.com/payswapdotorg/arena-2.0/pull/21) awaiting merge).
 Inventory upstream base commit, workspace package graph, app entry points, identity/auth modes, service composition roots, persistence, background jobs, remote/RPC boundaries, sandbox limitations, plugin/MCP capability, licensing, CI and build/test commands. Record exact commands and pre-existing failures. Preserve upstream LICENSE, NOTICE, dependency license records, provider disclosures and attribution.
 Acceptance: clean clone/install and available baseline checks recorded; actual file paths verified; every planned Arena integration point has an owner; no assumption that ZCode workspace equals OS isolation.
 
