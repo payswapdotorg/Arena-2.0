@@ -34,5 +34,10 @@ jobs:
       - name: Architecture guard
         run: pnpm architecture:check
 
-      - name: Unit tests (node:test via tsx loader)
-        run: node_modules/.bin/tsx --test packages/services/test/providerConfigMigration.test.ts packages/services/test/nonCliAcpRetirement.test.ts packages/services/test/importedClaudeRecovery.test.ts packages/ui/test/nonCliAcpRetirement.test.ts
+      - name: Unit tests — services (node:test via tsx)
+        working-directory: packages/services
+        run: ../../node_modules/.bin/tsx --test test/providerConfigMigration.test.ts test/nonCliAcpRetirement.test.ts test/importedClaudeRecovery.test.ts
+
+      - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
+        working-directory: packages/ui
+        run: ../../node_modules/.bin/tsx --test test/nonCliAcpRetirement.test.ts
