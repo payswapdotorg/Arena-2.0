@@ -1,0 +1,208 @@
+{
+  "envelope": "acceptance-criteria",
+  "cases": [
+    {
+      "id": "ac-valid-1",
+      "kind": "valid",
+      "payload": [
+        {
+          "criterion_id": "crt_00000001",
+          "statement": "pnpm install, pnpm typecheck and pnpm test all exit 0 on the pinned toolchain",
+          "measurement": {
+            "definition": "exit code of the three commands inside the capsule runner",
+            "metric": "exit_code",
+            "unit": null,
+            "threshold": 0,
+            "comparator": "eq"
+          },
+          "hard_stop": true,
+          "proof_class": "P0",
+          "weight": 1.0
+        },
+        {
+          "criterion_id": "crt_00000002",
+          "statement": "patch stays under 500 changed lines",
+          "measurement": {
+            "definition": "diff line count of the intervention manifest",
+            "metric": "changed_lines",
+            "unit": "lines",
+            "threshold": 500,
+            "comparator": "le"
+          },
+          "hard_stop": false,
+          "proof_class": "P0",
+          "weight": 0.25
+        }
+      ]
+    },
+    {
+      "id": "ac-neg-missing-measurement",
+      "kind": "negative",
+      "payload": [
+        {
+          "criterion_id": "crt_00000001",
+          "statement": "pnpm install, pnpm typecheck and pnpm test all exit 0 on the pinned toolchain",
+          "hard_stop": true,
+          "proof_class": "P0",
+          "weight": 1.0
+        },
+        {
+          "criterion_id": "crt_00000002",
+          "statement": "patch stays under 500 changed lines",
+          "measurement": {
+            "definition": "diff line count of the intervention manifest",
+            "metric": "changed_lines",
+            "unit": "lines",
+            "threshold": 500,
+            "comparator": "le"
+          },
+          "hard_stop": false,
+          "proof_class": "P0",
+          "weight": 0.25
+        }
+      ]
+    },
+    {
+      "id": "ac-neg-wrong-type-hard-stop",
+      "kind": "negative",
+      "payload": [
+        {
+          "criterion_id": "crt_00000001",
+          "statement": "pnpm install, pnpm typecheck and pnpm test all exit 0 on the pinned toolchain",
+          "measurement": {
+            "definition": "exit code of the three commands inside the capsule runner",
+            "metric": "exit_code",
+            "unit": null,
+            "threshold": 0,
+            "comparator": "eq"
+          },
+          "hard_stop": "yes",
+          "proof_class": "P0",
+          "weight": 1.0
+        },
+        {
+          "criterion_id": "crt_00000002",
+          "statement": "patch stays under 500 changed lines",
+          "measurement": {
+            "definition": "diff line count of the intervention manifest",
+            "metric": "changed_lines",
+            "unit": "lines",
+            "threshold": 500,
+            "comparator": "le"
+          },
+          "hard_stop": false,
+          "proof_class": "P0",
+          "weight": 0.25
+        }
+      ]
+    },
+    {
+      "id": "ac-neg-unknown-field",
+      "kind": "negative",
+      "payload": [
+        {
+          "criterion_id": "crt_00000001",
+          "statement": "pnpm install, pnpm typecheck and pnpm test all exit 0 on the pinned toolchain",
+          "measurement": {
+            "definition": "exit code of the three commands inside the capsule runner",
+            "metric": "exit_code",
+            "unit": null,
+            "threshold": 0,
+            "comparator": "eq"
+          },
+          "hard_stop": true,
+          "proof_class": "P0",
+          "weight": 1.0,
+          "tenant": "tnt_99999999"
+        },
+        {
+          "criterion_id": "crt_00000002",
+          "statement": "patch stays under 500 changed lines",
+          "measurement": {
+            "definition": "diff line count of the intervention manifest",
+            "metric": "changed_lines",
+            "unit": "lines",
+            "threshold": 500,
+            "comparator": "le"
+          },
+          "hard_stop": false,
+          "proof_class": "P0",
+          "weight": 0.25
+        }
+      ]
+    },
+    {
+      "id": "ac-neg-bad-proof-class",
+      "kind": "negative",
+      "payload": [
+        {
+          "criterion_id": "crt_00000001",
+          "statement": "pnpm install, pnpm typecheck and pnpm test all exit 0 on the pinned toolchain",
+          "measurement": {
+            "definition": "exit code of the three commands inside the capsule runner",
+            "metric": "exit_code",
+            "unit": null,
+            "threshold": 0,
+            "comparator": "eq"
+          },
+          "hard_stop": true,
+          "proof_class": "P9",
+          "weight": 1.0
+        },
+        {
+          "criterion_id": "crt_00000002",
+          "statement": "patch stays under 500 changed lines",
+          "measurement": {
+            "definition": "diff line count of the intervention manifest",
+            "metric": "changed_lines",
+            "unit": "lines",
+            "threshold": 500,
+            "comparator": "le"
+          },
+          "hard_stop": false,
+          "proof_class": "P0",
+          "weight": 0.25
+        }
+      ]
+    },
+    {
+      "id": "ac-neg-empty-array",
+      "kind": "negative",
+      "payload": []
+    },
+    {
+      "id": "ac-neg-semantics-no-hard-stop",
+      "kind": "semantic-negative",
+      "payload": [
+        {
+          "criterion_id": "crt_00000001",
+          "statement": "pnpm install, pnpm typecheck and pnpm test all exit 0 on the pinned toolchain",
+          "measurement": {
+            "definition": "exit code of the three commands inside the capsule runner",
+            "metric": "exit_code",
+            "unit": null,
+            "threshold": 0,
+            "comparator": "eq"
+          },
+          "hard_stop": false,
+          "proof_class": "P0",
+          "weight": 1.0
+        },
+        {
+          "criterion_id": "crt_00000002",
+          "statement": "patch stays under 500 changed lines",
+          "measurement": {
+            "definition": "diff line count of the intervention manifest",
+            "metric": "changed_lines",
+            "unit": "lines",
+            "threshold": 500,
+            "comparator": "le"
+          },
+          "hard_stop": false,
+          "proof_class": "P0",
+          "weight": 0.25
+        }
+      ]
+    }
+  ]
+}

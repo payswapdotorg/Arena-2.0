@@ -1,0 +1,222 @@
+{
+  "envelope": "event-envelope",
+  "cases": [
+    {
+      "id": "en-valid-1",
+      "kind": "valid",
+      "payload": {
+        "event_id": "evt_00000001",
+        "schema_version": "ES2.0-EV1",
+        "tenant_id": "tnt_00000001",
+        "aggregate": {
+          "type": "escalation",
+          "id": "esc_00000001",
+          "version": 3
+        },
+        "event_type": "EscalationAccepted",
+        "occurred_at": "2026-10-10T05:59:00Z",
+        "recorded_at": "2026-10-10T06:00:00Z",
+        "actor": {
+          "type": "system",
+          "id": "sys_00000001"
+        },
+        "correlation_id": "cor_00000001",
+        "causation_id": "evt_00000009",
+        "request_id": "req_00000001",
+        "policy_version": "PVP1.0",
+        "payload": {
+          "schema_id": "sch_00000002",
+          "redaction_class": "tenant"
+        },
+        "immutable": true,
+        "correction": null
+      }
+    },
+    {
+      "id": "en-neg-missing-aggregate",
+      "kind": "negative",
+      "payload": {
+        "event_id": "evt_00000001",
+        "schema_version": "ES2.0-EV1",
+        "tenant_id": "tnt_00000001",
+        "event_type": "EscalationAccepted",
+        "occurred_at": "2026-10-10T05:59:00Z",
+        "recorded_at": "2026-10-10T06:00:00Z",
+        "actor": {
+          "type": "system",
+          "id": "sys_00000001"
+        },
+        "correlation_id": "cor_00000001",
+        "causation_id": "evt_00000009",
+        "request_id": "req_00000001",
+        "policy_version": "PVP1.0",
+        "payload": {
+          "schema_id": "sch_00000002",
+          "redaction_class": "tenant"
+        },
+        "immutable": true,
+        "correction": null
+      }
+    },
+    {
+      "id": "en-neg-wrong-type-version",
+      "kind": "negative",
+      "payload": {
+        "event_id": "evt_00000001",
+        "schema_version": "ES2.0-EV1",
+        "tenant_id": "tnt_00000001",
+        "aggregate": {
+          "type": "escalation",
+          "id": "esc_00000001",
+          "version": "three"
+        },
+        "event_type": "EscalationAccepted",
+        "occurred_at": "2026-10-10T05:59:00Z",
+        "recorded_at": "2026-10-10T06:00:00Z",
+        "actor": {
+          "type": "system",
+          "id": "sys_00000001"
+        },
+        "correlation_id": "cor_00000001",
+        "causation_id": "evt_00000009",
+        "request_id": "req_00000001",
+        "policy_version": "PVP1.0",
+        "payload": {
+          "schema_id": "sch_00000002",
+          "redaction_class": "tenant"
+        },
+        "immutable": true,
+        "correction": null
+      }
+    },
+    {
+      "id": "en-neg-unknown-field",
+      "kind": "negative",
+      "payload": {
+        "event_id": "evt_00000001",
+        "schema_version": "ES2.0-EV1",
+        "tenant_id": "tnt_00000001",
+        "aggregate": {
+          "type": "escalation",
+          "id": "esc_00000001",
+          "version": 3
+        },
+        "event_type": "EscalationAccepted",
+        "occurred_at": "2026-10-10T05:59:00Z",
+        "recorded_at": "2026-10-10T06:00:00Z",
+        "actor": {
+          "type": "system",
+          "id": "sys_00000001"
+        },
+        "correlation_id": "cor_00000001",
+        "causation_id": "evt_00000009",
+        "request_id": "req_00000001",
+        "policy_version": "PVP1.0",
+        "payload": {
+          "schema_id": "sch_00000002",
+          "redaction_class": "tenant"
+        },
+        "immutable": true,
+        "correction": null,
+        "retry_count": 3
+      }
+    },
+    {
+      "id": "en-neg-bad-schema-version",
+      "kind": "negative",
+      "payload": {
+        "event_id": "evt_00000001",
+        "schema_version": "EV9",
+        "tenant_id": "tnt_00000001",
+        "aggregate": {
+          "type": "escalation",
+          "id": "esc_00000001",
+          "version": 3
+        },
+        "event_type": "EscalationAccepted",
+        "occurred_at": "2026-10-10T05:59:00Z",
+        "recorded_at": "2026-10-10T06:00:00Z",
+        "actor": {
+          "type": "system",
+          "id": "sys_00000001"
+        },
+        "correlation_id": "cor_00000001",
+        "causation_id": "evt_00000009",
+        "request_id": "req_00000001",
+        "policy_version": "PVP1.0",
+        "payload": {
+          "schema_id": "sch_00000002",
+          "redaction_class": "tenant"
+        },
+        "immutable": true,
+        "correction": null
+      }
+    },
+    {
+      "id": "en-neg-semantics-self-correction",
+      "kind": "semantic-negative",
+      "payload": {
+        "event_id": "evt_00000001",
+        "schema_version": "ES2.0-EV1",
+        "tenant_id": "tnt_00000001",
+        "aggregate": {
+          "type": "escalation",
+          "id": "esc_00000001",
+          "version": 3
+        },
+        "event_type": "EscalationAccepted",
+        "occurred_at": "2026-10-10T05:59:00Z",
+        "recorded_at": "2026-10-10T06:00:00Z",
+        "actor": {
+          "type": "system",
+          "id": "sys_00000001"
+        },
+        "correlation_id": "cor_00000001",
+        "causation_id": "evt_00000009",
+        "request_id": "req_00000001",
+        "policy_version": "PVP1.0",
+        "payload": {
+          "schema_id": "sch_00000002",
+          "redaction_class": "tenant"
+        },
+        "immutable": true,
+        "correction": {
+          "supersedes_event_id": "evt_00000001",
+          "reason": "fix"
+        }
+      }
+    },
+    {
+      "id": "event-envelope-neg-tenant-override",
+      "kind": "negative",
+      "payload": {
+        "event_id": "evt_00000001",
+        "schema_version": "ES2.0-EV1",
+        "tenant_id": "tnt_00000001",
+        "aggregate": {
+          "type": "escalation",
+          "id": "esc_00000001",
+          "version": 3
+        },
+        "event_type": "EscalationAccepted",
+        "occurred_at": "2026-10-10T05:59:00Z",
+        "recorded_at": "2026-10-10T06:00:00Z",
+        "actor": {
+          "type": "system",
+          "id": "sys_00000001"
+        },
+        "correlation_id": "cor_00000001",
+        "causation_id": "evt_00000009",
+        "request_id": "req_00000001",
+        "policy_version": "PVP1.0",
+        "payload": {
+          "schema_id": "sch_00000002",
+          "redaction_class": "tenant"
+        },
+        "immutable": true,
+        "correction": null,
+        "tenant": "tnt_99999999"
+      }
+    }
+  ]
+}

@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies (frozen lockfile)
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck (tsc -b, 11 projects)
+      - name: Typecheck (tsc -b, 12 projects incl. arena-contracts)
         run: pnpm typecheck
 
       - name: Lint (oxlint)
@@ -33,6 +33,10 @@ jobs:
 
       - name: Architecture guard
         run: pnpm architecture:check
+
+      - name: Contract suite — arena-contracts vectors, transitions, completeness, ownership (B1-B5)
+        working-directory: packages/arena-contracts
+        run: ../../node_modules/.bin/tsx --test test/vectors.test.ts test/transitions.test.ts test/completeness.test.ts test/ownership.test.ts test/contracts.test.ts
 
       - name: Unit tests — services (node:test via tsx)
         working-directory: packages/services

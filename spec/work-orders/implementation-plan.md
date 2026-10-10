@@ -21,7 +21,7 @@ Acceptance: clean clone/install and available baseline checks recorded; actual f
 
 ### AR2-001: Domain and public contract freeze
 
-Owner: TL. Dependencies: AR2-000. State: NOT STARTED (acceptance rubric frozen: spec/work-orders/ar2-001-acceptance.md).
+Owner: TL. Dependencies: AR2-000. State: EXECUTED — freeze PR pending acceptance (corpus CF1.0: `packages/arena-contracts`; five contract questions CLOSED in spec/contracts/ar2-001-freeze.md §2; 104-test contract suite wired into CI; acceptance rubric: spec/work-orders/ar2-001-acceptance.md).
 Freeze EscalationRequest, acceptance criteria, proof policy snapshot, Attempt, CapsuleManifest, EvidenceEnvelope, ResultEnvelope, EventEnvelope, idempotency/retry contract, tenant context and major state machines. Runtime schema validation is mandatory. Define API error catalog and compatibility policy. Review contract schemas with workers before dispatch.
 Acceptance: examples and transition tests agreed; APIs and field ownership explicit; no unresolved blocking interface question.
 

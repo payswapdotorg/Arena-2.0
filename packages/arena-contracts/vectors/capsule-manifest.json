@@ -1,0 +1,427 @@
+{
+  "envelope": "capsule-manifest",
+  "cases": [
+    {
+      "id": "cm-valid-1",
+      "kind": "valid",
+      "payload": {
+        "manifest_id": "man_00000001",
+        "capsule_id": "cap_00000001",
+        "manifest_version": 1,
+        "tenant_id": "tnt_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "environment": {
+          "environment_ref": "ghcr.io/arena/capsule-runner@sha256:aaaabbbbccccdddd",
+          "toolchain_pins": ["node-24.14.0", "pnpm-10.33.2"],
+          "workspace_init": "restore baseline snapshot and pinned dependencies"
+        },
+        "permitted_actions": [
+          {
+            "action_id": "act_00000001",
+            "tool": "shell",
+            "scope": "workspace only",
+            "command_allowlist": ["pnpm install", "pnpm typecheck", "pnpm test"]
+          }
+        ],
+        "resource_policy": {
+          "cpu_limit": 2.0,
+          "memory_limit_mb": 3072,
+          "disk_limit_mb": 10240,
+          "max_duration_seconds": 7200
+        },
+        "egress_policy": {
+          "denied_default": true,
+          "allowed_hosts": ["registry.npmjs.org"],
+          "allow_ingress": false
+        },
+        "credentials": [
+          {
+            "credential_id": "crd_00000001",
+            "scope": "read:artifact-store/esc_00000001",
+            "ttl_seconds": 14400,
+            "rotation_policy": "rotate every 4h"
+          }
+        ],
+        "lifecycle": {
+          "provisioning_timeout_seconds": 600,
+          "heartbeat_interval_seconds": 30,
+          "teardown_timeout_seconds": 300
+        },
+        "assurance": {
+          "isolation_class": "container",
+          "conformance_suite_digest": "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+          "conformance_suite_version": "1.0.0",
+          "verified_at": "2026-10-09T00:00:00Z",
+          "provider_id": "prv_00000001"
+        },
+        "artifact_transfer": {
+          "transfer": "pull_only",
+          "max_artifact_bytes": 52428800
+        },
+        "content_digest": "1212121212121212121212121212121212121212121212121212121212121212"
+      }
+    },
+    {
+      "id": "cm-neg-missing-assurance",
+      "kind": "negative",
+      "payload": {
+        "manifest_id": "man_00000001",
+        "capsule_id": "cap_00000001",
+        "manifest_version": 1,
+        "tenant_id": "tnt_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "environment": {
+          "environment_ref": "ghcr.io/arena/capsule-runner@sha256:aaaabbbbccccdddd",
+          "toolchain_pins": ["node-24.14.0", "pnpm-10.33.2"],
+          "workspace_init": "restore baseline snapshot and pinned dependencies"
+        },
+        "permitted_actions": [
+          {
+            "action_id": "act_00000001",
+            "tool": "shell",
+            "scope": "workspace only",
+            "command_allowlist": ["pnpm install", "pnpm typecheck", "pnpm test"]
+          }
+        ],
+        "resource_policy": {
+          "cpu_limit": 2.0,
+          "memory_limit_mb": 3072,
+          "disk_limit_mb": 10240,
+          "max_duration_seconds": 7200
+        },
+        "egress_policy": {
+          "denied_default": true,
+          "allowed_hosts": ["registry.npmjs.org"],
+          "allow_ingress": false
+        },
+        "credentials": [
+          {
+            "credential_id": "crd_00000001",
+            "scope": "read:artifact-store/esc_00000001",
+            "ttl_seconds": 14400,
+            "rotation_policy": "rotate every 4h"
+          }
+        ],
+        "lifecycle": {
+          "provisioning_timeout_seconds": 600,
+          "heartbeat_interval_seconds": 30,
+          "teardown_timeout_seconds": 300
+        },
+        "artifact_transfer": {
+          "transfer": "pull_only",
+          "max_artifact_bytes": 52428800
+        },
+        "content_digest": "1212121212121212121212121212121212121212121212121212121212121212"
+      }
+    },
+    {
+      "id": "cm-neg-wrong-type-egress",
+      "kind": "negative",
+      "payload": {
+        "manifest_id": "man_00000001",
+        "capsule_id": "cap_00000001",
+        "manifest_version": 1,
+        "tenant_id": "tnt_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "environment": {
+          "environment_ref": "ghcr.io/arena/capsule-runner@sha256:aaaabbbbccccdddd",
+          "toolchain_pins": ["node-24.14.0", "pnpm-10.33.2"],
+          "workspace_init": "restore baseline snapshot and pinned dependencies"
+        },
+        "permitted_actions": [
+          {
+            "action_id": "act_00000001",
+            "tool": "shell",
+            "scope": "workspace only",
+            "command_allowlist": ["pnpm install", "pnpm typecheck", "pnpm test"]
+          }
+        ],
+        "resource_policy": {
+          "cpu_limit": 2.0,
+          "memory_limit_mb": 3072,
+          "disk_limit_mb": 10240,
+          "max_duration_seconds": 7200
+        },
+        "egress_policy": {
+          "denied_default": "true",
+          "allowed_hosts": ["registry.npmjs.org"],
+          "allow_ingress": false
+        },
+        "credentials": [
+          {
+            "credential_id": "crd_00000001",
+            "scope": "read:artifact-store/esc_00000001",
+            "ttl_seconds": 14400,
+            "rotation_policy": "rotate every 4h"
+          }
+        ],
+        "lifecycle": {
+          "provisioning_timeout_seconds": 600,
+          "heartbeat_interval_seconds": 30,
+          "teardown_timeout_seconds": 300
+        },
+        "assurance": {
+          "isolation_class": "container",
+          "conformance_suite_digest": "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+          "conformance_suite_version": "1.0.0",
+          "verified_at": "2026-10-09T00:00:00Z",
+          "provider_id": "prv_00000001"
+        },
+        "artifact_transfer": {
+          "transfer": "pull_only",
+          "max_artifact_bytes": 52428800
+        },
+        "content_digest": "1212121212121212121212121212121212121212121212121212121212121212"
+      }
+    },
+    {
+      "id": "cm-neg-unknown-field",
+      "kind": "negative",
+      "payload": {
+        "manifest_id": "man_00000001",
+        "capsule_id": "cap_00000001",
+        "manifest_version": 1,
+        "tenant_id": "tnt_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "environment": {
+          "environment_ref": "ghcr.io/arena/capsule-runner@sha256:aaaabbbbccccdddd",
+          "toolchain_pins": ["node-24.14.0", "pnpm-10.33.2"],
+          "workspace_init": "restore baseline snapshot and pinned dependencies"
+        },
+        "permitted_actions": [
+          {
+            "action_id": "act_00000001",
+            "tool": "shell",
+            "scope": "workspace only",
+            "command_allowlist": ["pnpm install", "pnpm typecheck", "pnpm test"]
+          }
+        ],
+        "resource_policy": {
+          "cpu_limit": 2.0,
+          "memory_limit_mb": 3072,
+          "disk_limit_mb": 10240,
+          "max_duration_seconds": 7200
+        },
+        "egress_policy": {
+          "denied_default": true,
+          "allowed_hosts": ["registry.npmjs.org"],
+          "allow_ingress": false
+        },
+        "credentials": [
+          {
+            "credential_id": "crd_00000001",
+            "scope": "read:artifact-store/esc_00000001",
+            "ttl_seconds": 14400,
+            "rotation_policy": "rotate every 4h"
+          }
+        ],
+        "lifecycle": {
+          "provisioning_timeout_seconds": 600,
+          "heartbeat_interval_seconds": 30,
+          "teardown_timeout_seconds": 300
+        },
+        "assurance": {
+          "isolation_class": "container",
+          "conformance_suite_digest": "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+          "conformance_suite_version": "1.0.0",
+          "verified_at": "2026-10-09T00:00:00Z",
+          "provider_id": "prv_00000001"
+        },
+        "artifact_transfer": {
+          "transfer": "pull_only",
+          "max_artifact_bytes": 52428800
+        },
+        "content_digest": "1212121212121212121212121212121212121212121212121212121212121212",
+        "host": "localhost:22"
+      }
+    },
+    {
+      "id": "cm-neg-bad-isolation-class",
+      "kind": "negative",
+      "payload": {
+        "manifest_id": "man_00000001",
+        "capsule_id": "cap_00000001",
+        "manifest_version": 1,
+        "tenant_id": "tnt_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "environment": {
+          "environment_ref": "ghcr.io/arena/capsule-runner@sha256:aaaabbbbccccdddd",
+          "toolchain_pins": ["node-24.14.0", "pnpm-10.33.2"],
+          "workspace_init": "restore baseline snapshot and pinned dependencies"
+        },
+        "permitted_actions": [
+          {
+            "action_id": "act_00000001",
+            "tool": "shell",
+            "scope": "workspace only",
+            "command_allowlist": ["pnpm install", "pnpm typecheck", "pnpm test"]
+          }
+        ],
+        "resource_policy": {
+          "cpu_limit": 2.0,
+          "memory_limit_mb": 3072,
+          "disk_limit_mb": 10240,
+          "max_duration_seconds": 7200
+        },
+        "egress_policy": {
+          "denied_default": true,
+          "allowed_hosts": ["registry.npmjs.org"],
+          "allow_ingress": false
+        },
+        "credentials": [
+          {
+            "credential_id": "crd_00000001",
+            "scope": "read:artifact-store/esc_00000001",
+            "ttl_seconds": 14400,
+            "rotation_policy": "rotate every 4h"
+          }
+        ],
+        "lifecycle": {
+          "provisioning_timeout_seconds": 600,
+          "heartbeat_interval_seconds": 30,
+          "teardown_timeout_seconds": 300
+        },
+        "assurance": {
+          "isolation_class": "browser_tab",
+          "conformance_suite_digest": "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+          "conformance_suite_version": "1.0.0",
+          "verified_at": "2026-10-09T00:00:00Z",
+          "provider_id": "prv_00000001"
+        },
+        "artifact_transfer": {
+          "transfer": "pull_only",
+          "max_artifact_bytes": 52428800
+        },
+        "content_digest": "1212121212121212121212121212121212121212121212121212121212121212"
+      }
+    },
+    {
+      "id": "cm-neg-semantics-none-isolation",
+      "kind": "semantic-negative",
+      "payload": {
+        "manifest_id": "man_00000001",
+        "capsule_id": "cap_00000001",
+        "manifest_version": 1,
+        "tenant_id": "tnt_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "environment": {
+          "environment_ref": "ghcr.io/arena/capsule-runner@sha256:aaaabbbbccccdddd",
+          "toolchain_pins": ["node-24.14.0", "pnpm-10.33.2"],
+          "workspace_init": "restore baseline snapshot and pinned dependencies"
+        },
+        "permitted_actions": [
+          {
+            "action_id": "act_00000001",
+            "tool": "shell",
+            "scope": "workspace only",
+            "command_allowlist": ["pnpm install", "pnpm typecheck", "pnpm test"]
+          }
+        ],
+        "resource_policy": {
+          "cpu_limit": 2.0,
+          "memory_limit_mb": 3072,
+          "disk_limit_mb": 10240,
+          "max_duration_seconds": 7200
+        },
+        "egress_policy": {
+          "denied_default": true,
+          "allowed_hosts": ["registry.npmjs.org"],
+          "allow_ingress": false
+        },
+        "credentials": [
+          {
+            "credential_id": "crd_00000001",
+            "scope": "read:artifact-store/esc_00000001",
+            "ttl_seconds": 14400,
+            "rotation_policy": "rotate every 4h"
+          }
+        ],
+        "lifecycle": {
+          "provisioning_timeout_seconds": 600,
+          "heartbeat_interval_seconds": 30,
+          "teardown_timeout_seconds": 300
+        },
+        "assurance": {
+          "isolation_class": "none",
+          "conformance_suite_digest": "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+          "conformance_suite_version": "1.0.0",
+          "verified_at": "2026-10-09T00:00:00Z",
+          "provider_id": "prv_00000001"
+        },
+        "artifact_transfer": {
+          "transfer": "pull_only",
+          "max_artifact_bytes": 52428800
+        },
+        "content_digest": "1212121212121212121212121212121212121212121212121212121212121212"
+      }
+    },
+    {
+      "id": "capsule-manifest-neg-tenant-override",
+      "kind": "negative",
+      "payload": {
+        "manifest_id": "man_00000001",
+        "capsule_id": "cap_00000001",
+        "manifest_version": 1,
+        "tenant_id": "tnt_00000001",
+        "escalation_id": "esc_00000001",
+        "attempt_id": "att_00000001",
+        "environment": {
+          "environment_ref": "ghcr.io/arena/capsule-runner@sha256:aaaabbbbccccdddd",
+          "toolchain_pins": ["node-24.14.0", "pnpm-10.33.2"],
+          "workspace_init": "restore baseline snapshot and pinned dependencies"
+        },
+        "permitted_actions": [
+          {
+            "action_id": "act_00000001",
+            "tool": "shell",
+            "scope": "workspace only",
+            "command_allowlist": ["pnpm install", "pnpm typecheck", "pnpm test"]
+          }
+        ],
+        "resource_policy": {
+          "cpu_limit": 2.0,
+          "memory_limit_mb": 3072,
+          "disk_limit_mb": 10240,
+          "max_duration_seconds": 7200
+        },
+        "egress_policy": {
+          "denied_default": true,
+          "allowed_hosts": ["registry.npmjs.org"],
+          "allow_ingress": false
+        },
+        "credentials": [
+          {
+            "credential_id": "crd_00000001",
+            "scope": "read:artifact-store/esc_00000001",
+            "ttl_seconds": 14400,
+            "rotation_policy": "rotate every 4h"
+          }
+        ],
+        "lifecycle": {
+          "provisioning_timeout_seconds": 600,
+          "heartbeat_interval_seconds": 30,
+          "teardown_timeout_seconds": 300
+        },
+        "assurance": {
+          "isolation_class": "container",
+          "conformance_suite_digest": "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+          "conformance_suite_version": "1.0.0",
+          "verified_at": "2026-10-09T00:00:00Z",
+          "provider_id": "prv_00000001"
+        },
+        "artifact_transfer": {
+          "transfer": "pull_only",
+          "max_artifact_bytes": 52428800
+        },
+        "content_digest": "1212121212121212121212121212121212121212121212121212121212121212",
+        "tenant": "tnt_99999999"
+      }
+    }
+  ]
+}

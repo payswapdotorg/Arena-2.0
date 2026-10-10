@@ -1,0 +1,83 @@
+{
+  "envelope": "idempotency-record",
+  "cases": [
+    {
+      "id": "ir-valid-1",
+      "kind": "valid",
+      "payload": {
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "status": "COMPLETED",
+        "response_digest": "dededededededededededededededededededededededededededededededede",
+        "completed_at": "2026-10-10T06:00:00Z"
+      }
+    },
+    {
+      "id": "ir-neg-missing-status",
+      "kind": "negative",
+      "payload": {
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "response_digest": "dededededededededededededededededededededededededededededededede",
+        "completed_at": "2026-10-10T06:00:00Z"
+      }
+    },
+    {
+      "id": "ir-neg-wrong-type-digest",
+      "kind": "negative",
+      "payload": {
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "status": "COMPLETED",
+        "response_digest": 12345,
+        "completed_at": "2026-10-10T06:00:00Z"
+      }
+    },
+    {
+      "id": "ir-neg-unknown-field",
+      "kind": "negative",
+      "payload": {
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "status": "COMPLETED",
+        "response_digest": "dededededededededededededededededededededededededededededededede",
+        "completed_at": "2026-10-10T06:00:00Z",
+        "caller": "worker-9"
+      }
+    },
+    {
+      "id": "ir-neg-bad-status",
+      "kind": "negative",
+      "payload": {
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "status": "PENDING",
+        "response_digest": "dededededededededededededededededededededededededededededededede",
+        "completed_at": "2026-10-10T06:00:00Z"
+      }
+    },
+    {
+      "id": "ir-neg-semantics-inprogress-with-response",
+      "kind": "semantic-negative",
+      "payload": {
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "status": "IN_PROGRESS",
+        "response_digest": "dededededededededededededededededededededededededededededededede",
+        "completed_at": "2026-10-10T06:00:00Z"
+      }
+    },
+    {
+      "id": "idempotency-record-neg-tenant-override",
+      "kind": "negative",
+      "payload": {
+        "idempotency_key": "idem-key-0001",
+        "request_digest": "abababababababababababababababababababababababababababababababab",
+        "status": "COMPLETED",
+        "response_digest": "dededededededededededededededededededededededededededededededede",
+        "completed_at": "2026-10-10T06:00:00Z",
+        "tenant": "tnt_99999999"
+      }
+    }
+  ]
+}

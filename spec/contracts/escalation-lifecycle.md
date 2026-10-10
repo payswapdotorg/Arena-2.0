@@ -1,6 +1,6 @@
 # Escalation Lifecycle Contract
 
-Contract version: ES2.0 draft for implementation freeze.
+Contract version: ES2.0, FROZEN 2026-10-10 as corpus CF1.0 — machine-readable schemas, state machines and test vectors live in `packages/arena-contracts`; see [ar2-001-freeze.md](ar2-001-freeze.md). Post-freeze changes require a reviewed ACR.
 Normative sources: spec/architecture-lock.md and spec/verification/proof-and-payment-policy.md.
 
 ## 1. Request envelope
