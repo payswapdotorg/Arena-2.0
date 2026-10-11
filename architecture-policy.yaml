@@ -144,6 +144,12 @@ modules:
       ]
     publicEntrypoints: [packages/arena-harness/src/contract.ts]
     owner: arena-tl
+  - id: arena-learning
+    roots: [packages/arena-learning/src]
+    managed: true
+    requires: [arena-contracts, arena-evidence]
+    publicEntrypoints: [packages/arena-learning/src/contract.ts]
+    owner: arena-tl
 
 global:
   maxFileLines: 400
