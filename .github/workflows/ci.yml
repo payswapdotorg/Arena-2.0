@@ -56,7 +56,7 @@ jobs:
 
       - name: Unit tests — arena-workbench (node:test via tsx)
         working-directory: packages/arena-workbench
-        run: ../../node_modules/.bin/tsx --test test/workbench.test.ts test/render.test.tsx test/expert-review.test.ts test/expert-review-render.test.tsx
+        run: ../../node_modules/.bin/tsx --test test/workbench.test.ts test/render.test.tsx test/expert-review.test.ts test/expert-review-render.test.tsx test/e2e-real-api.test.ts
 
       - name: Unit tests — arena-persistence (node:test via tsx, node:sqlite)
         working-directory: packages/arena-persistence

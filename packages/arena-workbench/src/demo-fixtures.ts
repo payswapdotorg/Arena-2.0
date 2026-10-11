@@ -89,7 +89,14 @@ export const DEMO_PROOF_POLICY_PRESET: ProofPolicySnapshot = {
     },
   ],
   rerun_policy: { minimum_reruns: 1, risk_exception: null },
-  sample_policy: null,
+  // AR2-006 修正：DEMO 预设此前从未过服务端语义校验（mock 只跑 schema）。
+  // P1 需要 sample policy（PVP1.0 §2）；冻结语义见 validateProofPolicySemantics。
+  sample_policy: {
+    sample_size: 3,
+    repetitions: 2,
+    aggregate_threshold: "demo: >= 6/6 samples within 5% of target",
+    inconclusive_rule: "retry_within_budget",
+  },
   review_policy: {
     minimum_independent_reviews: 2,
     raise_to: 3,
@@ -114,7 +121,8 @@ export const DEMO_PROOF_POLICY_PRESET: ProofPolicySnapshot = {
   },
   timeout: "demo: 24h from environment ready",
   dispute_conditions: "demo: caller disputes within 14 days with evidence of criterion divergence",
-  budget_ceiling: 900,
+  // AR2-006 修正：budget_ceiling 不得超过请求预算（escalation-request 冻结语义）。
+  budget_ceiling: 500,
 };
 
 export const DEMO_HEX_DIGEST = HEX64;

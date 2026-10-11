@@ -57,6 +57,29 @@ export {
 } from "./mock-client.js";
 
 export {
+  ArenaApiClient,
+  type ApiCredentials,
+  type ArenaApiClientOptions,
+  type SubmitApiOutcome,
+  type LookupApiOutcome,
+  type TimelineOutcome,
+  type TimelineEvent,
+  type ResultViewOutcome,
+  type CommandApiOutcome,
+  type EscalationProjection,
+  type EscalationListItem,
+} from "./api-client.js";
+
+export {
+  RealWorkbenchBinding,
+  DEMO_PRINCIPAL_TOKENS,
+  REAL_BINDING_DISCLOSURE,
+  type PrincipalCredentials,
+  type TrackingRow,
+  type SubmitFlowOutcome,
+} from "./real-binding.js";
+
+export {
   SELF_EVALUATION_IS_NOT_A_VOTE_RULE,
   validateCandidateDraft,
   validateSelfEvaluationDraft,
