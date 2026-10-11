@@ -78,6 +78,10 @@ jobs:
         working-directory: packages/arena-sdk
         run: ../../node_modules/.bin/tsx --test test/sdk.test.ts test/webhook.test.ts test/mcp.test.ts test/e2e-real-integration.test.ts
 
+      - name: Unit tests — arena-expert-arena (node:test via tsx)
+        working-directory: packages/arena-expert-arena
+        run: ../../node_modules/.bin/tsx --test test/machines.test.ts test/candidate.test.ts test/review-assignment.test.ts test/rubric-quorum.test.ts test/adjudication-validation.test.ts
+
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
         run: ../../node_modules/.bin/tsx --test test/nonCliAcpRetirement.test.ts
