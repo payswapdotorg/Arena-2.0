@@ -1,0 +1,22 @@
+{
+  "name": "@arena/release-gate",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/contract.ts"
+  },
+  "scripts": {
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix --fix-suggestions"
+  },
+  "dependencies": {
+    "@arena/capsule": "workspace:*",
+    "@arena/contracts": "workspace:*",
+    "@arena/evidence": "workspace:*",
+    "@arena/sdk": "workspace:*",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  }
+}
