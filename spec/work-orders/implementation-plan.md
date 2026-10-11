@@ -115,6 +115,7 @@ Acceptance: no artifact is reusable by default; rights failure blocks publicatio
 
 ### AR2-015: Security, resilience, accessibility and release review
 
+Owner: TL. Dependencies: integrated product path (AR2-000..014 all accepted). State: ACCEPTED 2026-10-11 (TL-direct; PR #47 squash-merged 7d117f1, CI battery green on head c7baad4; issue #17 closed with acceptance record; `packages/arena-release-gate` 25-test suite: typed G0–G8 gate registry + four adversarial profiles on real surfaces + classified gate report at docs/evidence/release/AR2-015-gate-report-2026-10-11.md; machine core release decision NOT_GO — capsule isolation/cross-platform/accessibility BLOCKED, untrusted execution and live payments stay disabled).
 Dependencies: integrated previous waves.
 Scope: cross-tenant adversarial suite, capsule breakout/egress tests, malicious input/prompt injection tests, performance/capacity, platform install/build, keyboard/mobile UX, evidence registry, release gate and residual findings.
 Acceptance: every gate in spec/testing/acceptance-gates.md is explicitly PASS, FAIL, BLOCKED or WAIVED with evidence and authorized rationale. Critical/high issues block release unless permitted written owner acceptance is recorded. A build alone is not a release decision.
