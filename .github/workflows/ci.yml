@@ -90,6 +90,10 @@ jobs:
         working-directory: packages/arena-harness
         run: ../../node_modules/.bin/tsx --test test/vertical-p0.test.ts test/next-expert.test.ts test/p2-review.test.ts test/two-instance-recovery.test.ts
 
+      - name: Unit tests — arena-acquisition (node:test via tsx)
+        working-directory: packages/arena-acquisition
+        run: ../../node_modules/.bin/tsx --test test/*.test.ts
+
       - name: Unit tests — arena-learning (node:test via tsx)
         working-directory: packages/arena-learning
         run: ../../node_modules/.bin/tsx --test test/learning.test.ts
