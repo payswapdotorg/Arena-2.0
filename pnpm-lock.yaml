@@ -668,6 +668,25 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
 
+  packages/arena-expert-arena:
+    dependencies:
+      '@arena/contracts':
+        specifier: workspace:*
+        version: link:../arena-contracts
+      '@arena/evidence':
+        specifier: workspace:*
+        version: link:../arena-evidence
+      '@arena/matching':
+        specifier: workspace:*
+        version: link:../arena-matching
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+
   packages/arena-matching:
     dependencies:
       '@arena/contracts':
