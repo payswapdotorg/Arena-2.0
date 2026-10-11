@@ -91,6 +91,12 @@ modules:
     requires: [arena-contracts]
     publicEntrypoints: [packages/arena-persistence/src/contract.ts]
     owner: arena-tl
+  - id: arena-evidence
+    roots: [packages/arena-evidence/src]
+    managed: true
+    requires: [arena-contracts]
+    publicEntrypoints: [packages/arena-evidence/src/contract.ts]
+    owner: arena-tl
 
 global:
   maxFileLines: 400
