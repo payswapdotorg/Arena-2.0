@@ -1,6 +1,6 @@
 # Arena 2.0 Project State
 
-Last reconciled: 2026-10-10
+Last reconciled: 2026-10-11
 Repository: https://github.com/payswapdotorg/arena-2.0
 Base: fork of zai-org/ZCode
 Pinned base commit: 29628c9acdb81b703bbd4080c207a0e7ce5e276e
@@ -10,7 +10,7 @@ Maximum implementation workers: three plus Tech Lead
 
 ## Current status
 
-**Architecture approved; core implementation AR2-000 through AR2-014 accepted with linked CI and integration evidence. Production release is NOT approved: AR2-015 is the current core frontier and real production capsule isolation/commercial release readiness remain unproven. The scraper/capability-acquisition extension is specified but not implemented.
+**Architecture approved; core implementation AR2-000 through AR2-014 accepted with linked CI and integration evidence. Production release is NOT approved: AR2-015 is the current core frontier and real production capsule isolation/commercial release readiness remain unproven. The scraper/capability-acquisition extension is specified but not implemented.**
 
 The initial architecture setup PR #1 is merged. Treat the milestone table, current frontier, accepted work-order records and linked CI/evidence as the live implementation state; do not use historical setup-branch notes as current dispatch authority.
 
