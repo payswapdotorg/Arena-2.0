@@ -15,13 +15,13 @@ Parallel work is permitted only when contract versions are frozen and write surf
 
 ### AR2-000: Fork baseline and inherited surface inventory
 
-Owner: TL. Dependencies: none. State: EVIDENCE EXECUTED 2026-10-10 (clean-clone battery at 96e3edf; report at docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md; classification PASS WITH EXISTING FAILURES; [PR #21](https://github.com/payswapdotorg/arena-2.0/pull/21) awaiting merge).
+Owner: TL. Dependencies: none. State: ACCEPTED (issue #2 closed; PR #21 merged at 1f8bca1; baseline report at docs/evidence/baseline/AR2-000-baseline-report-2026-10-10.md; classification PASS WITH EXISTING FAILURES).
 Inventory upstream base commit, workspace package graph, app entry points, identity/auth modes, service composition roots, persistence, background jobs, remote/RPC boundaries, sandbox limitations, plugin/MCP capability, licensing, CI and build/test commands. Record exact commands and pre-existing failures. Preserve upstream LICENSE, NOTICE, dependency license records, provider disclosures and attribution.
 Acceptance: clean clone/install and available baseline checks recorded; actual file paths verified; every planned Arena integration point has an owner; no assumption that ZCode workspace equals OS isolation.
 
 ### AR2-001: Domain and public contract freeze
 
-Owner: TL. Dependencies: AR2-000. State: EXECUTED — freeze PR pending acceptance (corpus CF1.0: `packages/arena-contracts`; five contract questions CLOSED in spec/contracts/ar2-001-freeze.md §2; 104-test contract suite wired into CI; acceptance rubric: spec/work-orders/ar2-001-acceptance.md).
+Owner: TL. Dependencies: AR2-000. State: ACCEPTED (issue #3 closed; PR #24 merged at 9cd8ad8; corpus CF1.0 in `packages/arena-contracts`; five contract questions CLOSED in spec/contracts/ar2-001-freeze.md §2; 104-test suite wired into CI; acceptance rubric at spec/work-orders/ar2-001-acceptance.md).
 Freeze EscalationRequest, acceptance criteria, proof policy snapshot, Attempt, CapsuleManifest, EvidenceEnvelope, ResultEnvelope, EventEnvelope, idempotency/retry contract, tenant context and major state machines. Runtime schema validation is mandatory. Define API error catalog and compatibility policy. Review contract schemas with workers before dispatch.
 Acceptance: examples and transition tests agreed; APIs and field ownership explicit; no unresolved blocking interface question.
 
