@@ -62,6 +62,10 @@ jobs:
         working-directory: packages/arena-persistence
         run: ../../node_modules/.bin/tsx --test test/durable.test.ts test/jobs.test.ts
 
+      - name: Unit tests — arena-evidence (node:test via tsx)
+        working-directory: packages/arena-evidence
+        run: ../../node_modules/.bin/tsx --test test/evidence.test.ts test/validator.test.ts test/proof-evaluator.test.ts
+
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
         run: ../../node_modules/.bin/tsx --test test/nonCliAcpRetirement.test.ts
