@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "types": ["node"]
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../arena-contracts" },
+    { "path": "../arena-application" },
+    { "path": "../arena-persistence" },
+    { "path": "../arena-evidence" },
+    { "path": "../arena-payment" },
+    { "path": "../arena-matching" },
+    { "path": "../arena-expert-arena" },
+    { "path": "../arena-sdk" },
+    { "path": "../arena-ops" },
+    { "path": "../arena-capsule" }
+  ]
+}

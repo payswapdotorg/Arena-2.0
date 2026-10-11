@@ -86,6 +86,10 @@ jobs:
         working-directory: packages/arena-ops
         run: ../../node_modules/.bin/tsx --test test/health-capacity.test.ts test/custodian.test.ts test/observability-retention.test.ts
 
+      - name: Acceptance profiles — arena-harness (node:test via tsx; spawns REAL arena-api processes incl. two-instance + SIGKILL recovery)
+        working-directory: packages/arena-harness
+        run: ../../node_modules/.bin/tsx --test test/vertical-p0.test.ts test/next-expert.test.ts test/p2-review.test.ts test/two-instance-recovery.test.ts
+
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
         run: ../../node_modules/.bin/tsx --test test/nonCliAcpRetirement.test.ts

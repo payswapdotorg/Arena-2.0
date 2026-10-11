@@ -127,6 +127,23 @@ modules:
     requires: [arena-contracts, arena-capsule]
     publicEntrypoints: [packages/arena-ops/src/contract.ts]
     owner: arena-tl
+  - id: arena-harness
+    roots: [packages/arena-harness/src]
+    managed: true
+    requires:
+      [
+        arena-contracts,
+        arena-application,
+        arena-persistence,
+        arena-evidence,
+        arena-payment,
+        arena-matching,
+        arena-expert-arena,
+        arena-sdk,
+        arena-ops,
+      ]
+    publicEntrypoints: [packages/arena-harness/src/contract.ts]
+    owner: arena-tl
 
 global:
   maxFileLines: 400
