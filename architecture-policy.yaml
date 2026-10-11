@@ -109,6 +109,12 @@ modules:
     requires: [arena-contracts]
     publicEntrypoints: [packages/arena-matching/src/contract.ts]
     owner: arena-tl
+  - id: arena-sdk
+    roots: [packages/arena-sdk/src]
+    managed: true
+    requires: [arena-contracts]
+    publicEntrypoints: [packages/arena-sdk/src/contract.ts]
+    owner: arena-tl
 
 global:
   maxFileLines: 400
