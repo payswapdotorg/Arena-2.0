@@ -668,6 +668,19 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
 
+  packages/arena-payment:
+    dependencies:
+      '@arena/contracts':
+        specifier: workspace:*
+        version: link:../arena-contracts
+      '@arena/evidence':
+        specifier: workspace:*
+        version: link:../arena-evidence
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+
   packages/arena-persistence:
     dependencies:
       '@arena/contracts':

@@ -66,6 +66,10 @@ jobs:
         working-directory: packages/arena-evidence
         run: ../../node_modules/.bin/tsx --test test/evidence.test.ts test/validator.test.ts test/proof-evaluator.test.ts
 
+      - name: Unit tests — arena-payment (node:test via tsx)
+        working-directory: packages/arena-payment
+        run: ../../node_modules/.bin/tsx --test test/ledger.test.ts test/payment-flow.test.ts
+
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
         run: ../../node_modules/.bin/tsx --test test/nonCliAcpRetirement.test.ts
