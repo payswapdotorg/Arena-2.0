@@ -1,0 +1,28 @@
+{
+  "name": "@arena/harness",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/contract.ts"
+  },
+  "scripts": {
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix --fix-suggestions"
+  },
+  "dependencies": {
+    "@arena/application": "workspace:*",
+    "@arena/capsule": "workspace:*",
+    "@arena/contracts": "workspace:*",
+    "@arena/evidence": "workspace:*",
+    "@arena/expert-arena": "workspace:*",
+    "@arena/matching": "workspace:*",
+    "@arena/ops": "workspace:*",
+    "@arena/payment": "workspace:*",
+    "@arena/persistence": "workspace:*",
+    "@arena/sdk": "workspace:*",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  }
+}
