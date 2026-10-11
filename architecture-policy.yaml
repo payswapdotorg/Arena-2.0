@@ -150,6 +150,12 @@ modules:
     requires: [arena-contracts, arena-evidence]
     publicEntrypoints: [packages/arena-learning/src/contract.ts]
     owner: arena-tl
+  - id: arena-release-gate
+    roots: [packages/arena-release-gate/src]
+    managed: true
+    requires: [arena-contracts, arena-capsule, arena-evidence, arena-sdk]
+    publicEntrypoints: [packages/arena-release-gate/src/contract.ts]
+    owner: arena-tl
 
 global:
   maxFileLines: 400
