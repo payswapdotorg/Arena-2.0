@@ -121,6 +121,12 @@ modules:
     requires: [arena-contracts, arena-evidence, arena-matching]
     publicEntrypoints: [packages/arena-expert-arena/src/contract.ts]
     owner: arena-tl
+  - id: arena-ops
+    roots: [packages/arena-ops/src]
+    managed: true
+    requires: [arena-contracts, arena-capsule]
+    publicEntrypoints: [packages/arena-ops/src/contract.ts]
+    owner: arena-tl
 
 global:
   maxFileLines: 400

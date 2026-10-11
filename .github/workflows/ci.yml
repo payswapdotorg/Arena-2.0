@@ -82,6 +82,10 @@ jobs:
         working-directory: packages/arena-expert-arena
         run: ../../node_modules/.bin/tsx --test test/machines.test.ts test/candidate.test.ts test/review-assignment.test.ts test/rubric-quorum.test.ts test/adjudication-validation.test.ts
 
+      - name: Unit tests — arena-ops (node:test via tsx; custodian drives the real synthetic capsule provider)
+        working-directory: packages/arena-ops
+        run: ../../node_modules/.bin/tsx --test test/health-capacity.test.ts test/custodian.test.ts test/observability-retention.test.ts
+
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
         run: ../../node_modules/.bin/tsx --test test/nonCliAcpRetirement.test.ts

@@ -697,6 +697,22 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
 
+  packages/arena-ops:
+    dependencies:
+      '@arena/capsule':
+        specifier: workspace:*
+        version: link:../arena-capsule
+      '@arena/contracts':
+        specifier: workspace:*
+        version: link:../arena-contracts
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+
   packages/arena-payment:
     dependencies:
       '@arena/contracts':
