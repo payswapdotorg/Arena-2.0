@@ -74,6 +74,10 @@ jobs:
         working-directory: packages/arena-matching
         run: ../../node_modules/.bin/tsx --test test/matching.test.ts
 
+      - name: Unit tests — arena-sdk (node:test via tsx; E2E spawns real arena-api + MCP facade processes)
+        working-directory: packages/arena-sdk
+        run: ../../node_modules/.bin/tsx --test test/sdk.test.ts test/webhook.test.ts test/mcp.test.ts test/e2e-real-integration.test.ts
+
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
         run: ../../node_modules/.bin/tsx --test test/nonCliAcpRetirement.test.ts
