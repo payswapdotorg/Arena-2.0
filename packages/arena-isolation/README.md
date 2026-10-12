@@ -133,8 +133,21 @@ SIGXCPU→152, SIGSYS→159) — the outcome mapping accepts both forms.
   frozen families (`@arena/capsule`, `@arena/contracts` stay green and
   unmodified).
 
-When bwrap/userns are absent, probes skip with the honest
-`NOT_SUPPORTED` marker (the typed paths are exercised in the port tests).
+When bwrap/userns are absent (CI ubuntu-latest, the integration station),
+the suite stays green with **typed skips and port-logic fixtures**:
+
+- real-execution probes (conformance, escape battery) record the typed skip
+  `bwrap/userns unavailable` via the capability gate — the honest
+  `NOT_SUPPORTED` marker, never a faked result;
+- the port-discipline tests (tenant refusal indistinguishability, aggregate
+  mismatch, lifecycle/teardown, duration ceiling, action allowlist, egress
+  fail-closed, transfer limits) construct the provider directly with a
+  clearly-labeled **synthetic environment** injected through the documented
+  `probeEnvironment` seam (`provisionedPortLogicSession` in `test/helpers.ts`).
+  Every assertion there targets decisions the port makes **before any spawn**
+  (registries, allowlist, manifest ceilings, state machine); the fixture
+  records no isolation claim, and the real-environment fail-closed path
+  itself is asserted by the dedicated NOT_SUPPORTED tests.
 
 ## Reproducing the strict-mode run (release-gate owner)
 
