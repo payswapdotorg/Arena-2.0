@@ -7,7 +7,10 @@
   },
   "scripts": {
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix --fix-suggestions"
+    "lint:fix": "oxlint --fix --fix-suggestions",
+    "a11y:install-browser": "playwright install chromium",
+    "a11y:bundle": "node test/a11y/host/build-host.mjs",
+    "a11y:test": "tsx --test test/a11y.test.ts"
   },
   "dependencies": {
     "@arena/contracts": "workspace:*",
@@ -16,6 +19,9 @@
   "devDependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "axe-core": "^4.11.3",
+    "esbuild": "^0.27.7",
+    "playwright": "^1.59.1",
     "react-dom": "^19.2.0",
     "typescript": "^6.0.2"
   }
