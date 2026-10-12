@@ -122,7 +122,7 @@ Acceptance: every gate in spec/testing/acceptance-gates.md is explicitly PASS, F
 
 ### AR2-016: Capability-gap acquisition contract and provider router
 
-Owner: TL-assigned worker. Dependencies: AR2-002 accepted, AR2-005 durable store/jobs accepted, and AR2-008 capability-demand/matching contracts accepted. Status: PLANNED; not dispatchable until all dependencies are accepted and the TL records exact base SHA and frozen schema versions. Write fence: new capability-acquisition contract/router package and tests only; TL owns root manifests, shared frozen contracts, migrations and integration.
+Owner: TL-assigned worker. Dependencies: AR2-002 accepted, AR2-005 durable store/jobs accepted, and AR2-008 capability-demand/matching contracts accepted. Status: ACCEPTED 2026-10-11 — issue #32 closed; PR #48 squash-merged ddea6e48; ACQ1.0 contract family + deterministic provider router in packages/arena-acquisition (77/77 package tests; CF1.0 corpus 104/104 green). Write fence: new capability-acquisition contract/router package and tests only; TL owns root manifests, shared frozen contracts, migrations and integration.
 
 Scope: versioned CapabilityGapReport and CapabilityAcquisitionRequest; route modes PINNED_PROVIDER, ANY_COMPATIBLE_PROVIDER and AUTO; registry descriptors for SCRAPER, EXTERNAL_API and HUMAN_EXPERT; deterministic authorization/rights/schema/budget/deadline/quota filters before ranking; auditable route decision and explicit fallback policy. CF1.0 stays immutable—shared contract changes require the reviewed ACR and explicit schema migration/versioning.
 
@@ -130,7 +130,7 @@ Acceptance: machine-readable schemas and positive/negative vectors; current CF1.
 
 ### AR2-017: Scraper Factory, crawler runtime and external API adapters
 
-Owner: TL-assigned worker. Dependencies: AR2-004 accepted capsule seam, AR2-005 accepted durable jobs, AR2-016 frozen provider contract. Status: PLANNED. Write fence: scraper-runtime/definition/build packages, external provider adapters, scraper-specific tests/docs; root manifests and cross-module integration remain TL-owned.
+Owner: TL-assigned worker. Dependencies: AR2-004 accepted capsule seam, AR2-005 accepted durable jobs, AR2-016 frozen provider contract. Status: ACCEPTED 2026-10-12 — issue #33 closed; PR #49 merged 12043d0; SCRP1.0 scraper factory, Crawlee-based crawler runtime, SSRF/redirect/DNS-rebinding egress guards and external API adapters in packages/arena-scraper (104/104 package tests; mock-server adapters only — no live paid services in tested scope). Write fence: scraper-runtime/definition/build packages, external provider adapters, scraper-specific tests/docs; root manifests and cross-module integration remain TL-owned.
 
 Scope: bounded scraper definition/build/version lifecycle; Crawlee Node/TypeScript first, a Python runtime only if justified; provider-neutral API connector port; optional explicit Apify Actor/task API adapter; immutable output datasets and source metadata; durable execution, cancellation, rate/cost/page/byte/time quotas and connector operation semantics. Do not clone the hosted Apify platform.
 
@@ -138,7 +138,7 @@ Acceptance: local permitted-fixture crawl with pinned version and schema validat
 
 ### AR2-018: Evidence-to-capability packaging, evaluation and controlled learning
 
-Owner: TL-assigned worker. Dependencies: AR2-007 accepted evidence/verification, AR2-014 accepted rights-gated learning, AR2-016 and AR2-017 accepted. Status: PLANNED. Write fence: acquisition dataset validation, transformation lineage, CapabilityUpgradeProposal and before/after evaluation modules/tests; coordinate immutable BodyVersion and rights records with the AR2-014 owner.
+Owner: TL-assigned worker. Dependencies: AR2-007 accepted evidence/verification, AR2-014 accepted rights-gated learning, AR2-016 and AR2-017 accepted. Status: ACCEPTED 2026-10-12 — issue #34 closed; PR #50 squash-merged e0eed65 (CI run green first-run); UPG1.0 dataset intake, transformation lineage, capability-pack build, before/after evaluation, publication and rollback in packages/arena-upgrade (91/91 package tests; deterministic mock target-agent harness and gated fine-tuning stub — no live-model evaluation or training in tested scope). Write fence: acquisition dataset validation, transformation lineage, CapabilityUpgradeProposal and before/after evaluation modules/tests; coordinate immutable BodyVersion and rights records with the AR2-014 owner.
 
 Scope: provenance/rights/privacy/source-policy gate; immutable dataset; choose retrieval/index, knowledge pack, tool/connector, rules/examples or explicitly approved fine-tuning strategy; build a versioned capability proposal; evaluate gap-specific success and regressions; publish/adopt/rollback under policy.
 
@@ -151,7 +151,11 @@ Wave 1: AR2-002 || AR2-003 || AR2-004.
 Wave 2: AR2-005 (after API/persistence port) || AR2-006 (after AR2-002) || AR2-007 (after AR2-004 and evidence contract).
 Wave 3: AR2-008 || AR2-009 || AR2-010 only when all listed dependencies and frozen interfaces are truly ready; if not, pull the next independent ready WO from the graph.
 Wave 4: AR2-011 || AR2-013 || AR2-014 when their dependencies are satisfied; AR2-012 and AR2-015 integrate after the vertical slice exists.
-Capability-acquisition extension: AR2-016 after AR2-002/005/008; AR2-017 after AR2-004/005/016; AR2-018 after AR2-007/014/016/017. These are planned additions and must not delay the separately releasable core vertical slice.
+Capability-acquisition extension: AR2-016 after AR2-002/005/008; AR2-017 after AR2-004/005/016; AR2-018 after AR2-007/014/016/017. These were planned additions and did not delay the separately releasable core vertical slice; all three are now ACCEPTED (2026-10-11/12) and the registered roadmap is complete at 19/19.
+
+## WO3.0 — Production-readiness release plan (registered 2026-10-12)
+
+AR2-019 through AR2-023 (issues #51–#55) are NEWLY REGISTERED post-completion work orders that turn the AR2-015 NOT_GO blockers into evidence work: OS-level capsule isolation conformance, cross-platform install evidence, accessibility E2E coverage, production identity adapter, and the release-owner decision record. Sequencing, capacity and disabled-capability boundaries are normative in `spec/work-orders/release-plan.md`. These are separate from the completed 19/19 implementation roadmap; registration authorizes no release, and live-money payments plus untrusted execution stay disabled pending AR2-019 evidence and a recorded owner decision.
 
 The table is a ceiling, not a mandate to dispatch all three. The TL recomputes readiness, branch drift, write-surface overlap, worker capacity and integration risk before each wave. Do not parallelize root manifests, lockfiles, migrations that touch the same ledger/schema, a state-machine contract and its implementation before the contract freezes, or tests that rewrite the same evidence files.
 
