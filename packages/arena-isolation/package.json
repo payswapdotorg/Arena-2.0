@@ -1,0 +1,19 @@
+{
+  "name": "@arena/isolation",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/contract.ts"
+  },
+  "scripts": {
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix --fix-suggestions"
+  },
+  "dependencies": {
+    "@arena/capsule": "workspace:*",
+    "@arena/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  }
+}
