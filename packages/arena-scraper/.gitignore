@@ -1,0 +1,5 @@
+# Crawlee's default local storage writes runtime state under ./storage when a
+# filesystem-backed client is selected; tests run against in-memory queues and
+# these artifacts are disposable. Never commit crawl runtime state.
+storage/
+dist/
