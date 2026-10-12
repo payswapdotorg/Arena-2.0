@@ -33,12 +33,14 @@ function EvidenceEntry(props: {
   }
   // AR2-021 a11y fix: evidence entries are keyboard-activatable buttons so
   // the evidence-detail dialog (composition layer) is reachable without a mouse.
+  // The accessible name embeds the full visible text (WCAG 2.5.3 label in
+  // name — axe label-content-name-mismatch) plus the action verb.
   return (
     <li key={props.envelope.evidence_id} data-evidence={props.envelope.evidence_id}>
       <button
         type="button"
         className="arena-evidence-inspect"
-        aria-label={`Inspect evidence ${props.envelope.evidence_id}`}
+        aria-label={`${props.envelope.evidence_id} — ${props.envelope.redaction_class} (inspect evidence details)`}
         onClick={() => props.onInspect?.(props.envelope)}
       >
         {props.envelope.evidence_id} — {props.envelope.redaction_class}
