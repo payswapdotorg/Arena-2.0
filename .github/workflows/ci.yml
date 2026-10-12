@@ -98,6 +98,10 @@ jobs:
         working-directory: packages/arena-scraper
         run: ../../node_modules/.bin/tsx --test test/*.test.ts
 
+      - name: Unit tests — arena-upgrade (node:test via tsx)
+        working-directory: packages/arena-upgrade
+        run: ../../node_modules/.bin/tsx --test test/*.test.ts
+
       - name: Unit tests — arena-learning (node:test via tsx)
         working-directory: packages/arena-learning
         run: ../../node_modules/.bin/tsx --test test/learning.test.ts
