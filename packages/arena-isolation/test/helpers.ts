@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { arch, platform, release, tmpdir } from "node:os";
 import path from "node:path";
 import assert from "node:assert/strict";
 import type { CapsuleManifest } from "@arena/contracts";
@@ -117,27 +117,32 @@ export interface SessionFixture {
   };
   sessionDir: string;
   workspaceRoot: string;
+  /** The environment report the session was provisioned against — the real
+   * probe for real-execution fixtures, the labeled synthetic for port-logic
+   * fixtures (see provisionedPortLogicSession). */
+  environment: IsolationEnvironmentReport;
 }
 
-export async function provisionedSession(
-  options: {
-    tenantId?: string;
-    capsuleId?: string;
-    manifestOverrides?: Record<string, unknown>;
-    mode?: "strict" | "auto";
-  } = {},
+interface SessionFixtureOptions {
+  tenantId?: string;
+  capsuleId?: string;
+  manifestOverrides?: Record<string, unknown>;
+  mode?: "strict" | "auto";
+}
+
+async function buildSession(
+  options: SessionFixtureOptions,
+  providerFactory: (workspaceRoot: string) => LinuxNamespaceIsolationProvider,
+  environment: IsolationEnvironmentReport,
 ): Promise<SessionFixture> {
   const workspaceRoot = mkdtempSync(path.join(tmpdir(), "arena-iso-test-"));
+  const provider = providerFactory(workspaceRoot);
   const tenantId = options.tenantId ?? "tnt_00000001";
   const capsuleId = options.capsuleId ?? "cap_00000001";
   const manifest = validIsolationManifest({
     tenant_id: tenantId,
     capsule_id: capsuleId,
     ...options.manifestOverrides,
-  });
-  const provider = new LinuxNamespaceIsolationProvider({
-    mode: options.mode ?? "auto",
-    workspaceRoot,
   });
   const outcome = await provider.provision(manifest);
   assert.equal(outcome.kind, "PROVISIONED", `fixture provision failed: ${JSON.stringify(outcome)}`);
@@ -152,7 +157,79 @@ export async function provisionedSession(
     },
     sessionDir: path.join(workspaceRoot, `tenant-${tenantId}`, `cap-${capsuleId}`),
     workspaceRoot,
+    environment,
   };
+}
+
+/** Real-environment fixture: provision runs against the actual capability
+ * probe, so it fails closed (typed NOT_SUPPORTED) wherever bwrap is absent.
+ * Only real-execution tests may use this — they gate on
+ * realIsolationAvailable() and record the typed skip otherwise. */
+export async function provisionedSession(
+  options: SessionFixtureOptions = {},
+): Promise<SessionFixture> {
+  const environment = await batteryEnvironment();
+  return await buildSession(
+    options,
+    (workspaceRoot) =>
+      new LinuxNamespaceIsolationProvider({ mode: options.mode ?? "auto", workspaceRoot }),
+    environment,
+  );
+}
+
+/** Clearly-labeled synthetic environment for PRE-SPAWN refusal-logic
+ * fixtures: provision() succeeds on bwrap-less stations (CI ubuntu-latest,
+ * the integration station) so the port's typed refusals — tenant mismatch,
+ * action allowlist, duration ceiling, egress fail-closed, transfer limits,
+ * lifecycle/teardown — stay under test everywhere. This report records NO
+ * isolation claim: tests using it assert outcomes decided before any spawn,
+ * and real isolation coverage stays with the gated real-execution battery
+ * (and the strict-mode instrument, which always probes the real
+ * environment). The shape mirrors a PARTIAL_ISOLATION probe result so the
+ * auto-mode PARTIAL provisioning path is exercised on every station. */
+export function syntheticPortLogicEnvironment(): IsolationEnvironmentReport {
+  return {
+    probed_at: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
+    platform: platform(),
+    arch: arch(),
+    kernel_release: release(),
+    max_user_namespaces: null,
+    unprivileged_userns_clone: null,
+    userns_empirically_available: true,
+    bwrap: { path: null, version: null, major: null, minor: null },
+    procfs_strategy: "unprobed",
+    seccomp_filter_supported: null,
+    prlimit_path: null,
+    capability: "PARTIAL_ISOLATION",
+    limitations: [
+      "synthetic port-logic fixture environment: injected so pre-spawn typed-refusal " +
+        "logic is testable on bwrap-less stations; records no isolation claim — real " +
+        "isolation coverage comes from the gated battery and the strict-mode instrument",
+    ],
+    probe_stderr_samples: [],
+  };
+}
+
+/** Port-logic fixture: the provider is constructed directly with the labeled
+ * synthetic environment injected through the documented probeEnvironment
+ * seam (IsolationProviderOptions). No bwrap, userns or seccomp is required,
+ * looked up or executed — every assertion in these tests targets decisions
+ * the port makes before any spawn (session registry, binding registry,
+ * allowlist, manifest ceilings, lifecycle state machine). */
+export async function provisionedPortLogicSession(
+  options: SessionFixtureOptions = {},
+): Promise<SessionFixture> {
+  const environment = syntheticPortLogicEnvironment();
+  return await buildSession(
+    options,
+    (workspaceRoot) =>
+      new LinuxNamespaceIsolationProvider({
+        mode: options.mode ?? "auto",
+        workspaceRoot,
+        probeEnvironment: async () => environment,
+      }),
+    environment,
+  );
 }
 
 /** Execute a fixed shell script through the sandbox (battery probe style). */

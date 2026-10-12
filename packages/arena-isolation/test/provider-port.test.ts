@@ -7,7 +7,7 @@ import path from "node:path";
 import type { CapsuleManifest } from "@arena/contracts";
 import { CapsuleBindingRegistry, ScopedCredentialLedger } from "@arena/capsule";
 import { LinuxNamespaceIsolationProvider } from "../src/provider.js";
-import { validIsolationManifest, provisionedSession, batteryEnvironment } from "./helpers.js";
+import { validIsolationManifest, provisionedPortLogicSession, batteryEnvironment } from "./helpers.js";
 
 /**
  * Port-level discipline (the same fail-closed matrix the release gate runs
@@ -125,7 +125,11 @@ test("execution fails closed with typed NOT_SUPPORTED when a pinned bwrap vanish
 });
 
 test("cross-tenant references are refused indistinguishably on every port op", async () => {
-  const fixture = await provisionedSession();
+  // Port-logic fixture: the provider is constructed directly with the labeled
+  // synthetic environment (probeEnvironment seam) so this typed-refusal test
+  // runs identically on bwrap-less stations (CI, integration). All refusals
+  // below are decided by the session/binding registries before any spawn.
+  const fixture = await provisionedPortLogicSession();
   const attackerRef = {
     capsule_id: "cap_00000001",
     tenant_id: "tnt_00000099",
@@ -163,7 +167,7 @@ test("cross-tenant references are refused indistinguishably on every port op", a
 });
 
 test("aggregate (escalation/attempt) mismatch is a typed TENANT_MISMATCH", async () => {
-  const fixture = await provisionedSession();
+  const fixture = await provisionedPortLogicSession();
   const mismatched = {
     capsule_id: "cap_00000001",
     tenant_id: "tnt_00000001",
@@ -178,12 +182,18 @@ test("aggregate (escalation/attempt) mismatch is a typed TENANT_MISMATCH", async
 });
 
 test("lifecycle: heartbeat beats, teardown is verified and terminal", async () => {
-  const fixture = await provisionedSession();
+  const fixture = await provisionedPortLogicSession();
   const beat = await fixture.provider.heartbeat(fixture.ref);
   assert.equal(beat.kind, "BEAT");
   if (beat.kind === "BEAT") {
     assert.equal(beat.snapshot.state, "ENVIRONMENT_READY");
-    assert.equal(beat.snapshot.assurance_recorded, true);
+    // assurance_recorded must MIRROR the environment the session was
+    // provisioned against (real probe result, or the labeled synthetic in
+    // the port-logic fixture) — the propagation invariant under test.
+    assert.equal(
+      beat.snapshot.assurance_recorded,
+      fixture.environment.userns_empirically_available === true,
+    );
   }
   const torn = await fixture.provider.teardown(fixture.ref);
   assert.equal(torn.kind, "TORN_DOWN");
@@ -196,7 +206,9 @@ test("lifecycle: heartbeat beats, teardown is verified and terminal", async () =
 });
 
 test("session duration ceiling produces the typed SESSION_DURATION_EXCEEDED", async () => {
-  const fixture = await provisionedSession({
+  // The expiry check is the port's FIRST decision in executeCommand — it
+  // fires before any tool lookup, so the port-logic fixture exercises it.
+  const fixture = await provisionedPortLogicSession({
     manifestOverrides: { resource_policy: { cpu_limit: 1, memory_limit_mb: 256, disk_limit_mb: 64, max_duration_seconds: 1 } },
   });
   await new Promise((resolve) => setTimeout(resolve, 1100));
@@ -211,7 +223,8 @@ test("session duration ceiling produces the typed SESSION_DURATION_EXCEEDED", as
 });
 
 test("command not in the action allowlist is refused before any spawn", async () => {
-  const fixture = await provisionedSession();
+  // Allowlist refusal is decided before any tool lookup or spawn.
+  const fixture = await provisionedPortLogicSession();
   const executed = await fixture.provider.executeCommand(fixture.ref, {
     action_id: "act_00000001",
     command: ["python3", "-c", "print(1)"],
@@ -224,7 +237,8 @@ test("command not in the action allowlist is refused before any spawn", async ()
 });
 
 test("manifest granting egress hosts fails closed at execution (empty netns cannot honor)", async () => {
-  const fixture = await provisionedSession({
+  // Egress fail-closed is decided from the manifest alone, before any spawn.
+  const fixture = await provisionedPortLogicSession({
     manifestOverrides: {
       egress_policy: { denied_default: true, allowed_hosts: ["registry.npmjs.org"], allow_ingress: false },
     },
@@ -240,7 +254,9 @@ test("manifest granting egress hosts fails closed at execution (empty netns cann
 });
 
 test("transferArtifact enforces flat ids and the manifest byte ceiling", async () => {
-  const fixture = await provisionedSession();
+  // Artifact transfer never spawns: flat-id and byte-ceiling refusals are
+  // pure port logic against the manifest and session state.
+  const fixture = await provisionedPortLogicSession();
   const traversal = await fixture.provider.transferArtifact(fixture.ref, {
     direction: "pull_only",
     artifact_id: "../escape",

@@ -401,7 +401,16 @@ test("probe secret-hygiene: credentials never materialize in the sandbox or evid
   await fixture.provider.teardown(fixture.ref);
 });
 
-test("probe tenant-binding: tenant A cannot mount tenant B paths (fail closed)", async () => {
+test("probe tenant-binding: tenant A cannot mount tenant B paths (fail closed)", async (t) => {
+  // Real-execution probe: the input-mount tenant binding is validated with a
+  // LIVE session and the positive control actually executes inside the
+  // sandbox. At bwrap-less stations the typed skip is recorded (the
+  // cross-tenant REFUSED semantics themselves stay under test everywhere via
+  // the port-logic fixtures in provider-port.test.ts).
+  if (!(await realIsolationAvailable())) {
+    t.skip("bwrap/userns unavailable — input-mount tenant-binding needs a real isolation session");
+    return;
+  }
   const fixture = await provisionedSession({ tenantId: "tnt_00000001" });
   // Tenant B lives in the SAME isolation host (shared workspace root).
   const tenantB = tenantBWorkspace(fixture.workspaceRoot);

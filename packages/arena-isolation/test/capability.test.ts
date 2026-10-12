@@ -12,15 +12,25 @@ test("environment report records kernel, userns sysctls and tool facts", async (
   const report = await probeIsolationEnvironment();
   assert.equal(report.platform, "linux");
   assert.match(report.kernel_release, /^\d+\.\d+/);
-  assert.equal(typeof report.max_user_namespaces, "number");
+  // Degraded environments record absent facts honestly as null (bwrap
+  // missing => the empirical probes never ran): null | number and
+  // null | boolean are the documented report shapes on every station.
+  assert.ok(
+    report.max_user_namespaces === null || typeof report.max_user_namespaces === "number",
+  );
   // max_user_namespaces is recorded raw (null when unreadable); the empirical
   // result below is the load-bearing fact.
-  assert.equal(typeof report.userns_empirically_available, "boolean");
+  assert.ok(
+    report.userns_empirically_available === null ||
+      typeof report.userns_empirically_available === "boolean",
+  );
   assert.ok(["FULL_ISOLATION", "PARTIAL_ISOLATION", "NOT_SUPPORTED"].includes(report.capability));
   assert.ok(
     ["fresh-proc", "masked-proc", "unavailable", "unprobed"].includes(report.procfs_strategy),
   );
-  assert.equal(typeof report.seccomp_filter_supported, "boolean");
+  assert.ok(
+    report.seccomp_filter_supported === null || typeof report.seccomp_filter_supported === "boolean",
+  );
   assert.equal(report.probed_at.endsWith("Z"), true);
   assert.ok(Array.isArray(report.limitations));
 });
@@ -51,7 +61,13 @@ test("this battery environment is classified (documented in the report)", async 
   // The gate battery expects real isolation; the classification itself is
   // environment-driven and recorded verbatim in the completion report.
   if (report.capability === "NOT_SUPPORTED") {
-    assert.equal(report.userns_empirically_available, false);
+    // Honest degraded shapes: null (bwrap absent, the empirical probe never
+    // ran) or false (probed and refused). Both fail closed — never a
+    // fabricated boolean.
+    assert.ok(
+      report.userns_empirically_available === null ||
+        report.userns_empirically_available === false,
+    );
   } else {
     assert.equal(report.userns_empirically_available, true);
     assert.notEqual(report.procfs_strategy, "unavailable");
