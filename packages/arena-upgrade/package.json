@@ -1,0 +1,23 @@
+{
+  "name": "@arena/upgrade",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/contract.ts"
+  },
+  "scripts": {
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix --fix-suggestions"
+  },
+  "dependencies": {
+    "@arena/acquisition": "workspace:*",
+    "@arena/contracts": "workspace:*",
+    "@arena/evidence": "workspace:*",
+    "@arena/learning": "workspace:*",
+    "@arena/scraper": "workspace:*",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  }
+}
