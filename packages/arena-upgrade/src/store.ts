@@ -14,7 +14,7 @@ import {
 import { capabilityPackSchema, computePackContentDigest, type CapabilityPack } from "./pack.js";
 import type { EvaluationRun, BeforeAfterDelta } from "./eval/run.js";
 import type { UpgErrorCode } from "./errors.js";
-import type { PublicationDecision, RollbackRecord, AdoptionRecord } from "./publish/publication.js";
+import type { PublicationDecision, RollbackRecord, AdoptionRecord } from "./publish/records.js";
 
 /**
  * AR2-018 — UpgradeStore (issue #34).

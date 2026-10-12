@@ -1,25 +1,20 @@
-import { z } from "zod";
-import {
-  arenaIdSchema,
-  isoTimestampSchema,
-  nonNegativeIntSchema,
-  privacyProfileSchema,
-  redactionClassSchema,
-  retentionProfileSchema,
-  type TenantContext,
-} from "@arena/contracts";
+import type { TenantContext } from "@arena/contracts";
 import { computeCanonicalDigest } from "@arena/acquisition";
 import { checkDatasetArtifact, contentHashOf, type DatasetArtifact } from "@arena/scraper";
-import { rightsScopeSchema, type RightsGrantRegistry, type RightsScope } from "@arena/learning";
-import {
-  UPGRADE_SCHEMA_FAMILY,
-  actorRefSchema,
-  boundedText,
-  nonEmptyShort,
-  type ActorRef,
-  type SemanticIssue,
-} from "./primitives.js";
+import type { RightsGrantRegistry, RightsScope } from "@arena/learning";
+import { UPGRADE_SCHEMA_FAMILY, type ActorRef, type SemanticIssue } from "./primitives.js";
 import type { UpgErrorCode } from "./errors.js";
+import type {
+  DatasetIntakeRecord,
+  DatasetQualityMetrics,
+  IntakePolicy,
+  IntakeProvenanceCheck,
+  IntakeRightsState,
+} from "./intake-records.js";
+
+/* Record contracts (intake schemas and types) live in ./intake-records.ts;
+ * re-exported here so the public import surface is unchanged. */
+export * from "./intake-records.js";
 
 /**
  * AR2-018 — DatasetIntakeRecord (issue #34; spec §7).
@@ -32,113 +27,6 @@ import type { UpgErrorCode } from "./errors.js";
  * metrics are recorded; every rejection class carries its exact fail-closed
  * reason code. The record itself is immutable once written.
  */
-
-export const intakePolicySchema = z
-  .object({
-    /** Allowed source hosts: exact ("docs.example.org") or leftmost-wildcard ("*.example.org"). */
-    permitted_source_patterns: z.array(nonEmptyShort).min(1).max(64),
-    privacy_profile: privacyProfileSchema,
-    retention_profile: retentionProfileSchema,
-  })
-  .strict();
-
-export type IntakePolicy = z.infer<typeof intakePolicySchema>;
-
-export const intakeProvenanceCheckSchema = z
-  .object({
-    field: nonEmptyShort,
-    present: z.boolean(),
-    consistent: z.boolean(),
-  })
-  .strict();
-
-export type IntakeProvenanceCheck = z.infer<typeof intakeProvenanceCheckSchema>;
-
-export const intakeRightsStateSchema = z
-  .object({
-    state: z.enum(["LINKED", "DENIED", "UNKNOWN", "EXPIRED", "SCOPE_MISMATCH"]),
-    grant_id: arenaIdSchema.nullable(),
-    scope: rightsScopeSchema.nullable(),
-    reason: boundedText.nullable(),
-  })
-  .strict();
-
-export type IntakeRightsState = z.infer<typeof intakeRightsStateSchema>;
-
-export const datasetQualityMetricsSchema = z
-  .object({
-    item_count: nonNegativeIntSchema,
-    distinct_source_urls: nonNegativeIntSchema,
-    unique_content_hashes: nonNegativeIntSchema,
-    dedup_ratio: z.number().min(0).max(1),
-    field_completeness: z.number().min(0).max(1),
-    malformed_item_ratio: z.number().min(0).max(1),
-    quarantined_item_ratio: z.number().min(0).max(1),
-  })
-  .strict();
-
-export type DatasetQualityMetrics = z.infer<typeof datasetQualityMetricsSchema>;
-
-export const datasetIntakeRecordSchema = z
-  .object({
-    schema_version: z.literal(UPGRADE_SCHEMA_FAMILY),
-    intake_id: arenaIdSchema,
-    tenant_id: arenaIdSchema,
-    dataset_id: arenaIdSchema,
-    run_id: arenaIdSchema,
-    correlation_id: arenaIdSchema,
-    causation_id: arenaIdSchema.nullable(),
-    recorded_at: isoTimestampSchema,
-    recorded_by: actorRefSchema,
-    outcome: z.enum(["ACCEPTED", "BLOCKED"]),
-    stage1_schema: z
-      .object({
-        passed: z.boolean(),
-        issues: z.array(z.object({ field: z.string(), rule: z.string() }).strict()).max(64),
-      })
-      .strict(),
-    stage2_semantics: z
-      .object({
-        passed: z.boolean(),
-        reason_codes: z.array(z.string().min(1)).max(32),
-        issues: z.array(z.object({ field: z.string(), rule: z.string() }).strict()).max(64),
-      })
-      .strict(),
-    provenance_completeness: z
-      .object({
-        checks: z.array(intakeProvenanceCheckSchema).max(16),
-        complete: z.boolean(),
-      })
-      .strict(),
-    rights: intakeRightsStateSchema,
-    source_policy: z
-      .object({
-        verdict: z.enum(["COMPLIANT", "VIOLATION"]),
-        violations: z
-          .array(z.object({ item_id: arenaIdSchema, url: z.string().max(2048), rule: z.string() }).strict())
-          .max(256),
-      })
-      .strict(),
-    privacy_retention: z
-      .object({
-        privacy_profile: privacyProfileSchema,
-        retention_profile: retentionProfileSchema,
-        redaction_classes_observed: z.array(redactionClassSchema).max(4),
-      })
-      .strict(),
-    integrity: z
-      .object({
-        per_item_verified: z.boolean(),
-        object_hash_verified: z.boolean(),
-        expected_object_hash: z.string().regex(/^[a-f0-9]{64}$/),
-        computed_object_hash: z.string().regex(/^[a-f0-9]{64}$/),
-      })
-      .strict(),
-    quality: datasetQualityMetricsSchema,
-  })
-  .strict();
-
-export type DatasetIntakeRecord = z.infer<typeof datasetIntakeRecordSchema>;
 
 export interface IntakeInput {
   dataset: unknown;
