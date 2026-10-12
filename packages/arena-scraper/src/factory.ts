@@ -9,11 +9,12 @@ import {
   type ScraperBuild,
 } from "./scraper-build.js";
 import {
-  checkScraperDefinition,
   computeScraperDefinitionDigest,
+  scraperDefinitionSchema,
   type ScraperDefinition,
   type ScraperVersion,
 } from "./scraper-definition.js";
+import { classifyShapeIssues } from "./errors.js";
 import {
   actorAllowed,
   computeBuildDigest,
@@ -84,11 +85,21 @@ export class ScraperFactory {
 
   /** Register a draft definition and open its build record in DRAFT. */
   startBuild(tenantId: string, actor: ActorRef, definitionInput: unknown): FactoryCommandResult {
-    const check = checkScraperDefinition(definitionInput);
-    if (!check.ok) {
-      return { ok: false, code: check.code, detail: check.issues.map((i) => `${i.field}: ${i.rule}`).slice(0, 8).join("; ") };
+    // Draft intake is SCHEMA-only: semantic/source-scope sanity is the STATIC
+    // VALIDATION gate's job, so scope violations land in REJECTED_STATIC with
+    // a typed reason (the full trust-boundary check stays checkScraperDefinition).
+    const parsed = scraperDefinitionSchema.safeParse(definitionInput);
+    if (!parsed.success) {
+      return {
+        ok: false,
+        code: classifyShapeIssues(parsed.error.issues),
+        detail: parsed.error.issues
+          .map((issue) => `${issue.path.map(String).join(".") || "(root)"}: ${issue.code}${issue.message ? ` — ${issue.message}` : ""}`)
+          .slice(0, 8)
+          .join("; "),
+      };
     }
-    const definition = check.definition;
+    const definition = parsed.data;
     if (definition.tenant_id !== tenantId) {
       return { ok: false, code: "SCRP_TENANT_MISMATCH", detail: "definition tenant does not match the calling tenant" };
     }
@@ -160,18 +171,17 @@ export class ScraperFactory {
     actor: ActorRef,
     versionTag: string,
   ): Promise<ReleaseResult> {
-    const gateResult = await this.runGate(buildId, tenantId, actor, "RELEASE_APPROVAL");
-    if (!gateResult.ok) return gateResult;
     const stored = this.builds.get(buildId);
-    if (stored === undefined) return { ok: false, code: "SCRP_NOT_FOUND", detail: "build not visible in tenant scope" };
+    if (stored === undefined || stored.build.tenant_id !== tenantId) {
+      return { ok: false, code: "SCRP_NOT_FOUND", detail: "build not visible in tenant scope" };
+    }
     const { build, definition } = stored;
     const definitionDigest = computeScraperDefinitionDigest(definition);
+    // Immutability first: the same (definition, version) is a replay or a typed
+    // conflict — decided by digests, independent of the current build state.
     const existing = this.versionsByDefinition.get(definition.definition_id)?.get(versionTag);
     if (existing !== undefined) {
-      if (
-        existing.definition_digest === definitionDigest &&
-        existing.build_digest === build.build_digest
-      ) {
+      if (existing.definition_digest === definitionDigest && existing.build_digest === build.build_digest) {
         return { ok: true, version: existing, replayed: true };
       }
       return {
@@ -180,6 +190,31 @@ export class ScraperFactory {
         detail: `version ${versionTag} of ${definition.definition_id} already exists with different digests`,
       };
     }
+    if (!actorAllowed("RELEASE_APPROVAL", actor)) {
+      return {
+        ok: false,
+        code: "SCRP_ACTOR_NOT_AUTHORIZED",
+        detail: `actor role ${actor.role} is not authorized for gate RELEASE_APPROVAL`,
+      };
+    }
+    if (build.state !== "POLICY_CHECKED") {
+      return {
+        ok: false,
+        code: "SCRP_BUILD_STATE_INVALID",
+        detail: `release requires the POLICY_CHECKED state, build is ${build.state}`,
+      };
+    }
+    const gateResult: GateResult = {
+      ok: true,
+      evidence: releaseEvidence(definition),
+      detail: "release approved by an authorized RELEASER",
+    };
+    const transition = this.transition(build, "RELEASE_APPROVAL", actor, gateResult, "RELEASED");
+    stored.build = {
+      ...build,
+      state: "RELEASED",
+      transitions: [...build.transitions, transition],
+    };
     const version: ScraperVersion = {
       schema_version: "SCRP1.0",
       version_id: this.nextId("scv"),
@@ -191,7 +226,7 @@ export class ScraperFactory {
       dependency_lock_digest: computeCanonicalDigest(definition.dependency_lock),
       released_at: this.config.nowIso(),
       released_by: actor,
-      release_evidence: build.transitions
+      release_evidence: stored.build.transitions
         .filter((t) => t.evidence !== null)
         .slice(-8)
         .map((t) => t.evidence),

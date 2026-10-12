@@ -13,6 +13,7 @@ import { assembleDataset } from "../runtime/assembly.js";
 import { guardedRobotsRequest } from "../runtime/fetch.js";
 import type { DatasetArtifact } from "../dataset-artifact.js";
 import { buildScraperCapsuleManifest } from "./capsule-manifest.js";
+import { decideTerminalState } from "./crawl-support.js";
 import { DatasetStore, RunStore, commandDigestOf } from "./store.js";
 
 /**
@@ -263,6 +264,27 @@ export class ScraperRunService {
     definition: ScraperDefinition,
     version: ScraperVersion,
   ): Promise<CrawlOutcome> {
+    if (this.cancelledRuns.has(run.run_id)) {
+      // Cancellation arrived before the crawl started — terminate closed.
+      const terminated = this.markTerminal(run, "CANCELLED", "SCRP_RUN_CANCELLED");
+      this.runs.save(terminated);
+      return {
+        run: terminated,
+        crawl: {
+          items: [],
+          quarantined: [],
+          egress_denied: [],
+          robots_denied: [],
+          pages_fetched: 0,
+          bytes_fetched: 0,
+          stop_reason: "CANCELLED",
+          stop_detail: "cancelled before the crawl started",
+          engine_version: "SCRP-ENGINE1.0",
+          crawlee_version: "3.18.2",
+        },
+        dataset: null,
+      };
+    }
     const runDeadlineMs = Date.parse(run.deadline);
     const effectiveWallMs = Math.max(
       1000,
@@ -316,7 +338,17 @@ export class ScraperRunService {
         redact_pii: true,
       });
       let current = run;
+      const mergeFromStore = (): AcquisitionRun => {
+        // Merge with the latest stored record so externally appended events
+        // (e.g. CANCEL_REQUESTED) are never clobbered by a stale snapshot.
+        const stored = this.runs.find(run.run_id, run.tenant_id);
+        if (stored !== null && stored.events.length > current.events.length) {
+          current = stored;
+        }
+        return current;
+      };
       const onEvent = (event: { kind: CrawlEventKind; detail: string }): void => {
+        mergeFromStore();
         if (current.events.length >= 1024) return;
         current = this.withEvent(current, event.kind, event.detail);
         this.runs.save(current);
@@ -332,29 +364,15 @@ export class ScraperRunService {
         fetchTimeoutMs: this.config.fetchTimeoutMs ?? 10000,
       });
       const crawlResult = await engine.crawl(definition.seeds, true);
-      const deadlineExceeded = this.config.nowMs() > runDeadlineMs;
-      let status: AcquisitionRun["status"] = "COMPLETED";
-      let reason = crawlResult.stop_reason === "COMPLETED" ? "COMPLETED" : `BUDGET_${crawlResult.stop_reason}`;
-      if (crawlResult.stop_reason === "CANCELLED") {
-        status = "CANCELLED";
-        reason = "SCRP_RUN_CANCELLED";
-      }
-      if (crawlResult.stop_reason === "PROVIDER_STOPPED" || (crawlResult.stop_reason === "WALL_TIME" && deadlineExceeded)) {
-        status = "UNKNOWN";
-        reason = "SCRP_RUN_DEADLINE_EXCEEDED";
-      }
-      if (deadlineExceeded && status === "COMPLETED") {
-        status = "UNKNOWN";
-        reason = "SCRP_RUN_DEADLINE_EXCEEDED";
-      }
-      if (quarantine.quarantineOverflow()) {
-        status = "FAILED";
-        reason = "SCRP_QUARANTINE_EXCESS";
-      }
-      if (this.cancelledRuns.has(run.run_id) && crawlResult.stop_reason === "CANCELLED") {
-        status = "CANCELLED";
-        reason = "SCRP_RUN_CANCELLED";
-      }
+      const decision = decideTerminalState({
+        stopReason: crawlResult.stop_reason,
+        deadlineExceeded: this.config.nowMs() > runDeadlineMs,
+        quarantineOverflow: quarantine.quarantineOverflow(),
+        cancelled: this.cancelledRuns.has(run.run_id),
+      });
+      const status = decision.status;
+      const reason = decision.reason;
+      mergeFromStore();
       current = {
         ...current,
         operation_identity: status === "UNKNOWN" ? `attempt:${current.attempt_counter}:crawl:${current.run_id}` : current.operation_identity,

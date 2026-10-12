@@ -13,7 +13,7 @@ import type { ScraperDefinition, ScraperVersion } from "../scraper-definition.js
  */
 
 /** Synthetic-provider conformance digest (disclosed NON-PRODUCTION evidence). */
-export const SYNTHETIC_ISOLATION_SUITE_DIGEST = "5f4dcc3b5aa765d61d8327deb882cf99a8f7c4c2e6e1f9b5a3c8d0f1e2b3c4d5e";
+export const SYNTHETIC_ISOLATION_SUITE_DIGEST = "5f4dcc3b5aa765d61d8327deb882cf99a8f7c4c2e6e1f9b5a3c8d0f1e2b3c4d5";
 
 export interface CapsuleManifestInput {
   run: AcquisitionRun;

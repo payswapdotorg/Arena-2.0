@@ -105,6 +105,10 @@ export class HttpValidatedFetcher {
       const check = await this.guard.validateUrl(current);
       if (!check.ok) throw new EgressDeniedError(check.detail);
       const response = await this.requestOnce(current, options);
+      if (response.status >= 500) {
+        // 5xx responses are retryable conditions (bounded backoff upstream).
+        throw new Error(`upstream 5xx: ${response.status} from ${current}`);
+      }
       if (response.status >= 300 && response.status < 400 && response.location !== null) {
         const next = new URL(response.location, current).toString();
         redirects.push({ url: current, status: response.status });

@@ -127,7 +127,7 @@ export function runDependencySourceLicenseReviewGate(def: ScraperDefinition): Ga
     if (!APPROVED_DEPENDENCY_LICENSES.has(dependency.license)) {
       return {
         ok: false,
-        code: "SCRP_BUILD_GATE_REJECTED",
+        code: "SCRP_LICENSE_REVIEW_REJECTED",
         detail: `dependency ${dependency.name}@${dependency.version} carries unapproved license ${dependency.license}`,
       };
     }

@@ -89,7 +89,7 @@ function ipv6ToBigInt(ip: string): bigint | null {
   };
   const left = parseGroups(halves[0] ?? "");
   const right = halves.length === 2 ? parseGroups(halves[1] ?? "") : null;
-  if (left === null || right === null) return null;
+  if (left === null || (halves.length === 2 && right === null)) return null;
   const missing = 8 - left.length - (right ?? []).length;
   if (missing < 0) return null;
   const groups =

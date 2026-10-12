@@ -316,7 +316,16 @@ export class ApifyAdapter implements ExternalApiConnectorPort {
           await this.options.sleep(descriptor.retry.backoff_base_ms || 10);
           continue;
         }
-        if (response.status >= 500 && attempt <= descriptor.retry.max_retries) {
+        if (response.status >= 500) {
+          if (attempt > descriptor.retry.max_retries) {
+            return {
+              kind: "FAILED",
+              operation_id: request.operation_id,
+              code: "SCRP_CONNECTOR_RETRY_EXCEEDED",
+              detail: `persistent 5xx (${response.status}) after ${attempt} attempt(s)`,
+              retryable: true,
+            };
+          }
           await this.options.sleep(descriptor.retry.backoff_base_ms * attempt);
           continue;
         }
@@ -364,7 +373,7 @@ export class ApifyAdapter implements ExternalApiConnectorPort {
     run: ApifyRunState,
   ): Promise<{ body: unknown; bytes: number } | null> {
     if (run.defaultDatasetId === null) return null;
-    const response = await connectorHttpRequest(config.base_url, `/datasets/${run.defaultDatasetId}/items`, {
+    const response = await connectorHttpRequest(config.base_url, `/v2/datasets/${run.defaultDatasetId}/items`, {
       method: "GET",
       token,
       timeout_ms: descriptor.retry.timeout_ms,

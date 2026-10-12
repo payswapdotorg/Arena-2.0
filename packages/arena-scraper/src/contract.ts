@@ -213,6 +213,7 @@ export {
   type RunServiceConfig,
 } from "./run/run-service.js";
 export { RunStore, DatasetStore, commandDigestOf } from "./run/store.js";
+export { decideTerminalState } from "./run/crawl-support.js";
 export {
   buildScraperCapsuleManifest,
   SYNTHETIC_ISOLATION_SUITE_DIGEST,
