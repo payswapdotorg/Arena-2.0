@@ -132,6 +132,8 @@ export {
   RequesterCockpit,
 } from "./screens/requester-cockpit.js";
 
+export { LiveAnnouncer } from "./screens/live-announcer.js";
+
 export { ExpertQueue, ExpertWorkspace, SelfEvaluationPanel } from "./screens/expert-workbench.js";
 
 export {
