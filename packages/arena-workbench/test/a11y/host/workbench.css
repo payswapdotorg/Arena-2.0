@@ -241,7 +241,9 @@ form button[type="submit"],
 }
 
 form button[type="submit"]:disabled,
-.arena-payout-panel button:disabled {
+.arena-payout-panel button:disabled,
+form button[type="submit"][aria-disabled="true"],
+.arena-payout-panel button[aria-disabled="true"] {
   color: #4b5563;
   background: #f3f4f6;
   border-color: var(--line-strong);

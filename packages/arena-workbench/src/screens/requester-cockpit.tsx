@@ -145,7 +145,7 @@ export function RequesterCockpit(props: RequesterCockpitProps): ReactNode {
           onChange={(event) => props.onBudgetChange(event.target.value)}
         />
         <FieldErrorList errors={props.errors} />
-        <button type="submit" onClick={props.onSubmit} disabled={submitting}>
+        <button type="submit" onClick={props.onSubmit} aria-disabled={submitting}>
           Submit escalation
         </button>
       </form>

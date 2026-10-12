@@ -397,8 +397,11 @@ function WorkbenchHostApp(): ReactNode {
   const payoutState = PAYOUT_HAPPY_PATH[payoutStep] ?? PAYOUT_HAPPY_PATH[0] ?? "PENDING_EVIDENCE";
   const payoutTerminal = payoutStep >= PAYOUT_HAPPY_PATH.length - 1;
   const handlePayoutAdvance = useCallback(() => {
+    if (payoutTerminal) {
+      return;
+    }
     setPayoutStep((step) => Math.min(step + 1, PAYOUT_HAPPY_PATH.length - 1));
-  }, []);
+  }, [payoutTerminal]);
 
   const payoutLabel =
     WORKBENCH_STATE_VIEWS.payment.find((view) => view.state === payoutState)?.label ?? payoutState;
@@ -454,7 +457,7 @@ function WorkbenchHostApp(): ReactNode {
                   </li>
                 ))}
               </ol>
-              <button type="button" onClick={handlePayoutAdvance} disabled={payoutTerminal}>
+              <button type="button" onClick={handlePayoutAdvance} aria-disabled={payoutTerminal}>
                 Advance payment lifecycle
               </button>
             </section>

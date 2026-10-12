@@ -90,7 +90,7 @@ export function ExpertWorkspace(props: ExpertWorkspaceProps): ReactNode {
           onChange={(event) => props.onNotesChange(event.target.value)}
         />
         <FieldErrorList errors={props.candidateErrors} />
-        <button type="submit" onClick={props.onCandidateSubmit} disabled={submitting}>
+        <button type="submit" onClick={props.onCandidateSubmit} aria-disabled={submitting}>
           Submit candidate version
         </button>
       </form>
