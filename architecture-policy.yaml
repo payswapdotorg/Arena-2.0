@@ -162,6 +162,12 @@ modules:
     requires: [arena-contracts, arena-capsule, arena-acquisition]
     publicEntrypoints: [packages/arena-scraper/src/contract.ts]
     owner: arena-tl
+  - id: arena-upgrade
+    roots: [packages/arena-upgrade/src]
+    managed: true
+    requires: [arena-contracts, arena-evidence, arena-learning, arena-acquisition, arena-scraper]
+    publicEntrypoints: [packages/arena-upgrade/src/contract.ts]
+    owner: arena-tl
   - id: arena-release-gate
     roots: [packages/arena-release-gate/src]
     managed: true
