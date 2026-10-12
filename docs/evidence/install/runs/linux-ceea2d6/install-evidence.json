@@ -1,0 +1,142 @@
+{
+  "schema": "arena-install-evidence/1.0",
+  "work_order": "AR2-020",
+  "harness": "scripts/install-verify/verify-linux.sh",
+  "platform": "linux",
+  "platform_label": "Linux x86_64 (Debian GNU/Linux 13 (trixie))",
+  "os": {
+    "name": "Debian GNU/Linux",
+    "version": "13 (Debian GNU/Linux 13 (trixie))",
+    "arch": "x86_64",
+    "kernel": "Linux 5.10.134-013.15.kangaroo.al8.x86_64",
+    "shell": "bash"
+  },
+  "resources": {
+    "cpu_count": "2",
+    "mem_total": "4259396 kB",
+    "disk_free": "4.3G free on /"
+  },
+  "pinned_sha": "ceea2d638839485cad888411387d945a80af9978",
+  "source_mode": "fresh-clone",
+  "origin": "/home/z/arena",
+  "repo_clean": "true",
+  "tools": {
+    "node": "v24.21.0",
+    "pnpm": "10.33.2",
+    "git": "2.47.3",
+    "tsx": "resolved at install via workspace devDependency tsx@^4.19.4 (root package.json)"
+  },
+  "bootstrap": {
+    "commands": "node: (none — node v24.21.0 present)\npnpm: (none — pnpm 10.33.2 present)",
+    "notes": ""
+  },
+  "steps": [
+    {
+      "name": "env",
+      "command": "(environment capture: uname, os-release, arch, shell, tools, cpu/mem/disk)",
+      "exit_code": 0,
+      "duration_ms": 341,
+      "notes": "see transcript environment block"
+    },
+    {
+      "name": "bootstrap",
+      "command": "ensure node>=24 + pnpm@10.33.2 ((none — node v24.21.0 present); (none — pnpm 10.33.2 present))",
+      "exit_code": 0,
+      "duration_ms": 1836,
+      "notes": "node v24.21.0 already present (>=24) — no node bootstrap required; pnpm 10.33.2 already pinned — no pnpm bootstrap required"
+    },
+    {
+      "name": "resolve-source",
+      "command": "git clone /home/z/arena && git checkout ceea2d638839485cad888411387d945a80af9978 (or in-place checkout at same SHA)",
+      "exit_code": 0,
+      "duration_ms": 1668,
+      "notes": "fresh clone from /home/z/arena at pinned SHA ceea2d638839485cad888411387d945a80af9978 (verified rev-parse HEAD)"
+    },
+    {
+      "name": "install",
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "duration_ms": 10174,
+      "notes": "pnpm summary: Done in 10.1s using pnpm v10.33.2 ; lines matching /warn/i: 1; node_modules pre-existed: no"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "duration_ms": 127410,
+      "notes": ""
+    },
+    {
+      "name": "lint",
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "duration_ms": 1158,
+      "notes": "Found 70 warnings and 0 errors."
+    },
+    {
+      "name": "architecture-check",
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "duration_ms": 1213,
+      "notes": "architecture: OK;violations: 0;baseline: 0;new: 0;"
+    },
+    {
+      "name": "contracts-corpus",
+      "command": "../../node_modules/.bin/tsx --test test/vectors.test.ts test/transitions.test.ts test/completeness.test.ts test/ownership.test.ts test/contracts.test.ts",
+      "exit_code": 0,
+      "duration_ms": 2058,
+      "notes": "node:test summary: tests=104 pass=104 fail=0",
+      "tests": {
+        "pass": 104,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "capsule-corpus",
+      "command": "../../node_modules/.bin/tsx --test test/capsule.test.ts test/synthetic-provider.test.ts",
+      "exit_code": 0,
+      "duration_ms": 2024,
+      "notes": "node:test summary: tests=32 pass=32 fail=0",
+      "tests": {
+        "pass": 32,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "harness-smoke",
+      "command": "../../node_modules/.bin/tsx --test test/vertical-p0.test.ts test/next-expert.test.ts test/p2-review.test.ts test/two-instance-recovery.test.ts",
+      "exit_code": 0,
+      "duration_ms": 5897,
+      "notes": "node:test summary: tests=5 pass=5 fail=0",
+      "tests": {
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "isolation-runtime-probe",
+      "command": "command -v bwrap",
+      "exit_code": 0,
+      "duration_ms": 0,
+      "notes": "typed capability probe; see capabilities[] in install-evidence.json"
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "os-level-isolation-runtime",
+      "status": "not_supported",
+      "reason": "bwrap absent on this Linux runner; AR2-019 OS-level isolation runtime not present at pinned SHA ceea2d638839485cad888411387d945a80af9978 (probe: command -v bwrap)"
+    }
+  ],
+  "failures": [],
+  "verdict": {
+    "overall": "PASS",
+    "generated_at": "2026-10-12T22:01:22Z"
+  }
+}

@@ -1,0 +1,103 @@
+# =============================================================================
+# AR2-020 — PROPOSED GitHub Actions workflow for cross-platform install
+# evidence (macOS / Windows / Linux).
+#
+# This file is a PROPOSAL artifact under docs/evidence/install/ per work order
+# AR2-020 §3.2. The TL owns .github/** and lands this content (reviewed, and
+# adjusted if runner conventions require it) as
+# .github/workflows/install-evidence.yml at integration. It is the recorded
+# path for the actual macOS/Windows runs that close the AR2-015 gate row
+# grg_00000002 (cross-platform install proof BLOCKED).
+#
+# Design notes for the TL review:
+# - The harness scripts (scripts/install-verify/verify-{linux,macos,windows})
+#   are entry-point clean and runner-portable: no interactive input, no
+#   sandbox-private paths, and they clone/verify an EXACT pinned SHA
+#   (workflow_dispatch input, else the event SHA). On a runner whose checkout
+#   already sits at the pinned SHA they run in-place; otherwise they fresh-
+#   clone from the canonical origin at that SHA.
+# - Node 24 + pnpm@10.33.2 are provisioned by setup-node/npm here for speed
+#   and determinism; the scripts still self-bootstrap (and record it) when
+#   those are absent, so the same scripts work on a bare runner.
+# - Each job uploads the human transcript (install-transcript.txt) and the
+#   machine-readable summary (install-evidence.json, schema
+#   arena-install-evidence/1.0) as workflow artifacts — the inspectable
+#   evidence a release owner cites in the AR2-023 decision record.
+# - windows-latest uses pwsh to invoke the PS 5.1-compatible
+#   verify-windows.ps1 (the script itself runs on both Windows PowerShell 5.1
+#   and PowerShell 7+).
+# =============================================================================
+
+name: install-evidence
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Pinned SHA to verify (empty = the event SHA of this dispatch)"
+        required: false
+        default: ""
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/install-verify/**"
+      - "docs/evidence/install/**"
+
+permissions:
+  contents: read
+
+jobs:
+  install-evidence:
+    name: install-evidence (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Checkout (script access; harness resolves the pinned SHA itself)
+        uses: actions/checkout@v4
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install pinned pnpm 10.33.2
+        run: npm install -g pnpm@10.33.2
+
+      - name: Resolve pinned SHA for this run
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.sha }}" ]; then
+            echo "SHA=${{ inputs.sha }}" >> "$GITHUB_ENV"
+          else
+            echo "SHA=${{ github.sha }}" >> "$GITHUB_ENV"
+          fi
+
+      - name: Install-verification harness (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: bash scripts/install-verify/verify-linux.sh "$SHA"
+
+      - name: Install-verification harness (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: bash scripts/install-verify/verify-macos.sh "$SHA"
+
+      - name: Install-verification harness (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/install-verify/verify-windows.ps1 -Sha $env:SHA
+
+      - name: Upload install evidence (transcript + JSON)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: install-evidence-${{ matrix.os }}
+          path: |
+            install-evidence.json
+            install-transcript.txt
+          if-no-files-found: error
