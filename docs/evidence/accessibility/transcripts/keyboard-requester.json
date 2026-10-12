@@ -1,0 +1,170 @@
+{
+  "kind": "keyboard-journey",
+  "journey": "requester",
+  "steps": [
+    {
+      "action": "initial (page load)",
+      "focus": {
+        "tag": "body",
+        "id": null,
+        "text": "Skip to main contentArena workbench — accessibility render hostDEMO render host: workbench",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab #1 — skip link",
+      "focus": {
+        "tag": "a",
+        "id": null,
+        "text": "Skip to main content",
+        "role": null,
+        "className": "skip-link"
+      }
+    },
+    {
+      "action": "Enter on skip link — focus jumps to main landmark",
+      "focus": {
+        "tag": "main",
+        "id": "arena-main",
+        "text": "Requester cockpitExpert workbenchReviewer screensAdjudicator screensDEMO — deterministic f",
+        "role": null,
+        "className": "site-main"
+      }
+    },
+    {
+      "action": "Tab — lens button Requester cockpit",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Requester cockpit",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — lens button Expert workbench",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Expert workbench",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — lens button Reviewer screens",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Reviewer screens",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — lens button Adjudicator screens",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Adjudicator screens",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — task title input",
+      "focus": {
+        "tag": "input",
+        "id": "arena-task-title",
+        "text": "",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — outcome textarea",
+      "focus": {
+        "tag": "textarea",
+        "id": "arena-task-outcome",
+        "text": "",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — budget input (left empty on purpose)",
+      "focus": {
+        "tag": "input",
+        "id": "arena-budget-limit",
+        "text": "",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — submit control",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Submit escalation",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Enter (empty budget) — focus moved to error summary",
+      "focus": {
+        "tag": "ul",
+        "id": null,
+        "text": "budget.limit_amount: invalid_type — Invalid input: expected number, received NaN",
+        "role": null,
+        "className": "arena-field-errors"
+      },
+      "announcement": "Escalation rejected — 1 field error(s); see the validation summary"
+    },
+    {
+      "action": "Shift+Tab — back to budget input",
+      "focus": {
+        "tag": "input",
+        "id": "arena-budget-limit",
+        "text": "",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — submit control again",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Submit escalation",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Enter — submitting (focus retained)",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Submit escalation",
+        "role": null,
+        "className": null
+      },
+      "announcement": "Submitting escalation request…"
+    },
+    {
+      "action": "after submission (focus retained)",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Submit escalation",
+        "role": null,
+        "className": null
+      },
+      "announcement": "Escalation submitted — esc_00000001"
+    }
+  ],
+  "inputMode": "keyboard-only (Playwright keyboard API; no mouse events)"
+}

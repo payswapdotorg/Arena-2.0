@@ -1,0 +1,19 @@
+{
+  "kind": "axe-scan",
+  "journey": "reviewer",
+  "state": "deck-pending",
+  "viewport": "mobile-375",
+  "ruleTags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa",
+    "best-practice"
+  ],
+  "violations": [],
+  "passesCount": 44,
+  "incomplete": [],
+  "inapplicableCount": 46,
+  "consoleErrors": [],
+  "pageErrors": []
+}
