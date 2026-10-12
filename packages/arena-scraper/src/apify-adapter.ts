@@ -6,12 +6,17 @@ import type {
   ReconcileOutcome,
   SecretResolver,
 } from "./connector.js";
-import { checkApiConnectorDescriptor, connectorHttpRequest } from "./connector.js";
-export { verifyConnectorWebhook } from "./connector.js";
+import { checkApiConnectorDescriptor } from "./connector.js";
+import { fetchApifyRun, runIdOfOperation, runStateOf, startApifyRun } from "./apify/run-client.js";
+import { datasetResponseIsValid, fetchApifyDatasetItems } from "./apify/store-client.js";
+export { verifyConnectorWebhook } from "./apify/store-client.js";
 
 /**
  * AR2-017 — OPTIONAL Apify adapter for the ExternalApiConnectorPort
- * (issue #33; spec §5 — Apify REST API v2).
+ * (issue #33; spec §5 — Apify REST API v2). Composition root over the two
+ * client planes in ./apify/: the async run lifecycle (run-client.ts) and
+ * the dataset-store/HMAC verification (store-client.ts), which share the
+ * retrying transport (transport.ts).
  *
  * Runs ONLY when explicitly configured (an unconfigured adapter is INERT and
  * fails closed with SCRP_CONNECTOR_NOT_CONFIGURED). Tests use a LOCAL mock
@@ -38,13 +43,6 @@ export interface ApifyAdapterOptions {
   sleep: (ms: number) => Promise<void>;
   /** Response schema check hook (declared response_schema is honored). */
   validateResponse?: (body: unknown) => boolean;
-}
-
-interface ApifyRunState {
-  runId: string;
-  status: string;
-  defaultDatasetId: string | null;
-  usageTotalUsd: number;
 }
 
 export class ApifyAdapter implements ExternalApiConnectorPort {
@@ -167,13 +165,13 @@ export class ApifyAdapter implements ExternalApiConnectorPort {
     if (typeof token !== "string") {
       return { kind: "RECONCILE_UNSUPPORTED", operation_id: operationId, detail: "credential resolution failed (fail closed)" };
     }
-    const runId = operationId.split(":").pop() ?? operationId;
-    const run = await this.fetchRun(descriptor, config, token, request.host, request.endpoint, runId);
+    const runId = runIdOfOperation(operationId);
+    const run = await fetchApifyRun(config.base_url, descriptor, token, request.endpoint, runId);
     if (run === null) {
       return { kind: "STILL_UNKNOWN", operation_id: operationId, detail: "run state is not resolvable yet" };
     }
     if (run.status === "SUCCEEDED") {
-      const items = await this.fetchItems(descriptor, config, token, request.host, run);
+      const items = await fetchApifyDatasetItems(config.base_url, descriptor, token, run.defaultDatasetId);
       if (items === null) {
         return { kind: "STILL_UNKNOWN", operation_id: operationId, detail: "dataset items are not available yet" };
       }
@@ -193,14 +191,14 @@ export class ApifyAdapter implements ExternalApiConnectorPort {
     const token = await this.resolveToken(descriptor, request.operation_id);
     if (typeof token !== "string") return token;
     // Start the run (operation identity = apify run id).
-    const started = await this.requestJson(descriptor, config, token, request, "POST");
+    const started = await startApifyRun(config.base_url, descriptor, token, request, this.options.sleep);
     if (started.kind !== "SUCCEEDED") return started;
     const run = runStateOf(started.body);
     const operationId = `${request.operation_id}:${run.runId}`;
     const deadlineMs = this.options.nowMs() + descriptor.retry.timeout_ms;
     // Poll until terminal, the timeout (-> UNKNOWN with operation identity) or cost ceiling.
     for (;;) {
-      const poll = await this.fetchRun(descriptor, config, token, request.host, request.endpoint, run.runId);
+      const poll = await fetchApifyRun(config.base_url, descriptor, token, request.endpoint, run.runId);
       if (poll === null) {
         return { kind: "UNKNOWN", operation_id: operationId, code: "SCRP_CONNECTOR_TIMEOUT_UNKNOWN", detail: "run state unavailable" };
       }
@@ -215,7 +213,7 @@ export class ApifyAdapter implements ExternalApiConnectorPort {
         };
       }
       if (poll.status === "SUCCEEDED") {
-        const items = await this.fetchItems(descriptor, config, token, request.host, poll);
+        const items = await fetchApifyDatasetItems(config.base_url, descriptor, token, poll.defaultDatasetId);
         if (items === null) {
           return {
             kind: "FAILED",
@@ -225,7 +223,7 @@ export class ApifyAdapter implements ExternalApiConnectorPort {
             retryable: false,
           };
         }
-        if (this.options.validateResponse !== undefined && !this.options.validateResponse(items.body)) {
+        if (!datasetResponseIsValid(this.options.validateResponse, items.body)) {
           return {
             kind: "FAILED",
             operation_id: operationId,
@@ -290,114 +288,10 @@ export class ApifyAdapter implements ExternalApiConnectorPort {
     return { ok: true };
   }
 
-  private async requestJson(
-    descriptor: ApiConnectorDescriptor,
-    config: ApifyAdapterConfig,
-    token: string,
-    request: ConnectorCallRequest,
-    method: "GET" | "POST",
-  ): Promise<ConnectorCallOutcome> {
-    let attempt = 0;
-    let lastDetail = "unknown";
-    for (;;) {
-      attempt += 1;
-      try {
-        const response = await connectorHttpRequest(config.base_url, request.endpoint, {
-          method,
-          query: request.query,
-          body: request.body,
-          token,
-          timeout_ms: descriptor.retry.timeout_ms,
-        });
-        if (response.status === 401) {
-          return { kind: "FAILED", operation_id: request.operation_id, code: "SCRP_CONNECTOR_CREDENTIAL_MISSING", detail: "apify rejected the token (401)", retryable: false };
-        }
-        if (response.status === 429 && attempt <= 1) {
-          await this.options.sleep(descriptor.retry.backoff_base_ms || 10);
-          continue;
-        }
-        if (response.status >= 500) {
-          if (attempt > descriptor.retry.max_retries) {
-            return {
-              kind: "FAILED",
-              operation_id: request.operation_id,
-              code: "SCRP_CONNECTOR_RETRY_EXCEEDED",
-              detail: `persistent 5xx (${response.status}) after ${attempt} attempt(s)`,
-              retryable: true,
-            };
-          }
-          await this.options.sleep(descriptor.retry.backoff_base_ms * attempt);
-          continue;
-        }
-        if (response.status < 200 || response.status >= 300) {
-          return { kind: "FAILED", operation_id: request.operation_id, code: "SCRP_CONNECTOR_RESPONSE_INVALID", detail: `unexpected status ${response.status}`, retryable: false };
-        }
-        if (response.bytes > descriptor.max_response_bytes) {
-          return { kind: "FAILED", operation_id: request.operation_id, code: "SCRP_CONNECTOR_RESPONSE_INVALID", detail: "response exceeded max bytes", retryable: false };
-        }
-        return { kind: "SUCCEEDED", operation_id: request.operation_id, status: response.status, body: response.json, bytes: response.bytes, cost_amount: null };
-      } catch (error) {
-        lastDetail = String(error);
-        if (attempt > descriptor.retry.max_retries) {
-          return { kind: "FAILED", operation_id: request.operation_id, code: "SCRP_CONNECTOR_RETRY_EXCEEDED", detail: lastDetail, retryable: true };
-        }
-        await this.options.sleep(descriptor.retry.backoff_base_ms * attempt);
-      }
-    }
-  }
-
-  private async fetchRun(
-    descriptor: ApiConnectorDescriptor,
-    config: ApifyAdapterConfig,
-    token: string,
-    host: string,
-    endpoint: string,
-    runId: string,
-  ): Promise<ApifyRunState | null> {
-    const actorPath = endpoint.split("?")[0] ?? endpoint;
-    const runsPath = actorPath.replace(/\/runs\/.*$/, "").replace(/\/(run-sync|run-sync-get-dataset-items|runs)$/m, "");
-    const response = await connectorHttpRequest(config.base_url, `${runsPath}/runs/${runId}`, {
-      method: "GET",
-      token,
-      timeout_ms: descriptor.retry.timeout_ms,
-    });
-    if (response.status !== 200) return null;
-    return runStateOf(response.json);
-  }
-
-  private async fetchItems(
-    descriptor: ApiConnectorDescriptor,
-    config: ApifyAdapterConfig,
-    token: string,
-    host: string,
-    run: ApifyRunState,
-  ): Promise<{ body: unknown; bytes: number } | null> {
-    if (run.defaultDatasetId === null) return null;
-    const response = await connectorHttpRequest(config.base_url, `/v2/datasets/${run.defaultDatasetId}/items`, {
-      method: "GET",
-      token,
-      timeout_ms: descriptor.retry.timeout_ms,
-    });
-    if (response.status !== 200) return null;
-    if (response.bytes > descriptor.max_response_bytes) return null;
-    return { body: response.json, bytes: response.bytes };
-  }
-
   /** Spent so far (for tests and observability; never includes the token). */
   costSpentUsd(): number {
     return this.costSpent;
   }
-}
-
-function runStateOf(body: unknown): ApifyRunState {
-  const record = (body ?? {}) as { data?: Record<string, unknown> };
-  const data = record.data ?? (record as Record<string, unknown>);
-  return {
-    runId: String(data.id ?? ""),
-    status: String(data.status ?? "UNKNOWN"),
-    defaultDatasetId: data.defaultDatasetId === undefined ? null : String(data.defaultDatasetId),
-    usageTotalUsd: typeof data.usageTotalUsd === "number" ? data.usageTotalUsd : 0,
-  };
 }
 
 function hostApproved(host: string, descriptor: ApiConnectorDescriptor): boolean {
