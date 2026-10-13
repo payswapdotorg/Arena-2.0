@@ -22,4 +22,68 @@ export { buildCanonicalGateRows, type GateReportMeta } from "./canonical-rows.js
 
 export { coreReleaseDecision, renderGateReport } from "./gate-report.js";
 
+export {
+  GATE_RECOMPUTATION_SCHEMA_VERSION,
+  gitCommitShaSchema,
+  evidenceLinkKindSchema,
+  evidenceSetIdSchema,
+  evidenceEntryIdSchema,
+  evidenceManifestEntrySchema,
+  gateEvidenceSubmissionSchema,
+  evidenceSetSchema,
+  evidenceBasisRefSchema,
+  releaseDecisionMachineSchema,
+  gateRecomputationEntrySchema,
+  gateRecomputationResultSchema,
+  recomputeGates,
+  type EvidenceLinkKind,
+  type EvidenceManifestEntry,
+  type GateEvidenceSubmission,
+  type EvidenceSet,
+  type EvidenceBasisRef,
+  type GateRecomputationEntry,
+  type GateRecomputationResult,
+  type RecomputationOutcome,
+} from "./recompute-gates.js";
+
+export {
+  RELEASE_DECISION_SCHEMA_VERSION,
+  releasePlatformSchema,
+  financeModeSchema,
+  untrustedExecutionModeSchema,
+  identityModeSchema,
+  isolationModeSchema,
+  releaseScopeSchema,
+  decisionClassSchema,
+  decisionRecordStatusSchema,
+  decisionIdSchema,
+  signerMethodSchema,
+  decisionSignerSchema,
+  riskDispositionSchema,
+  residualRiskIdSchema,
+  residualRiskSchema,
+  reviewConditionKindSchema,
+  reviewConditionSchema,
+  amendmentRefSchema,
+  releaseDecisionRecordSchema,
+  validateDecisionRecord,
+  canonicalJson,
+  type ReleasePlatform,
+  type FinanceMode,
+  type UntrustedExecutionMode,
+  type IdentityMode,
+  type IsolationMode,
+  type ReleaseScope,
+  type DecisionClass,
+  type DecisionRecordStatus,
+  type RiskDisposition,
+  type ResidualRisk,
+  type ReviewCondition,
+  type AmendmentRef,
+  type ReleaseDecisionRecord,
+  type DecisionRecordValidation,
+} from "./decision-record.js";
+
+export { validateDecisionChain, type DecisionChainValidation } from "./decision-chain.js";
+
 export { arenaReleaseGateModule } from "./module.js";
