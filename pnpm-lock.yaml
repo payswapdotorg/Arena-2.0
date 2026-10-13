@@ -843,7 +843,7 @@ importers:
         version: 1.2.0
       crawlee:
         specifier: 3.18.2
-        version: 3.18.2(@types/node@25.6.0)
+        version: 3.18.2(@types/node@25.6.0)(playwright@1.64.0)
       zod:
         specifier: 4.6.5
         version: 4.6.5
@@ -908,6 +908,15 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
+      axe-core:
+        specifier: ^4.11.3
+        version: 4.14.0
+      esbuild:
+        specifier: ^0.27.7
+        version: 0.27.7
+      playwright:
+        specifier: ^1.59.1
+        version: 1.64.0
       react-dom:
         specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
@@ -5902,6 +5911,10 @@ packages:
     resolution: {integrity: sha512-zJAaP9zxTcvTHRlejau3ZOY4V7SRpiByf3/dxx2uyKxxor19tpmpV2QRsTKikckwhaPmr2dVpxxMr7jOCYVp5g==}
     engines: {node: '>=6.0.0'}
 
+  axe-core@4.14.0:
+    resolution: {integrity: sha512-9WTZxEjsZ7b13TH8JPmbV2z8CHbl80/2hm3XPEG4JgNdQLK81IBRXmSxHfMAOkSqQeRxT/0dwNDz2GOm3zzpcQ==}
+    engines: {node: '>=4'}
+
   axios@1.13.6:
     resolution: {integrity: sha512-ChTCHMouEe2kn713WHbQGcuYrr6fXTBiu460OTwWrWob16g1bXn4vtz07Ope7ewMozJAnEquLk5lWQWtBig9DQ==}
 
@@ -9098,6 +9111,16 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  playwright-core@1.64.0:
+    resolution: {integrity: sha512-T9r+MZkTECl2+oUcZ26YgZzTrYidTsIhYYkJix+6iDOymOb1FB2RLLSOxRGnZGv5DStt+aduIVbt+E8WygXYpg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.64.0:
+    resolution: {integrity: sha512-kVzTnYFYEyQ9RGzBjNCd2+yEqWmVbxl3AHPynv3qQ6JTjv4a+kwRcnqQwIpuP3NnrnIrE/Q6wWAIAvMfIE2/Yg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   plist@3.1.0:
     resolution: {integrity: sha512-uysumyrvkUX0rX/dEVqt8gC3sTBzd4zoWfLeS29nb53imdaXVvLINYXTI2GNqzaMuvacNx4uJQ8+b3zXR0pkgQ==}
     engines: {node: '>=10.4.0'}
@@ -11263,14 +11286,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@crawlee/browser-pool@3.18.2':
+  '@crawlee/browser-pool@3.18.2(playwright@1.64.0)':
     dependencies:
       '@apify/log': 2.5.54
       '@apify/timeout': 0.4.14
       '@crawlee/core': 3.18.2
       '@crawlee/types': 3.18.2
       fingerprint-generator: 2.1.88
-      fingerprint-injector: 2.1.88
+      fingerprint-injector: 2.1.88(playwright@1.64.0)
       lodash.merge: 4.6.2
       nanoid: 3.3.11
       ow: 0.28.2
@@ -11279,19 +11302,23 @@ snapshots:
       quick-lru: 5.1.1
       tiny-typed-emitter: 2.1.0
       tslib: 2.8.1
+    optionalDependencies:
+      playwright: 1.64.0
     transitivePeerDependencies:
       - supports-color
 
-  '@crawlee/browser@3.18.2':
+  '@crawlee/browser@3.18.2(playwright@1.64.0)':
     dependencies:
       '@apify/timeout': 0.4.14
       '@crawlee/basic': 3.18.2
-      '@crawlee/browser-pool': 3.18.2
+      '@crawlee/browser-pool': 3.18.2(playwright@1.64.0)
       '@crawlee/types': 3.18.2
       '@crawlee/utils': 3.18.2
       ow: 0.28.2
       tslib: 2.8.1
       type-fest: 4.41.0
+    optionalDependencies:
+      playwright: 1.64.0
     transitivePeerDependencies:
       - supports-color
 
@@ -11413,13 +11440,13 @@ snapshots:
       proper-lockfile: 4.1.2
       tslib: 2.8.1
 
-  '@crawlee/playwright@3.18.2':
+  '@crawlee/playwright@3.18.2(playwright@1.64.0)':
     dependencies:
       '@apify/datastructures': 2.0.6
       '@apify/log': 2.5.54
       '@apify/timeout': 0.4.14
-      '@crawlee/browser': 3.18.2
-      '@crawlee/browser-pool': 3.18.2
+      '@crawlee/browser': 3.18.2(playwright@1.64.0)
+      '@crawlee/browser-pool': 3.18.2(playwright@1.64.0)
       '@crawlee/core': 3.18.2
       '@crawlee/types': 3.18.2
       '@crawlee/utils': 3.18.2
@@ -11432,16 +11459,18 @@ snapshots:
       string-comparison: 1.3.0
       tslib: 2.8.1
       type-fest: 4.41.0
+    optionalDependencies:
+      playwright: 1.64.0
     transitivePeerDependencies:
       - puppeteer
       - supports-color
 
-  '@crawlee/puppeteer@3.18.2':
+  '@crawlee/puppeteer@3.18.2(playwright@1.64.0)':
     dependencies:
       '@apify/datastructures': 2.0.6
       '@apify/log': 2.5.54
-      '@crawlee/browser': 3.18.2
-      '@crawlee/browser-pool': 3.18.2
+      '@crawlee/browser': 3.18.2(playwright@1.64.0)
+      '@crawlee/browser-pool': 3.18.2(playwright@1.64.0)
       '@crawlee/types': 3.18.2
       '@crawlee/utils': 3.18.2
       cheerio: 1.0.0-rc.12
@@ -15144,6 +15173,8 @@ snapshots:
 
   await-to-js@3.0.0: {}
 
+  axe-core@4.14.0: {}
+
   axios@1.13.6:
     dependencies:
       follow-redirects: 1.16.0
@@ -15699,11 +15730,11 @@ snapshots:
       nan: 2.26.2
     optional: true
 
-  crawlee@3.18.2(@types/node@25.6.0):
+  crawlee@3.18.2(@types/node@25.6.0)(playwright@1.64.0):
     dependencies:
       '@crawlee/basic': 3.18.2
-      '@crawlee/browser': 3.18.2
-      '@crawlee/browser-pool': 3.18.2
+      '@crawlee/browser': 3.18.2(playwright@1.64.0)
+      '@crawlee/browser-pool': 3.18.2(playwright@1.64.0)
       '@crawlee/cheerio': 3.18.2
       '@crawlee/cli': 3.18.2(@types/node@25.6.0)
       '@crawlee/core': 3.18.2
@@ -15711,11 +15742,13 @@ snapshots:
       '@crawlee/jsdom': 3.18.2
       '@crawlee/linkedom': 3.18.2
       '@crawlee/memory-storage': 3.18.2
-      '@crawlee/playwright': 3.18.2
-      '@crawlee/puppeteer': 3.18.2
+      '@crawlee/playwright': 3.18.2(playwright@1.64.0)
+      '@crawlee/puppeteer': 3.18.2(playwright@1.64.0)
       '@crawlee/utils': 3.18.2
       import-local: 3.2.0
       tslib: 2.8.1
+    optionalDependencies:
+      playwright: 1.64.0
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
@@ -16657,10 +16690,12 @@ snapshots:
       header-generator: 2.1.88
       tslib: 2.8.1
 
-  fingerprint-injector@2.1.88:
+  fingerprint-injector@2.1.88(playwright@1.64.0):
     dependencies:
       fingerprint-generator: 2.1.88
       tslib: 2.8.1
+    optionalDependencies:
+      playwright: 1.64.0
 
   fix-dts-default-cjs-exports@1.0.1:
     dependencies:
@@ -19062,6 +19097,12 @@ snapshots:
       pathe: 2.0.3
 
   playwright-core@1.59.1: {}
+
+  playwright-core@1.64.0: {}
+
+  playwright@1.64.0:
+    dependencies:
+      playwright-core: 1.64.0
 
   plist@3.1.0:
     dependencies:

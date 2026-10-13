@@ -54,9 +54,13 @@ jobs:
         working-directory: packages/arena-capsule
         run: ../../node_modules/.bin/tsx --test test/capsule.test.ts test/synthetic-provider.test.ts
 
-      - name: Unit tests — arena-workbench (node:test via tsx)
+      - name: Install Playwright Chromium (arena-workbench a11y suite)
         working-directory: packages/arena-workbench
-        run: ../../node_modules/.bin/tsx --test test/workbench.test.ts test/render.test.tsx test/expert-review.test.ts test/expert-review-render.test.tsx test/e2e-real-api.test.ts
+        run: ../../node_modules/.bin/playwright install chromium
+
+      - name: Unit tests — arena-workbench (node:test via tsx; incl. rendered-state a11y + keyboard journeys)
+        working-directory: packages/arena-workbench
+        run: ../../node_modules/.bin/tsx --test test/*.test.ts && ../../node_modules/.bin/tsx --test test/*.test.tsx
 
       - name: Unit tests — arena-persistence (node:test via tsx, node:sqlite)
         working-directory: packages/arena-persistence
