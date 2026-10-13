@@ -118,9 +118,9 @@ jobs:
         working-directory: packages/arena-learning
         run: ../../node_modules/.bin/tsx --test test/learning.test.ts
 
-      - name: Release gate — arena-release-gate (node:test via tsx; adversarial profiles spawn a REAL arena-api process and a REAL HTTP webhook receiver)
+      - name: Release gate — arena-release-gate (node:test via tsx; AR2-015 adversarial profiles spawn a REAL arena-api process and a REAL HTTP webhook receiver; AR2-023 decision-instrument suite — schema vectors, determinism, class consistency, amendment chain, template parse, AR2-015 non-regression)
         working-directory: packages/arena-release-gate
-        run: ../../node_modules/.bin/tsx --test test/gate-registry.test.ts test/gate-report.test.ts test/cross-tenant.test.ts test/webhook-signature.test.ts test/prompt-injection-as-data.test.ts test/capsule-tenant-refusal.test.ts
+        run: ../../node_modules/.bin/tsx --test test/*.test.ts
 
       - name: Unit tests — ui (node:test via tsx, package-local tsconfig paths)
         working-directory: packages/ui
