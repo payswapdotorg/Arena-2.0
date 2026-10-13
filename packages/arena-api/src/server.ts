@@ -16,7 +16,13 @@ import {
   listEscalations,
   type ArenaRuntime,
 } from "@arena/application";
-import { DEMO_AUTH_DISCLOSURE, deriveTenantContext, roleIsPresentationOnly } from "./auth.js";
+import { IDENTITY_CONTRACT_VERSION } from "@arena/identity";
+import {
+  DEMO_AUTH_DISCLOSURE,
+  createDemoAuthGateway,
+  roleIsPresentationOnly,
+  type AuthGateway,
+} from "./auth.js";
 import { errorResponseBody } from "./errors-mapping.js";
 
 /**
@@ -31,6 +37,13 @@ import { errorResponseBody } from "./errors-mapping.js";
 
 export const API_DISCLOSURE =
   `${DEMO_AUTH_DISCLOSURE}; runtime composition is chosen by the entrypoint (main.ts wires the durable engine by default; see readiness and /v1/contract disclosures for the active mode)` as const;
+
+/**
+ * AR2-022：身份适配器 seam 披露（IDN1.0 端口可替换；demo 默认，
+ * OIDC/JWKS 生产参考实现经 ARENA_AUTH_MODE=oidc 组合）。
+ */
+export const IDENTITY_SEAM_DISCLOSURE =
+  `identity adapter seam IDN1.0 (AR2-022): authn via ${"@arena/identity"} adapter port; demo registry is DEMO-ONLY, the production-representative reference is OIDC/RS256+JWKS with issuer/audience/clock-skew bounds` as const;
 
 /**
  * ES2.0 §2 查询面补全（AR2-002 slice 2）：四个 typed 传输层 stub 的披露。
@@ -60,6 +73,11 @@ export interface ArenaServerOptions {
   runtime: ArenaRuntime;
   /** 缺省为 in-memory（AR2-002 兼容）；durable 组装由 main.ts 传入。 */
   persistence?: PersistenceDescriptor;
+  /**
+   * AR2-022：身份适配器网关（IDN1.0 端口）。缺省 demo 注册表
+   * （与 AR2-002 行为兼容）；生产组合由 main.ts 注入 OIDC 网关。
+   */
+  auth?: AuthGateway;
 }
 
 export function createArenaServer(options: ArenaServerOptions): Server {
@@ -70,9 +88,10 @@ export function createArenaServer(options: ArenaServerOptions): Server {
     disclosure:
       "AR2-002 test fixture (NON-DURABLE); the durable composition is the default entrypoint since AR2-005",
   };
+  const auth: AuthGateway = options.auth ?? createDemoAuthGateway();
 
   return createServer((request, response) => {
-    void handle(request, response, runtime, persistence).catch((error: unknown) => {
+    void handle(request, response, runtime, persistence, auth).catch((error: unknown) => {
       const mapped = errorResponseBody(error, "cor_serverfail", null);
       respondJson(response, mapped.status, mapped.body);
     });
@@ -84,6 +103,7 @@ async function handle(
   response: ServerResponse,
   runtime: ArenaRuntime,
   persistence: PersistenceDescriptor,
+  auth: AuthGateway,
 ): Promise<void> {
   const url = new URL(request.url ?? "/", "http://arena.local");
   const path = url.pathname;
@@ -96,18 +116,27 @@ async function handle(
     return respondJson(response, 200, { status: "ok", process: "arena-api", pid: process.pid });
   }
   if (method === "GET" && path === "/readyz") {
+    const authDescription = auth.describeAuth();
     return respondJson(response, 200, {
-      status: persistence.ready ? "ready" : "degraded",
+      status: persistence.ready && authDescription.ready ? "ready" : "degraded",
       process: "arena-api",
       dependencies: {
         persistence: { mode: persistence.mode, ready: persistence.ready },
-        auth: { mode: "demo_registry", ready: true },
+        auth: {
+          mode: authDescription.mode,
+          ready: authDescription.ready,
+          ...(authDescription.disclosure !== undefined
+            ? { detail: authDescription.disclosure }
+            : {}),
+        },
       },
     });
   }
   if (method === "GET" && path === "/v1/contract") {
     const disclosures = [
       API_DISCLOSURE,
+      IDENTITY_SEAM_DISCLOSURE,
+      `active identity adapter: ${auth.describeAuth().mode} (IDN1.0 ${IDENTITY_CONTRACT_VERSION})`,
       `active persistence mode: ${persistence.mode}`,
       "ES2.0 §2 query surface 8/8 wired: 4 backed by in-WO stores, 4 are typed transport stubs (see STUB_QUERY_DISCLOSURES)",
     ];
@@ -121,8 +150,8 @@ async function handle(
     });
   }
 
-  // 认证（服务端推导租户上下文）。
-  const tenant: TenantContext | null = deriveTenantContext(
+  // 认证（服务端推导租户上下文；IDN1.0 网关 → 类型化失败 → 统一 401）。
+  const tenant: TenantContext | null = await auth.deriveTenantContext(
     firstHeader(request.headers.authorization),
   );
   if (tenant === null) {
