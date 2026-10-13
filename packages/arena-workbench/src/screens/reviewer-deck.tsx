@@ -6,6 +6,7 @@ import type {
   ReviewerCriterionRow,
   VerificationTrail,
 } from "../reviewer-deck.js";
+import type { EvidenceEnvelope } from "@arena/contracts";
 import { DemoBanner, StateBadge } from "./requester-cockpit.js";
 import { SELF_EVALUATION_IS_NOT_A_VOTE_RULE } from "../expert-flow.js";
 
@@ -18,6 +19,35 @@ import { SELF_EVALUATION_IS_NOT_A_VOTE_RULE } from "../expert-flow.js";
  * - operator 级证据对 reviewer 面扣留（只披露计数，不渲染内容）；
  * - 自评渲染在独立分区（data-never-vote）且不计入独立评审人数。
  */
+
+function EvidenceEntry(props: {
+  envelope: EvidenceEnvelope;
+  onInspect?: (envelope: EvidenceEnvelope) => void;
+}): ReactNode {
+  if (props.onInspect === undefined) {
+    return (
+      <li key={props.envelope.evidence_id} data-evidence={props.envelope.evidence_id}>
+        {props.envelope.evidence_id} — {props.envelope.redaction_class}
+      </li>
+    );
+  }
+  // AR2-021 a11y fix: evidence entries are keyboard-activatable buttons so
+  // the evidence-detail dialog (composition layer) is reachable without a mouse.
+  // The accessible name embeds the full visible text (WCAG 2.5.3 label in
+  // name — axe label-content-name-mismatch) plus the action verb.
+  return (
+    <li key={props.envelope.evidence_id} data-evidence={props.envelope.evidence_id}>
+      <button
+        type="button"
+        className="arena-evidence-inspect"
+        aria-label={`${props.envelope.evidence_id} — ${props.envelope.redaction_class} (inspect evidence details)`}
+        onClick={() => props.onInspect?.(props.envelope)}
+      >
+        {props.envelope.evidence_id} — {props.envelope.redaction_class}
+      </button>
+    </li>
+  );
+}
 
 export function RedactionBoundary(props: {
   redactionClass: "reviewer_private";
@@ -90,7 +120,13 @@ export function VerificationTrailView(props: { trail: VerificationTrail }): Reac
   );
 }
 
-export function ReviewerDeckScreen(props: { deck: ReviewDeckView }): ReactNode {
+export interface ReviewerDeckScreenProps {
+  deck: ReviewDeckView;
+  /** AR2-021 a11y: when present, evidence entries render as keyboard-activatable inspect buttons. */
+  onInspectEvidence?: (envelope: EvidenceEnvelope) => void;
+}
+
+export function ReviewerDeckScreen(props: ReviewerDeckScreenProps): ReactNode {
   const deck = props.deck;
   return (
     <section
@@ -130,9 +166,7 @@ export function ReviewerDeckScreen(props: { deck: ReviewDeckView }): ReactNode {
         <h3>Shared evidence</h3>
         <ul>
           {deck.redaction.shared.map((envelope) => (
-            <li key={envelope.evidence_id} data-evidence={envelope.evidence_id}>
-              {envelope.evidence_id} — {envelope.redaction_class}
-            </li>
+            <EvidenceEntry key={envelope.evidence_id} envelope={envelope} onInspect={props.onInspectEvidence} />
           ))}
         </ul>
       </section>
@@ -141,9 +175,7 @@ export function ReviewerDeckScreen(props: { deck: ReviewDeckView }): ReactNode {
           <h3>Reviewer-private evidence and rationale</h3>
           <ul>
             {deck.redaction.reviewer_private.map((envelope) => (
-              <li key={envelope.evidence_id} data-evidence={envelope.evidence_id}>
-                {envelope.evidence_id} — {envelope.redaction_class}
-              </li>
+              <EvidenceEntry key={envelope.evidence_id} envelope={envelope} onInspect={props.onInspectEvidence} />
             ))}
           </ul>
         </RedactionBoundary>
@@ -192,7 +224,9 @@ export function AdjudicatorDeckScreen(props: {
     >
       <DemoBanner />
       <h2>Adjudicator deck</h2>
-      <p className="arena-divergence" data-divergent={adjudication.divergent}>
+      {/* AR2-021 a11y fix: role="status" makes the adjudication pending→resolved
+          transition announce to assistive technology (live region). */}
+      <p className="arena-divergence" data-divergent={adjudication.divergent} role="status">
         {adjudication.divergent ? "Divergence detected" : "No divergence detected"}
       </p>
       {adjudication.trigger !== null ? (

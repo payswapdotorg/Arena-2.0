@@ -1,0 +1,109 @@
+{
+  "kind": "keyboard-journey",
+  "journey": "expert",
+  "steps": [
+    {
+      "action": "Tab ×3 — expert lens button",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Expert workbench",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Enter — expert lens active (focus retained on lens button)",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Expert workbench",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — reviewer lens button (still in switcher)",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Reviewer screens",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — adjudicator lens button (still in switcher)",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Adjudicator screens",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — artifact manifest textarea",
+      "focus": {
+        "tag": "textarea",
+        "id": "arena-artifact-manifest",
+        "text": "",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — submission notes input",
+      "focus": {
+        "tag": "input",
+        "id": "arena-submission-notes",
+        "text": "",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — candidate submit control",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Submit candidate version",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Enter — candidate submitted (focus retained)",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Submit candidate version",
+        "role": null,
+        "className": null
+      },
+      "announcement": "Candidate version 1 submitted — attempt SUBMITTED"
+    },
+    {
+      "action": "Tab — self-evaluation submit control",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Submit structured self-evaluation",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Enter — self-evaluation submitted (focus retained)",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Submit structured self-evaluation",
+        "role": null,
+        "className": null
+      },
+      "announcement": "Structured self-evaluation submitted — attempt VERIFYING (visible evidence, never an independent vote)"
+    }
+  ],
+  "inputMode": "keyboard-only (Playwright keyboard API; no mouse events)"
+}

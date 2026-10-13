@@ -1,0 +1,132 @@
+{
+  "kind": "run-summary",
+  "generatedAt": "2026-10-12T23:29:20.430Z",
+  "journeys": 4,
+  "axeScans": 20,
+  "axeScansDesktop": 16,
+  "axeScansMobile": 4,
+  "totalViolations": 0,
+  "keyboardJourneys": 4,
+  "perScan": [
+    {
+      "journey": "requester",
+      "state": "empty",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "requester",
+      "state": "validation-error",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "requester",
+      "state": "submitting",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "requester",
+      "state": "submitted",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "expert",
+      "state": "queue-pristine",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "expert",
+      "state": "candidate-error",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "expert",
+      "state": "candidate-submitted",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "expert",
+      "state": "selfevaluation-submitted",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "reviewer",
+      "state": "deck-pending",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "reviewer",
+      "state": "evidence-dialog-open",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "reviewer",
+      "state": "deck-divergent",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "adjudicator",
+      "state": "pending",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "adjudicator",
+      "state": "resolved",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "payout",
+      "state": "pending",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "payout",
+      "state": "releasing",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "payout",
+      "state": "paid",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "requester",
+      "state": "empty",
+      "viewport": "mobile-375",
+      "violations": 0
+    },
+    {
+      "journey": "expert",
+      "state": "queue-pristine",
+      "viewport": "mobile-375",
+      "violations": 0
+    },
+    {
+      "journey": "reviewer",
+      "state": "deck-pending",
+      "viewport": "mobile-375",
+      "violations": 0
+    },
+    {
+      "journey": "payout",
+      "state": "pending",
+      "viewport": "mobile-375",
+      "violations": 0
+    }
+  ]
+}

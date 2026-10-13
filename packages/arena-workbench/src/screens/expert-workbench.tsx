@@ -5,6 +5,7 @@ import {
 } from "../expert-flow.js";
 import type { AttemptSummary } from "../mock-client.js";
 import { DemoBanner, FieldErrorList, StateBadge } from "./requester-cockpit.js";
+import { LiveAnnouncer } from "./live-announcer.js";
 import type { FieldError } from "../requester-form.js";
 import type { Attempt } from "@arena/contracts";
 
@@ -40,7 +41,7 @@ export function ExpertQueue(props: { assignments: readonly AttemptSummary[] }): 
   );
 }
 
-export function ExpertWorkspace(props: {
+export interface ExpertWorkspaceProps {
   attempt: Attempt;
   manifestValue: string;
   notesValue: string;
@@ -50,7 +51,14 @@ export function ExpertWorkspace(props: {
   onNotesChange: (value: string) => void;
   onCandidateSubmit: () => void;
   onSelfEvaluationSubmit: () => void;
-}): ReactNode {
+  /** AR2-021 a11y: candidate submission in flight — disables controls and marks the form aria-busy. */
+  candidateSubmitting?: boolean;
+  /** AR2-021 a11y: live-region message for expert-flow async transitions. */
+  statusMessage?: string;
+}
+
+export function ExpertWorkspace(props: ExpertWorkspaceProps): ReactNode {
+  const submitting = props.candidateSubmitting === true;
   return (
     <section
       className="arena-expert-workspace"
@@ -63,7 +71,11 @@ export function ExpertWorkspace(props: {
         Attempt <code>{props.attempt.attempt_id}</code> —{" "}
         <StateBadge machine="attempt" state={props.attempt.status} />
       </p>
-      <form className="arena-candidate-form" onSubmit={(event) => event.preventDefault()}>
+      <form
+        className="arena-candidate-form"
+        aria-busy={submitting}
+        onSubmit={(event) => event.preventDefault()}
+      >
         <h3>Candidate submission</h3>
         <label htmlFor="arena-artifact-manifest">Artifact manifest (content)</label>
         <textarea
@@ -78,7 +90,7 @@ export function ExpertWorkspace(props: {
           onChange={(event) => props.onNotesChange(event.target.value)}
         />
         <FieldErrorList errors={props.candidateErrors} />
-        <button type="submit" onClick={props.onCandidateSubmit}>
+        <button type="submit" onClick={props.onCandidateSubmit} aria-disabled={submitting}>
           Submit candidate version
         </button>
       </form>
@@ -92,6 +104,7 @@ export function ExpertWorkspace(props: {
           Submit structured self-evaluation
         </button>
       </form>
+      <LiveAnnouncer message={props.statusMessage ?? ""} />
     </section>
   );
 }

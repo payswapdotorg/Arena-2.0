@@ -1,0 +1,82 @@
+{
+  "kind": "keyboard-journey",
+  "journey": "payout",
+  "steps": [
+    {
+      "action": "Tab — payout advance control",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Advance payment lifecycle",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "payout pending",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Advance payment lifecycle",
+        "role": null,
+        "className": null
+      },
+      "announcement": "Payment status: Pending Evidence (test-mode)"
+    },
+    {
+      "action": "Enter — payment state EVIDENCE_ACCEPTED",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Advance payment lifecycle",
+        "role": null,
+        "className": null
+      },
+      "announcement": "Payment status: Evidence Accepted (test-mode)"
+    },
+    {
+      "action": "Enter — payment state READY_TO_RELEASE",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Advance payment lifecycle",
+        "role": null,
+        "className": null
+      },
+      "announcement": "Payment status: Ready To Release (test-mode)"
+    },
+    {
+      "action": "Enter — payment state RELEASE_SUBMITTED",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Advance payment lifecycle",
+        "role": null,
+        "className": null
+      },
+      "announcement": "Payment status: Release Submitted (test-mode)"
+    },
+    {
+      "action": "Enter — payment state SETTLED",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Advance payment lifecycle",
+        "role": null,
+        "className": null
+      },
+      "announcement": "Payment status: Settled (test-mode)"
+    },
+    {
+      "action": "terminal — aria-disabled control keeps focus",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Advance payment lifecycle",
+        "role": null,
+        "className": null
+      }
+    }
+  ],
+  "inputMode": "keyboard-only (Playwright keyboard API; no mouse events)"
+}

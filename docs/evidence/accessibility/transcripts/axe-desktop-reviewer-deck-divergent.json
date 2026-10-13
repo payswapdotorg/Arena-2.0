@@ -1,0 +1,19 @@
+{
+  "kind": "axe-scan",
+  "journey": "reviewer",
+  "state": "deck-divergent",
+  "viewport": "desktop",
+  "ruleTags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa",
+    "best-practice"
+  ],
+  "violations": [],
+  "passesCount": 43,
+  "incomplete": [],
+  "inapplicableCount": 47,
+  "consoleErrors": [],
+  "pageErrors": []
+}

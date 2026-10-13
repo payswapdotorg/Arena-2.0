@@ -1,0 +1,19 @@
+{
+  "kind": "axe-scan",
+  "journey": "requester",
+  "state": "submitting",
+  "viewport": "desktop",
+  "ruleTags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa",
+    "best-practice"
+  ],
+  "violations": [],
+  "passesCount": 40,
+  "incomplete": [],
+  "inapplicableCount": 50,
+  "consoleErrors": [],
+  "pageErrors": []
+}
