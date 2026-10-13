@@ -1,0 +1,969 @@
+================================================================================
+AR2-020 install-verification harness — Linux
+pinned_sha=ceea2d638839485cad888411387d945a80af9978 mode=fresh started=2026-10-12T22:01:22Z
+invocation_dir=/home/z/arena out_dir=/home/z/arena/docs/evidence/install/runs/linux-ceea2d6
+================================================================================
+
+### STEP 1/11: env
+$ (environment capture: uname, os-release, arch, shell, tools, cpu/mem/disk)
+uname -a: Linux c-6acd47e8-14810412-6650665e898d 5.10.134-013.15.kangaroo.al8.x86_64 #1 SMP Thu Jul 30 12:54:59 UTC 2026 x86_64 GNU/Linux
+kernel: Linux 5.10.134-013.15.kangaroo.al8.x86_64
+arch: x86_64
+shell: /bin/bash (bash GNU bash)
+os-release: PRETTY_NAME=Debian GNU/Linux 13 (trixie) VERSION_ID=13 ID=debian
+cpu_count: 2
+MemTotal:        4259396 kB
+c-6acd47e8-14810412-6650665e898d-rootfs  9.9G  5.1G  4.3G  55% /
+node: v24.21.0
+pnpm: 10.33.2
+git: git version 2.47.3
+### exit=0 duration_ms=341
+
+### STEP 2/11: bootstrap — node=v24.21.0 pnpm=10.33.2 git=2.47.3
+
+### STEP 3/11: resolve-source (pinned_sha=ceea2d638839485cad888411387d945a80af9978 mode=fresh origin=/home/z/arena)
+$ git clone --quiet /home/z/arena /tmp/arena-install-verify.vLqZUz/arena && git -C /tmp/arena-install-verify.vLqZUz/arena checkout ceea2d638839485cad888411387d945a80af9978
+### exit=0 duration_ms=1668
+
+### STEP 4/11: install
+$ cd /tmp/arena-install-verify.vLqZUz/arena
+$ pnpm install --frozen-lockfile
+apps/zcode-cli                           |  WARN  Unsupported engine: wanted: {"node":"24.14.0"} (current: {"node":"v24.21.0","pnpm":"10.33.2"})
+Scope: all 51 workspace projects
+Lockfile is up to date, resolution step is skipped
+Packages: +2036
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 0, reused 1, downloaded 0, added 0
+Progress: resolved 0, reused 163, downloaded 0, added 0
+Progress: resolved 0, reused 724, downloaded 0, added 0
+Progress: resolved 0, reused 1513, downloaded 0, added 0
+Progress: resolved 0, reused 1864, downloaded 0, added 173
+Progress: resolved 0, reused 1864, downloaded 0, added 723
+Progress: resolved 0, reused 1864, downloaded 0, added 1723
+Progress: resolved 0, reused 1864, downloaded 0, added 2036, done
+
+. prepare$ husky
+. prepare: Done
+packages/desktop postinstall$ node scripts/node-pty-rebuild.mjs
+packages/desktop postinstall: [node-pty] run electron-rebuild (non-windows-platform): /tmp/arena-install-verify.vLqZUz/arena/node_modules/node-pty/prebuilds/linux-x64/pty.node
+packages/desktop postinstall: - Searching dependency tree
+packages/desktop postinstall: ✔ Rebuild Complete
+packages/desktop postinstall: Done
+Done in 10.1s using pnpm v10.33.2
+### exit=0 duration_ms=10174
+
+### STEP 5/11: typecheck
+$ cd /tmp/arena-install-verify.vLqZUz/arena
+$ pnpm typecheck
+
+> zcode@3.14.3 typecheck /tmp/arena-install-verify.vLqZUz/arena
+> tsc -b packages/rpc packages/provider packages/provider-node packages/shared packages/services packages/client packages/server packages/zcode-server-cli packages/ui packages/web packages/desktop/tsconfig.host.json packages/arena-contracts packages/arena-application packages/arena-api packages/arena-capsule packages/arena-workbench packages/arena-persistence packages/arena-evidence packages/arena-payment packages/arena-matching packages/arena-sdk packages/arena-expert-arena packages/arena-ops packages/arena-harness packages/arena-learning packages/arena-release-gate packages/arena-acquisition packages/arena-scraper packages/arena-upgrade
+
+### exit=0 duration_ms=127410
+
+### STEP 6/11: lint
+$ cd /tmp/arena-install-verify.vLqZUz/arena
+$ pnpm lint
+
+> zcode@3.14.3 lint /tmp/arena-install-verify.vLqZUz/arena
+> oxlint
+
+
+  ! eslint(no-unused-vars): Identifier 'sessionCreateTelemetrySchema' is imported but never used.
+   ,-[packages/shared/src/validation.ts:3:3]
+ 2 | import {
+ 3 |   sessionCreateTelemetrySchema,
+   :   ^^^^^^^^^^^^^^|^^^^^^^^^^^^^
+   :                 `-- 'sessionCreateTelemetrySchema' is imported here
+ 4 |   automationSessionCreateTelemetrySchema,
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'PROTOCOL_V4_LIMITS' is imported but never used.
+    ,-[packages/shared/src/validation.ts:25:10]
+ 24 | import { zcodeTaskModeSchema } from "./zcode-task-mode-schema.js";
+ 25 | import { PROTOCOL_V4_LIMITS } from "./zcode-protocol-v4/core.js";
+    :          ^^^^^^^^^|^^^^^^^^
+    :                   `-- 'PROTOCOL_V4_LIMITS' is imported here
+ 26 | import { errorAttributionSchema } from "./zcode-protocol-v4/snapshot.js";
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'sessionWorkflowActivitySchema' is imported but never used.
+    ,-[packages/shared/src/validation.ts:27:10]
+ 26 | import { errorAttributionSchema } from "./zcode-protocol-v4/snapshot.js";
+ 27 | import { sessionWorkflowActivitySchema } from "./zcode-protocol-v4/sessions-index-workflow-activity.js";
+    :          ^^^^^^^^^^^^^^|^^^^^^^^^^^^^^
+    :                        `-- 'sessionWorkflowActivitySchema' is imported here
+ 28 | import {
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Parameter 'workspaceRemoteSessionId' is declared but never used. Unused parameters should start with a '_'.
+     ,-[packages/ui/src/WorkspaceSidebarFooter.tsx:101:3]
+ 100 |   workspaceIdentity,
+ 101 |   workspaceRemoteSessionId,
+     :   ^^^^^^^^^^^^|^^^^^^^^^^^
+     :               `-- 'workspaceRemoteSessionId' is declared here
+ 102 |   activeTaskId,
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Parameter 'activeTaskId' is declared but never used. Unused parameters should start with a '_'.
+     ,-[packages/ui/src/WorkspaceSidebarFooter.tsx:102:3]
+ 101 |   workspaceRemoteSessionId,
+ 102 |   activeTaskId,
+     :   ^^^^^^|^^^^^
+     :         `-- 'activeTaskId' is declared here
+ 103 |   isDesktop = false,
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-control-regex): Unexpected control character
+     ,-[packages/shared/src/zcode-protocol-v4/transport.ts:841:18]
+ 840 |       .max(255)
+ 841 |       .regex(/^[^\0\r\n]+$/),
+     :                  ^|
+     :                   `-- '\0' matches the null character (U+0000), which is a control character.
+ 842 |     mime: z
+     `----
+  help: Avoid matching control characters in regular expressions. If intentional, consider using a Unicode escape instead.
+
+  ! eslint(no-unused-vars): Identifier '$getSelection' is imported but never used.
+    ,-[packages/ui/src/mentions/MentionPlugin.tsx:9:3]
+  8 |   $createTextNode,
+  9 |   $getSelection,
+    :   ^^^^^^|^^^^^^
+    :         `-- '$getSelection' is imported here
+ 10 |   $isRangeSelection,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier '$isRangeSelection' is imported but never used.
+    ,-[packages/ui/src/mentions/MentionPlugin.tsx:10:3]
+  9 |   $getSelection,
+ 10 |   $isRangeSelection,
+    :   ^^^^^^^^|^^^^^^^^
+    :           `-- '$isRangeSelection' is imported here
+ 11 |   BLUR_COMMAND,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Type 'AppSettings' is imported but never used.
+   ,-[packages/shared/src/validationAppSettings.ts:3:15]
+ 2 | import { z } from "zod";
+ 3 | import type { AppSettings } from "./protocol.js";
+   :               ^^^^^|^^^^^
+   :                    `-- 'AppSettings' is imported here
+ 4 | import { REMOTE_ASSET_INSTALL_MODES } from "./remoteAssetInstallMode.js";
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Type 'ZCodeProvider' is imported but never used.
+   ,-[packages/shared/src/protocol.ts:5:15]
+ 4 | import type { ProviderFamilyConnectionSelectionSettings } from "./provider-family-connection-selection.js";
+ 5 | import type { ZCodeProvider } from "./zcode-task-types-core.js";
+   :               ^^^^^^|^^^^^^
+   :                     `-- 'ZCodeProvider' is imported here
+ 6 | import type { WorkspacePurpose } from "./workspacePurpose.js";
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Type 'WindowTabState' is imported but never used.
+   ,-[packages/ui/src/root/rootPlatformWorkspaceSync.ts:1:15]
+ 1 | import { type WindowTabState } from "@/store/tabStore.js";
+   :               ^^^^^^^|^^^^^^
+   :                      `-- 'WindowTabState' is imported here
+ 2 | 
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Parameter 'reconnectingRemoteWorkspaceKeys' is declared but never used. Unused parameters should start with a '_'.
+    ,-[packages/ui/src/root/useRootPlatformEffects.ts:43:3]
+ 42 |   activeWorkspaceIdentity,
+ 43 |   reconnectingRemoteWorkspaceKeys = [],
+    :   ^^^^^^^^^^^^^^^|^^^^^^^^^^^^^^^
+    :                  `-- 'reconnectingRemoteWorkspaceKeys' is declared here
+ 44 |   remoteWorkspaceErrorByWorkspaceKey = {},
+    `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Parameter 'remoteWorkspaceErrorByWorkspaceKey' is declared but never used. Unused parameters should start with a '_'.
+    ,-[packages/ui/src/root/useRootPlatformEffects.ts:44:3]
+ 43 |   reconnectingRemoteWorkspaceKeys = [],
+ 44 |   remoteWorkspaceErrorByWorkspaceKey = {},
+    :   ^^^^^^^^^^^^^^^^^|^^^^^^^^^^^^^^^^
+    :                    `-- 'remoteWorkspaceErrorByWorkspaceKey' is declared here
+ 45 |   totalUnreadTaskCount,
+    `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Identifier 'lazy' is imported but never used.
+   ,-[packages/ui/src/Root.tsx:2:10]
+ 1 | /* eslint-disable max-lines -- Root 当前集中编排启动和 workspace shell wiring，先保持入口收口避免跨层状态拆散。 */
+ 2 | import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+   :          ^^|^
+   :            `-- 'lazy' is imported here
+ 3 | import { LucideProvider, RefreshCw } from "lucide-react";
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Suspense' is imported but never used.
+   ,-[packages/ui/src/Root.tsx:2:16]
+ 1 | /* eslint-disable max-lines -- Root 当前集中编排启动和 workspace shell wiring，先保持入口收口避免跨层状态拆散。 */
+ 2 | import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+   :                ^^^^|^^^
+   :                    `-- 'Suspense' is imported here
+ 3 | import { LucideProvider, RefreshCw } from "lucide-react";
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Type 'WorkspaceTabState' is imported but never used.
+    ,-[packages/ui/src/Root.tsx:40:46]
+ 39 | import { TabStoreProvider, useTabStore, useTabStoreApi } from "@/store/TabStoreProvider.js";
+ 40 | import { isSettingsTab, isWorkspaceTab, type WorkspaceTabState } from "@/store/tabStore.js";
+    :                                              ^^^^^^^^|^^^^^^^^
+    :                                                      `-- 'WorkspaceTabState' is imported here
+ 41 | import { logger } from "@/logger.js";
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'useGlobalTaskList' is imported but never used.
+    ,-[packages/ui/src/Root.tsx:61:10]
+ 60 | import { DiffsWorkerPoolProvider } from "@/root/DiffsWorkerPoolProvider.js";
+ 61 | import { useGlobalTaskList } from "@/hooks/useGlobalTaskList.js";
+    :          ^^^^^^^^|^^^^^^^^
+    :                  `-- 'useGlobalTaskList' is imported here
+ 62 | import { ScopedErrorBoundary } from "@/ErrorBoundary.js";
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Type 'BotWorkspaceRef' is imported but never used.
+   ,-[packages/ui/src/BotsDialog/shared.tsx:2:44]
+ 1 | import { Bot, Webhook } from "lucide-react";
+ 2 | import type { BotConfig, BotServiceStatus, BotWorkspaceRef } from "@zcode/shared";
+   :                                            ^^^^^^^|^^^^^^^
+   :                                                   `-- 'BotWorkspaceRef' is imported here
+ 3 | import { ALL_BOT_WORKSPACES, BOT_BIND_CODE_TTL_MS } from "@zcode/shared";
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Parameter 'onOpenWorkspace' is declared but never used. Unused parameters should start with a '_'.
+     ,-[packages/ui/src/SettingsPage.tsx:278:3]
+ 277 |   onCreateTask,
+ 278 |   onOpenWorkspace,
+     :   ^^^^^^^|^^^^^^^
+     :          `-- 'onOpenWorkspace' is declared here
+ 279 |   allowOpenWorkspace = true,
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Parameter 'allowOpenWorkspace' is declared but never used. Unused parameters should start with a '_'.
+     ,-[packages/ui/src/SettingsPage.tsx:279:3]
+ 278 |   onOpenWorkspace,
+ 279 |   allowOpenWorkspace = true,
+     :   ^^^^^^^^^|^^^^^^^^
+     :            `-- 'allowOpenWorkspace' is declared here
+ 280 |   onLogin,
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Parameter 'isMobileViewport' is declared but never used. Unused parameters should start with a '_'.
+     ,-[packages/ui/src/v4/composer/V4ComposerToolbar.tsx:372:3]
+ 371 |   provider,
+ 372 |   isMobileViewport = false,
+     :   ^^^^^^^^|^^^^^^^
+     :           `-- 'isMobileViewport' is declared here
+ 373 |   draftMode = false,
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Identifier 'hostname' is imported but never used.
+    ,-[packages/desktop/src/main/index.ts:49:19]
+ 48 | import { join, resolve } from "node:path";
+ 49 | import { homedir, hostname } from "node:os";
+    :                   ^^^^|^^^
+    :                       `-- 'hostname' is imported here
+ 50 | import {
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'buildZCodeEndpointUrls' is imported but never used.
+    ,-[packages/desktop/src/main/index.ts:77:3]
+ 76 |   ZCODE_ARMS_RUM_ENDPOINT,
+ 77 |   buildZCodeEndpointUrls,
+    :   ^^^^^^^^^^^|^^^^^^^^^^
+    :              `-- 'buildZCodeEndpointUrls' is imported here
+ 78 |   resolveZCodeEndpointOrigin,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'createTempTextAttachment' is imported but never used.
+     ,-[packages/desktop/src/main/index.ts:115:10]
+ 114 | import { createPrimaryWindowCoordinator } from "./primaryWindowCoordinator.js";
+ 115 | import { createTempTextAttachment } from "./tempTextAttachment.js";
+     :          ^^^^^^^^^^^^|^^^^^^^^^^^
+     :                      `-- 'createTempTextAttachment' is imported here
+ 116 | import { flushMainE2ECoverage } from "./e2eCoverage.js";
+     `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'loadCliMcpFromUserDirectory' is imported but never used.
+     ,-[packages/desktop/src/main/index.ts:203:3]
+ 202 | import {
+ 203 |   loadCliMcpFromUserDirectory,
+     :   ^^^^^^^^^^^^^|^^^^^^^^^^^^^
+     :                `-- 'loadCliMcpFromUserDirectory' is imported here
+ 204 |   migrateLegacyCommonMcp,
+     `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'migrateLegacyCommonMcp' is imported but never used.
+     ,-[packages/desktop/src/main/index.ts:204:3]
+ 203 |   loadCliMcpFromUserDirectory,
+ 204 |   migrateLegacyCommonMcp,
+     :   ^^^^^^^^^^^|^^^^^^^^^^
+     :              `-- 'migrateLegacyCommonMcp' is imported here
+ 205 |   saveCliMcpToUserDirectory,
+     `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'saveCliMcpToUserDirectory' is imported but never used.
+     ,-[packages/desktop/src/main/index.ts:205:3]
+ 204 |   migrateLegacyCommonMcp,
+ 205 |   saveCliMcpToUserDirectory,
+     :   ^^^^^^^^^^^^|^^^^^^^^^^^^
+     :               `-- 'saveCliMcpToUserDirectory' is imported here
+ 206 | } from "./mcpUserDirectory/index.js";
+     `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Parameter 'isMobileViewport' is declared but never used. Unused parameters should start with a '_'.
+      ,-[packages/ui/src/v4/ConversationStatusPanel.tsx:1724:3]
+ 1723 |   parentSessionId,
+ 1724 |   isMobileViewport = false,
+      :   ^^^^^^^^|^^^^^^^
+      :           `-- 'isMobileViewport' is declared here
+ 1725 |   layoutMode = "none",
+      `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Variable 'browserWindowId' is declared but never used. Unused variables should start with a '_'.
+     ,-[packages/desktop/src/main/desktopWindowLifecycle.ts:119:9]
+ 118 |   const wcId = win.webContents.id;
+ 119 |   const browserWindowId = win.id;
+     :         ^^^^^^^|^^^^^^^
+     :                `-- 'browserWindowId' is declared here
+ 120 |   // 资源遥测据此把主窗口 renderer 归 renderer_main；辅助窗口与 DevTools 归 chromium_other。
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'PRIMARY_LEAF' is imported but never used.
+    ,-[packages/ui/src/v4/V4WorkspaceChatArea.tsx:31:3]
+ 30 |   paneWorkspaceKey,
+ 31 |   PRIMARY_LEAF,
+    :   ^^^^^^|^^^^^
+    :         `-- 'PRIMARY_LEAF' is imported here
+ 32 |   usePaneLayoutStore,
+    `----
+  help: Consider removing this import.
+
+  ! eslint-plugin-unicorn(no-useless-spread): Using a spread operator here creates a new array unnecessarily.
+    ,-[packages/ui/src/v4/taskListMembershipVersion.ts:13:27]
+ 12 |   version += 1;
+ 13 |   for (const listener of [...listeners]) {
+    :                           ^^^
+ 14 |     listener();
+    `----
+  help: `for…of` can iterate over iterable, it's unnecessary to convert to an array.
+
+  ! eslint(no-unused-vars): Identifier 'BUILTIN_MODEL_PROVIDER_IDS' is imported but never used.
+    ,-[packages/ui/src/WorkspaceSidebar.tsx:50:10]
+ 49 | import type { Locale, RemoteTarget, UserInfo, ZCodeTaskMeta } from "@zcode/shared";
+ 50 | import { BUILTIN_MODEL_PROVIDER_IDS } from "@zcode/shared";
+    :          ^^^^^^^^^^^^^|^^^^^^^^^^^^
+    :                       `-- 'BUILTIN_MODEL_PROVIDER_IDS' is imported here
+ 51 | import {
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'setPendingSettingsSectionIntent' is imported but never used.
+    ,-[packages/ui/src/WorkspaceSidebar.tsx:93:10]
+ 92 | import { useShortcutCommandLabel } from "@/shortcuts/useShortcutBindings.js";
+ 93 | import { setPendingSettingsSectionIntent } from "@/lib/settingsNavigation.js";
+    :          ^^^^^^^^^^^^^^^|^^^^^^^^^^^^^^^
+    :                         `-- 'setPendingSettingsSectionIntent' is imported here
+ 94 | import { buildTaskWorkspaceKey } from "@/lib/taskQueryCache.js";
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'bumpTaskListVersion' is declared but never used. Unused variables should start with a '_'.
+     ,-[packages/ui/src/WorkspaceSidebar.tsx:339:9]
+ 338 |   const { openCodingPlanUpgrade } = useCodingPlanUpgradeDialog();
+ 339 |   const bumpTaskListVersion = useZCodeSessionStore((state) => state.bumpTaskListVersion);
+     :         ^^^^^^^^^|^^^^^^^^^
+     :                  `-- 'bumpTaskListVersion' is declared here
+ 340 |   const workspaceIdentity = useTabStore((state) => {
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Interface 'AskUserQuestionAnswerDraft' is declared but never used.
+    ,-[packages/ui/src/lib/askUserQuestion.ts:26:11]
+ 25 | 
+ 26 | interface AskUserQuestionAnswerDraft {
+    :           ^^^^^^^^^^^^^|^^^^^^^^^^^^
+    :                        `-- 'AskUserQuestionAnswerDraft' is declared here
+ 27 |   selectedOptionIds: string[];
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'getIconPalette' is imported but never used.
+   ,-[packages/ui/src/lib/fileDisplay.tsx:8:3]
+ 7 |   resolveIconName,
+ 8 |   getIconPalette,
+   :   ^^^^^^^|^^^^^^
+   :          `-- 'getIconPalette' is imported here
+ 9 |   getIconLabel,
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'getIconLabel' is imported but never used.
+    ,-[packages/ui/src/lib/fileDisplay.tsx:9:3]
+  8 |   getIconPalette,
+  9 |   getIconLabel,
+    :   ^^^^^^|^^^^^
+    :         `-- 'getIconLabel' is imported here
+ 10 |   buildInlineSvgDataUrl,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'buildInlineSvgDataUrl' is imported but never used.
+    ,-[packages/ui/src/lib/fileDisplay.tsx:10:3]
+  9 |   getIconLabel,
+ 10 |   buildInlineSvgDataUrl,
+    :   ^^^^^^^^^^|^^^^^^^^^^
+    :             `-- 'buildInlineSvgDataUrl' is imported here
+ 11 | } from "@/lib/fileDisplayHelpers.js";
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'getPathLeaf' is imported but never used.
+   ,-[packages/ui/src/lib/treemappingActivity.ts:3:10]
+ 2 | import type { TaskChatMessage, TaskChatToolCall } from "@/lib/taskChatMessageTypes.js";
+ 3 | import { getPathLeaf, isAbsoluteFilePath } from "@/lib/path.js";
+   :          ^^^^^|^^^^^
+   :               `-- 'getPathLeaf' is imported here
+ 4 | import { readRawToolCallFileSummaries } from "@/ToolCallBlocks/fileSummaries.js";
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Type 'PanelImperativeHandle' is imported but never used.
+   ,-[packages/ui/src/app-shell/WorkspaceShellLayout.tsx:8:15]
+ 7 | } from "react";
+ 8 | import type { PanelImperativeHandle } from "react-resizable-panels";
+   :               ^^^^^^^^^^|^^^^^^^^^^
+   :                         `-- 'PanelImperativeHandle' is imported here
+ 9 | 
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'V4ChatPane' is imported but never used.
+    ,-[packages/ui/src/app-shell/WorkspaceShellLayout.tsx:14:10]
+ 13 | import { sidePaneTerminalSessionRegistry } from "@/terminal/sidePaneTerminalSessionRegistry.js";
+ 14 | import { V4ChatPane } from "@/v4/V4ChatPane.js";
+    :          ^^^^^|^^^^
+    :               `-- 'V4ChatPane' is imported here
+ 15 | import { V4WorkspaceChatArea } from "@/v4/V4WorkspaceChatArea.js";
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Button' is imported but never used.
+    ,-[packages/ui/src/app-shell/WorkspaceShellLayout.tsx:68:10]
+ 67 | import { cn } from "@/components/lib/utils.js";
+ 68 | import { Button } from "@/components/ui/button.js";
+    :          ^^^|^^
+    :             `-- 'Button' is imported here
+ 69 | import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable.js";
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Parameter 'onCreateScratchWorkspace' is declared but never used. Unused parameters should start with a '_'.
+     ,-[packages/ui/src/app-shell/WorkspaceShellLayout.tsx:218:3]
+ 217 |   onOpenRemoteWorkspace,
+ 218 |   onCreateScratchWorkspace,
+     :   ^^^^^^^^^^^^|^^^^^^^^^^^
+     :               `-- 'onCreateScratchWorkspace' is declared here
+ 219 |   allowOpenWorkspace = true,
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Parameter 'testMessages' is declared but never used. Unused parameters should start with a '_'.
+     ,-[packages/ui/src/app-shell/WorkspaceShellLayout.tsx:274:3]
+ 273 |   taskSessionFile,
+ 274 |   testMessages,
+     :   ^^^^^^|^^^^^
+     :         `-- 'testMessages' is declared here
+ 275 |   conversationFindActiveIndex,
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Parameter 'handleOpenTreemapping' is declared but never used. Unused parameters should start with a '_'.
+     ,-[packages/ui/src/app-shell/WorkspaceShellLayout.tsx:302:3]
+ 301 |   handleOpenBrowserTab,
+ 302 |   handleOpenTreemapping,
+     :   ^^^^^^^^^^|^^^^^^^^^^
+     :             `-- 'handleOpenTreemapping' is declared here
+ 303 |   handleOpenWhiteboard,
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint-plugin-unicorn(no-useless-spread): Using a spread operator here creates a new array unnecessarily.
+     ,-[packages/desktop/src/host/startupDiskSampler.ts:107:28]
+ 106 |     try {
+ 107 |       for (const scope of [...this.scopes.values()]) {
+     :                            ^^^
+ 108 |         if (this.stopped) break;
+     `----
+  help: `for…of` can iterate over iterable, it's unnecessary to convert to an array.
+
+  ! eslint(no-unused-vars): Identifier 'IMediaPreviewService' is imported but never used.
+   ,-[packages/desktop/src/host/remoteWorkspaceServiceCollection.ts:5:3]
+ 4 |   IFileService,
+ 5 |   IMediaPreviewService,
+   :   ^^^^^^^^^^|^^^^^^^^^
+   :             `-- 'IMediaPreviewService' is imported here
+ 6 |   IGitService,
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'createMediaPreviewService' is imported but never used.
+    ,-[packages/desktop/src/host/remoteWorkspaceServiceCollection.ts:60:3]
+ 59 |   createUsageStatsService,
+ 60 |   createMediaPreviewService,
+    :   ^^^^^^^^^^^^|^^^^^^^^^^^^
+    :               `-- 'createMediaPreviewService' is imported here
+ 61 |   createCodingPlanSubscriptionService,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'join' is imported but never used.
+   ,-[packages/desktop/scripts/node-pty-rebuild.mjs:3:19]
+ 2 | import { access } from "node:fs/promises";
+ 3 | import { dirname, join, normalize, posix as posixPath, sep } from "node:path";
+   :                   ^^|^
+   :                     `-- 'join' is imported here
+ 4 | import process from "node:process";
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'adaptersRoot' is declared but never used. Unused variables should start with a '_'.
+    ,-[packages/desktop/scripts/prepare-agent-node-bundle.mjs:26:7]
+ 25 | const cliBundlePath = resolve(repoRoot, "apps/zcode-cli/packages/cli/dist/zcode.cjs");
+ 26 | const adaptersRoot = resolve(repoRoot, "apps/zcode-cli/packages/adapters");
+    :       ^^^^^^|^^^^^
+    :             `-- 'adaptersRoot' is declared here
+ 27 | const pnpmRunEnv = {
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Identifier 'verifyStagedKoffi' is imported but never used.
+    ,-[packages/desktop/electron-builder.config.js:23:10]
+ 22 | } from "./scripts/desktop-product-identity.mjs";
+ 23 | import { verifyStagedKoffi } from "./scripts/koffi-package-assets.mjs";
+    :          ^^^^^^^^|^^^^^^^^
+    :                  `-- 'verifyStagedKoffi' is imported here
+ 24 | const ELECTRON_BUILDER_ARCH = {
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'desktopElectronVersion' is declared but never used. Unused variables should start with a '_'.
+     ,-[packages/desktop/electron-builder.config.js:104:7]
+ 103 | let nsisInstallSectionPath = null;
+ 104 | const desktopElectronVersion = requireFromConfig("./package.json").devDependencies.electron;
+     :       ^^^^^^^^^^^|^^^^^^^^^^
+     :                  `-- 'desktopElectronVersion' is declared here
+ 105 | const asarCliPath = resolve(
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Parameter 'isUnavailable' is declared but never used. Unused parameters should start with a '_'.
+     ,-[packages/ui/src/settings/model-provider-section/StatusCards.tsx:667:3]
+ 666 |   isPurchased,
+ 667 |   isUnavailable = false,
+     :   ^^^^^^|^^^^^^
+     :         `-- 'isUnavailable' is declared here
+ 668 |   isStartPlanProvider,
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint-plugin-unicorn(no-useless-fallback-in-spread): Empty fallbacks in spreads are unnecessary
+     ,-[packages/ui/src/settings/RemotePluginSyncDialog.tsx:331:19]
+ 330 |     configuredOptions: { ...configuredOptions },
+ 331 |     userConfig: { ...(plugin?.userConfig ?? {}) },
+     :                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 332 |   };
+     `----
+  help: Spreading falsy values in object literals won't add any unexpected properties, so it's unnecessary to add an empty object as fallback.
+
+  ! eslint-plugin-unicorn(no-useless-fallback-in-spread): Empty fallbacks in spreads are unnecessary
+     ,-[packages/ui/src/settings/RemotePluginSyncDialog.tsx:727:5]
+ 726 |   const mergedOptions = {
+ 727 |     ...(remotePlugin.configuredOptions ?? {}),
+     :     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 728 |     ...plan.options,
+     `----
+  help: Spreading falsy values in object literals won't add any unexpected properties, so it's unnecessary to add an empty object as fallback.
+
+  ! eslint-plugin-unicorn(no-useless-spread): Using a spread operator here creates a new array unnecessarily.
+     ,-[packages/rpc/src/foundation.ts:158:29]
+ 157 |     }
+ 158 |     for (const listener of [...this.listeners]) {
+     :                             ^^^
+ 159 |       listener(event);
+     `----
+  help: `for…of` can iterate over iterable, it's unnecessary to convert to an array.
+
+  ! typescript-eslint(no-this-alias): Unexpected aliasing of 'this' to local variable.
+     ,-[packages/rpc/src/ipc.ts:161:11]
+ 160 |   ): T {
+ 161 |     const that = this;
+     :           ^^^^
+ 162 |     const isFilter = typeof routerOrFilter === "function";
+     `----
+  help: Assigning a variable to this instead of properly using arrow lambdas may be a symptom of pre-ES2015 practices or not managing scope well.
+
+  ! typescript-eslint(no-this-alias): Unexpected aliasing of 'this' to local variable.
+     ,-[packages/rpc/src/ipc.ts:219:11]
+ 218 |   ): Event<T> {
+ 219 |     const that = this;
+     :           ^^^^
+ 220 |     let disposables: DisposableStore | undefined;
+     `----
+  help: Assigning a variable to this instead of properly using arrow lambdas may be a symptom of pre-ES2015 practices or not managing scope well.
+
+  ! eslint(no-unused-vars): Parameter 'disposables' is declared but never used. Unused parameters should start with a '_'.
+    ,-[packages/rpc/src/proxy-channel.ts:48:5]
+ 47 |     service: unknown,
+ 48 |     disposables?: DisposableStore,
+    :     ^^^^^|^^^^^
+    :          `-- 'disposables' is declared here
+ 49 |   ): IServerChannel<TContext> {
+    `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Parameter 'connectTo' is declared but never used. Unused parameters should start with a '_'.
+     ,-[packages/rpc/examples/04-remote-connection.ts:136:12]
+ 135 | class MockWebSocketFactory implements ISocketFactory<RemoteConnectionType.WebSocket> {
+ 136 |   supports(connectTo: RemoteConnection & { type: RemoteConnectionType.WebSocket }): boolean {
+     :            ^^^^|^^^^
+     :                `-- 'connectTo' is declared here
+ 137 |     return true;
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Identifier 'useRef' is imported but never used.
+   ,-[packages/ui/src/settings/AutomationsSection.tsx:7:3]
+ 6 |   useMemo,
+ 7 |   useRef,
+   :   ^^^|^^
+   :      `-- 'useRef' is imported here
+ 8 |   useState,
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'buildTaskWorkspaceKey' is imported but never used.
+    ,-[packages/ui/src/TaskList.tsx:16:10]
+ 15 | import { TaskRenameDialog } from "@/TaskRenameDialog.js";
+ 16 | import { buildTaskWorkspaceKey } from "@/lib/taskQueryCache.js";
+    :          ^^^^^^^^^^|^^^^^^^^^^
+    :                    `-- 'buildTaskWorkspaceKey' is imported here
+ 17 | import { compareZCodeTaskListItems } from "@/lib/taskListOrdering.js";
+    `----
+  help: Consider removing this import.
+
+  ! eslint-plugin-unicorn(no-new-array): Do not use `new Array(singleArgument)`.
+     ,-[packages/services/src/conversation-share/conversationShareService.ts:101:19]
+ 100 |   if (items.length === 0) return [];
+ 101 |   const results = new Array<Output>(items.length);
+     :                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 102 |   let nextIndex = 0;
+     `----
+  help: It's not clear whether the argument is meant to be the length of the array or the only element. If the argument is the array's length, consider using `Array.from({ length: n })`. If the argument is the only element, use `[element]`.
+
+  ! eslint(no-unused-vars): Type 'ZCodeTaskMeta' is imported but never used.
+   ,-[packages/services/src/session/taskChangeSummary.ts:5:3]
+ 4 |   ZCodeTaskChangedFileSummary,
+ 5 |   ZCodeTaskMeta,
+   :   ^^^^^^|^^^^^^
+   :         `-- 'ZCodeTaskMeta' is imported here
+ 6 | } from "@zcode/shared";
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unsafe-finally): Unsafe `finally` block.
+    ,-[packages/services/src/session/tasksDatabase/startup.ts:95:21]
+ 94 |     } catch (error) {
+ 95 |       if (!failure) throw error;
+    :                     ^^^^^^^^^^^^
+ 96 |     }
+    `----
+  help: Control flow inside `try` or `catch` blocks will be overwritten by this statement.
+
+  ! eslint(no-unsafe-finally): Unsafe `finally` block.
+     ,-[packages/services/src/session/tasksDatabase/startup.ts:120:46]
+ 119 |     }
+ 120 |     if (!preparationFailure && closeFailure) throw closeFailure;
+     :                                              ^^^^^^^^^^^^^^^^^^^
+ 121 |   }
+     `----
+  help: Control flow inside `try` or `catch` blocks will be overwritten by this statement.
+
+  ! eslint(no-unused-vars): Identifier 'ZCODE_ENV' is imported but never used.
+     ,-[packages/services/src/node.ts:526:3]
+ 525 |   ZCODE_VERSION,
+ 526 |   ZCODE_ENV,
+     :   ^^^^|^^^^
+     :       `-- 'ZCODE_ENV' is imported here
+ 527 |   buildRuntimeZCodeApiUrl,
+     `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'commandsService' is declared but never used. Unused variables should start with a '_'.
+      ,-[packages/services/src/node.ts:1668:9]
+ 1667 |   });
+ 1668 |   const commandsService = createCommandsService({ isDesktopRuntime: true });
+      :         ^^^^^^^|^^^^^^^
+      :                `-- 'commandsService' is declared here
+ 1669 |   const hooksService = createHooksService({
+      `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'hooksService' is declared but never used. Unused variables should start with a '_'.
+      ,-[packages/services/src/node.ts:1669:9]
+ 1668 |   const commandsService = createCommandsService({ isDesktopRuntime: true });
+ 1669 |   const hooksService = createHooksService({
+      :         ^^^^^^|^^^^^
+      :               `-- 'hooksService' is declared here
+ 1670 |     grantWorkspaceHookTrust: (params) => zcodeAgentService.grantWorkspaceHookTrust(params),
+      `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'memoryService' is declared but never used. Unused variables should start with a '_'.
+      ,-[packages/services/src/node.ts:1672:9]
+ 1671 |   });
+ 1672 |   const memoryService = createMemoryService();
+      :         ^^^^^^|^^^^^^
+      :               `-- 'memoryService' is declared here
+ 1673 |   // 只要当前进程已经装配 Provider Runtime，就由该 Environment 自己的 Selection View
+      `----
+  help: Consider removing this declaration.
+
+Found 70 warnings and 0 errors.
+Finished in 744ms on 2894 files using 2 threads.
+### exit=0 duration_ms=1158
+
+### STEP 7/11: architecture-check
+$ cd /tmp/arena-install-verify.vLqZUz/arena
+$ pnpm architecture:check
+
+> zcode@3.14.3 architecture:check /tmp/arena-install-verify.vLqZUz/arena
+> node scripts/architecture/architecture-check.mjs check
+
+architecture: OK
+violations: 0
+baseline: 0
+new: 0
+### exit=0 duration_ms=1213
+### NOTE corpus drift: test/*.test.ts at pinned SHA = [completeness.test.ts contracts.test.ts ownership.test.ts transitions.test.ts vectors.test.ts ] vs frozen harness corpus [vectors.test.ts transitions.test.ts completeness.test.ts ownership.test.ts contracts.test.ts ] — harness corpus frozen per AR2-020; re-freeze requires the owning work order
+
+### STEP 8/11: contracts-corpus
+$ cd /tmp/arena-install-verify.vLqZUz/arena/packages/arena-contracts
+$ ../../node_modules/.bin/tsx --test test/vectors.test.ts test/transitions.test.ts test/completeness.test.ts test/ownership.test.ts test/contracts.test.ts
+✔ escalation: completeness check finds no issues (1.626273ms)
+✔ escalation: every state is reachable from the initial state (0.218485ms)
+✔ escalation: every state has entry/exit documentation (0.143919ms)
+✔ escalation: terminals are a subset of states and admit no outbound rules (0.182923ms)
+✔ escalation: transitions only reference enumerated states and frozen commands (0.45633ms)
+✔ escalation: generated state table matches the enumerated state count (0.180341ms)
+✔ attempt: completeness check finds no issues (0.11993ms)
+✔ attempt: every state is reachable from the initial state (0.091096ms)
+✔ attempt: every state has entry/exit documentation (2.143402ms)
+✔ attempt: terminals are a subset of states and admit no outbound rules (0.158429ms)
+✔ attempt: transitions only reference enumerated states and frozen commands (0.084328ms)
+✔ attempt: generated state table matches the enumerated state count (0.048668ms)
+✔ payment: completeness check finds no issues (0.074203ms)
+✔ payment: every state is reachable from the initial state (0.048839ms)
+✔ payment: every state has entry/exit documentation (0.032291ms)
+✔ payment: terminals are a subset of states and admit no outbound rules (0.057504ms)
+✔ payment: transitions only reference enumerated states and frozen commands (0.068814ms)
+✔ payment: generated state table matches the enumerated state count (0.03455ms)
+✔ learning: completeness check finds no issues (0.039667ms)
+✔ learning: every state is reachable from the initial state (0.032215ms)
+✔ learning: every state has entry/exit documentation (0.046735ms)
+✔ learning: terminals are a subset of states and admit no outbound rules (0.034202ms)
+✔ learning: transitions only reference enumerated states and frozen commands (0.047747ms)
+✔ learning: generated state table matches the enumerated state count (0.066684ms)
+✔ escalation machine covers the ES2.0 lifecycle states named in §6 (0.105781ms)
+✔ payment machine enumerates the twelve PVP1.0 payout states (0.053413ms)
+✔ frozen version constants are pinned (0.721681ms)
+✔ A13 mechanics: contract_version is a literal gate (unknown versions rejected) (6.325801ms)
+✔ common primitives reject malformed values (0.302208ms)
+✔ A12: error catalog covers every code with consistent metadata (0.293571ms)
+✔ A12: replay and conflict carry distinct typed codes (0.089319ms)
+✔ A12: error envelope is strict and carries correlation identity (0.704576ms)
+✔ A14: ports source contains no engine identifiers (engine neutrality) (13.420515ms)
+✔ the ownership registry covers exactly the corpus envelopes (1.552047ms)
+✔ ownership: escalation-request fields map 1:1 onto the schema shape (0.230603ms)
+✔ ownership: escalation-request every field has exactly one valid owning module (0.334063ms)
+✔ ownership: acceptance-criteria fields map 1:1 onto the schema shape (0.113392ms)
+✔ ownership: acceptance-criteria every field has exactly one valid owning module (0.111467ms)
+✔ ownership: proof-policy-snapshot fields map 1:1 onto the schema shape (0.095134ms)
+✔ ownership: proof-policy-snapshot every field has exactly one valid owning module (0.07379ms)
+✔ ownership: attempt fields map 1:1 onto the schema shape (0.070434ms)
+✔ ownership: attempt every field has exactly one valid owning module (0.194912ms)
+✔ ownership: capsule-manifest fields map 1:1 onto the schema shape (0.165696ms)
+✔ ownership: capsule-manifest every field has exactly one valid owning module (0.067148ms)
+✔ ownership: evidence-envelope fields map 1:1 onto the schema shape (0.100151ms)
+✔ ownership: evidence-envelope every field has exactly one valid owning module (0.037478ms)
+✔ ownership: result-envelope fields map 1:1 onto the schema shape (0.063361ms)
+✔ ownership: result-envelope every field has exactly one valid owning module (0.036613ms)
+✔ ownership: event-envelope fields map 1:1 onto the schema shape (0.045755ms)
+✔ ownership: event-envelope every field has exactly one valid owning module (0.091865ms)
+✔ ownership: command-envelope fields map 1:1 onto the schema shape (0.063319ms)
+✔ ownership: command-envelope every field has exactly one valid owning module (0.042458ms)
+✔ ownership: idempotency-record fields map 1:1 onto the schema shape (0.049694ms)
+✔ ownership: idempotency-record every field has exactly one valid owning module (0.027747ms)
+✔ ownership: tenant-context fields map 1:1 onto the schema shape (0.03736ms)
+✔ ownership: tenant-context every field has exactly one valid owning module (0.05248ms)
+✔ the four infrastructure owners are documented extensions of the eight ES2.0 §3 domain modules (0.211077ms)
+✔ the result envelope delegates payment authority to the payment domain only (0.084246ms)
+✔ the capsule manifest is owned by the capsule host, not by domain modules (0.056754ms)
+✔ error catalog: every code has a complete entry with stable HTTP mapping (0.055158ms)
+✔ the invariant registry covers exactly the ten ES2.0 §6 invariants (1.604526ms)
+✔ INV1: all guards true allows the transition (0.384425ms)
+✔ INV1: dropping any single guard rejects the transition (0.277412ms)
+✔ INV2: all guards true allows the transition (0.095351ms)
+✔ INV2: dropping any single guard rejects the transition (0.097939ms)
+✔ INV3: all guards true allows the transition (0.071296ms)
+✔ INV3: dropping any single guard rejects the transition (0.071529ms)
+✔ INV4: all guards true allows the transition (0.103988ms)
+✔ INV4: dropping any single guard rejects the transition (0.109584ms)
+✔ INV5: all guards true allows the transition (0.143462ms)
+✔ INV5: dropping any single guard rejects the transition (0.125223ms)
+✔ INV6: all guards true allows the transition (0.065341ms)
+✔ INV6: dropping any single guard rejects the transition (0.167684ms)
+✔ INV7: all guards true allows the transition (0.076203ms)
+✔ INV7: dropping any single guard rejects the transition (0.047462ms)
+✔ INV8: all guards true allows the transition (0.068674ms)
+✔ INV8: dropping any single guard rejects the transition (0.053286ms)
+✔ INV9: all guards true allows the transition (0.051176ms)
+✔ INV9: dropping any single guard rejects the transition (0.051424ms)
+✔ INV10: all guards true allows the transition (0.035967ms)
+✔ INV10: dropping any single guard rejects the transition (0.031406ms)
+✔ undefined (state, command) pairs are rejected as INVALID_TRANSITION (0.175425ms)
+✔ terminal states admit no outbound transitions in the escalation machine (0.114032ms)
+✔ invalid edges are rejected: no direct OFFERED -> ACCEPTED shortcut (0.051012ms)
+✔ INV5 OR-semantics proof: proof_satisfied composes P0/P1 conjunction or P2/P3 adjudication (0.052369ms)
+✔ INV6: disputed evidence cannot reach EVIDENCE_ACCEPTED (0.038254ms)
+✔ INV6: self-approved evidence cannot reach EVIDENCE_ACCEPTED (0.031803ms)
+✔ INV10: no routing beyond budget or attempts (0.048122ms)
+✔ correction never mutates history: event correction is a new linked record (0.072675ms)
+✔ payment settlement requires provider acknowledgement AND ledger reconciliation (INV 'no false settlement') (0.045442ms)
+✔ provider timeout routes to reconciliation, never a blind retry (0.047485ms)
+✔ every envelope has a vector file and every suite has a vector file (4.687288ms)
+✔ vectors: escalation-request (25.77223ms)
+✔ vectors: acceptance-criteria (6.621906ms)
+✔ vectors: proof-policy-snapshot (1.781323ms)
+✔ vectors: attempt (2.828176ms)
+✔ vectors: capsule-manifest (4.471431ms)
+✔ vectors: evidence-envelope (4.635522ms)
+✔ vectors: result-envelope (3.981986ms)
+✔ vectors: event-envelope (3.303752ms)
+✔ vectors: command-envelope (2.446313ms)
+✔ vectors: idempotency-record (2.04203ms)
+✔ vectors: tenant-context (1.438359ms)
+✔ B2: runtime validation rejects a tenant-override attempt on the request envelope (strict unknown-field) (0.657427ms)
+ℹ tests 104
+ℹ suites 0
+ℹ pass 104
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1940.201725
+### exit=0 duration_ms=2058
+
+### STEP 9/11: capsule-corpus
+$ cd /tmp/arena-install-verify.vLqZUz/arena/packages/arena-capsule
+$ ../../node_modules/.bin/tsx --test test/capsule.test.ts test/synthetic-provider.test.ts
+✔ scenario 2: valid manifest passes the fail-closed gate (8.707503ms)
+✔ scenario 2: unknown field is rejected (strict schema) (0.956616ms)
+✔ scenario 2: egress denied_default violation is rejected (0.306957ms)
+✔ scenario 2: isolation_class none with an assurance record is rejected (frozen semantic) (0.195449ms)
+✔ scenario 2: missing assurance is rejected (0.261054ms)
+✔ scenario 2: credential over TTL is rejected (0.327946ms)
+✔ scenario 2: supplementary semantics — empty command allowlist is over-scoped (0.210119ms)
+✔ scenario 2: supplementary semantics — unbounded session duration rejected (0.192313ms)
+✔ scenario 2: supplementary semantics — heartbeat interval must beat provisioning timeout (0.313192ms)
+✔ scenario 2: requireValidCapsuleManifest throws typed rejection with all issues (0.768466ms)
+✔ scenario 3: tenant binding — cross-tenant access is indistinguishable from not-found (0.409258ms)
+✔ scenario 3: aggregate binding mismatch is a typed tenant refusal (0.0749ms)
+✔ scenario 4: scoped credentials — short TTL, digest-only state, redaction (1.222288ms)
+✔ scenario 4: teardown path — revokeAllForManifest verifies revocation (0.9009ms)
+✔ scenario 4: unrevoked credential at teardown is surfaced (failing condition) (0.346568ms)
+✔ scenario 4: manifest TTL ceiling bounds issuance (0.147189ms)
+✔ lifecycle: explicit transition table — no skip over teardown, TERMINATED is terminal (3.70391ms)
+✔ scenario 4: provision reaches ENVIRONMENT_READY with assurance recorded and a real workspace (23.099128ms)
+✔ scenario 4: invalid manifest (isolation none) is REJECTED with zero filesystem side effects (2.271249ms)
+✔ scenario 4: broken workspace root yields typed PROVISION_FAILED (0.658563ms)
+✔ scenario 6: allowlisted command executes in the subprocess workspace (31.278972ms)
+✔ scenario 6: non-allowlisted command is refused and never executed (1.631189ms)
+✔ scenario 6: unknown action_id is refused (not allowlisted) (1.375387ms)
+✔ scenario 6: session duration cap refuses execution past max_duration_seconds (1.324933ms)
+✔ scenario 6: long-running command is killed at the remaining session budget (EXEC_TIMEOUT) (1008.282514ms)
+✔ scenario 2: tenant binding — cross-tenant indistinguishable, aggregate mismatch typed (2.565905ms)
+✔ scenario 1: heartbeat beats while live, records last_heartbeat_at (1.642506ms)
+✔ scenario 1: artifact transfer within cap lands in the workspace; oversize is typed OVERSIZE (2.329164ms)
+✔ scenario 3+4: verified teardown revokes credentials, removes workspace, closes the capsule (1.321274ms)
+✔ scenario 3: unrevoked credentials at teardown = TEARDOWN_FAILED, workspace retained as evidence (1.537508ms)
+✔ scenario 3: credentials are clipped to the session bound (never outlive the capsule) (1.103007ms)
+✔ scenario 4+5: NON-PRODUCTION disclosure everywhere; production flag frozen false; no secrets in state (1.488803ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1909.653226
+### exit=0 duration_ms=2024
+### NOTE corpus drift: test/*.test.ts at pinned SHA = [next-expert.test.ts p2-review.test.ts two-instance-recovery.test.ts vertical-p0.test.ts ] vs frozen harness corpus [vertical-p0.test.ts next-expert.test.ts p2-review.test.ts two-instance-recovery.test.ts ] — harness corpus frozen per AR2-020; re-freeze requires the owning work order
+
+### STEP 10/11: harness-smoke
+$ cd /tmp/arena-install-verify.vLqZUz/arena/packages/arena-harness
+$ ../../node_modules/.bin/tsx --test test/vertical-p0.test.ts test/next-expert.test.ts test/p2-review.test.ts test/two-instance-recovery.test.ts
+✔ next-expert path: failed first attempt does not pay; routed second expert is paid exactly once (728.273441ms)
+✔ P2 non-application-verifiable: fail-closed proof → frozen payout gate NOT_READY → independent review decides → round outcome (8.690137ms)
+✔ two API processes share durable state; SIGKILL outage loses nothing and double-delivers nothing (1866.342246ms)
+✔ crash mid-flight leaves the durable aggregates consistent for a fresh connection (680.874745ms)
+✔ P0 vertical: baseline failing task → intervention → proof → exactly one payout → webhooks → stable-ID trace (588.516292ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5780.037116
+### exit=0 duration_ms=5897
+
+### STEP 11/11: isolation-runtime-probe
+$ command -v bwrap (AR2-019 OS-level capsule isolation runtime is registered Linux-only; this probe records availability, never silently skips)
+### probe: bwrap ABSENT on this runner and the AR2-019 OS-isolation runtime is not merged at pinned SHA ceea2d638839485cad888411387d945a80af9978 — recorded as not_supported (typed, not skipped)
+install-evidence.json written to /home/z/arena/docs/evidence/install/runs/linux-ceea2d6/install-evidence.json
+
+================================================================================
+AR2-020 Linux install verification: PASS
+transcript: /home/z/arena/docs/evidence/install/runs/linux-ceea2d6/install-transcript.txt
+evidence:   /home/z/arena/docs/evidence/install/runs/linux-ceea2d6/install-evidence.json
+================================================================================

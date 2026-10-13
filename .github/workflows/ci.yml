@@ -54,6 +54,10 @@ jobs:
         working-directory: packages/arena-capsule
         run: ../../node_modules/.bin/tsx --test test/capsule.test.ts test/synthetic-provider.test.ts
 
+      - name: Unit tests — arena-isolation (node:test via tsx; auto-detect — typed skips when bwrap absent)
+        working-directory: packages/arena-isolation
+        run: ../../node_modules/.bin/tsx --test test/capability.test.ts test/conformance.test.ts test/evidence.test.ts test/provider-port.test.ts test/escape-battery.test.ts test/non-regression.test.ts
+
       - name: Install Playwright Chromium (arena-workbench a11y suite)
         working-directory: packages/arena-workbench
         run: ../../node_modules/.bin/playwright install chromium
