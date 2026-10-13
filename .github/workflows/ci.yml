@@ -58,6 +58,10 @@ jobs:
         working-directory: packages/arena-isolation
         run: ../../node_modules/.bin/tsx --test test/capability.test.ts test/conformance.test.ts test/evidence.test.ts test/provider-port.test.ts test/escape-battery.test.ts test/non-regression.test.ts
 
+      - name: Unit tests — arena-identity (node:test via tsx; adversarial auth battery incl. JWKS rotation + replay)
+        working-directory: packages/arena-identity
+        run: ../../node_modules/.bin/tsx --test test/*.test.ts
+
       - name: Install Playwright Chromium (arena-workbench a11y suite)
         working-directory: packages/arena-workbench
         run: ../../node_modules/.bin/playwright install chromium
