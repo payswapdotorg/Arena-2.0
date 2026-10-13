@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import * as cheerio from "cheerio";
-import { BasicCrawler, log as crawleeLog } from "crawlee";
+import { BasicCrawler, Configuration, log as crawleeLog } from "crawlee";
 import { CRAWLEE_PINNED_VERSION } from "../primitives.js";
 import type { CrawlBudget, BudgetStopReason } from "./budget.js";
 import type { EgressGuard } from "./egress.js";
@@ -89,6 +89,28 @@ export function contentHashOf(content: string): string {
 export class CrawlerEngine {
   private readonly options: CrawlEngineOptions;
   private readonly fetcher: HttpValidatedFetcher;
+  /**
+   * Hermetic per-engine substrate configuration (maint-001).
+   *
+   * Crawlee's local mode defaults (`persistStorage: true`, `purgeOnStart: true`)
+   * root the substrate at `<cwd>/storage` and share it across every engine in
+   * the process — and, because CI runs test files as concurrent child processes
+   * in one working directory, across sibling processes too. Each process's first
+   * `crawler.run()` then triggers `purgeDefaultStorages`, whose fire-and-forget
+   * `batchRemoveFiles` deletes `storage/request_queues/default/*` while another
+   * process is mid-crawl, so its next entry read fails with ENOENT (the
+   * maint-001 flake). Crawlee's own guard against this — a module-level cache
+   * that shares one storage client per directory — only works within a single
+   * process.
+   *
+   * The engine's storage is pure orchestration plumbing: Arena persists run
+   * state in its own bookkeeping and dataset artifacts, never in crawlee's
+   * directory. Making the substrate fully in-memory (`persistStorage: false`,
+   * `writeMetadata: false`) and scoping it to a per-engine `Configuration`
+   * removes the shared directory entirely: no files on disk, no cross-instance
+   * or cross-process purge interference, nothing to race.
+   */
+  private readonly substrateConfig: Configuration;
 
   constructor(options: CrawlEngineOptions) {
     this.options = options;
@@ -96,6 +118,10 @@ export class CrawlerEngine {
       guard: options.guard,
       budget: options.budget,
       sleep: options.sleep,
+    });
+    this.substrateConfig = new Configuration({
+      persistStorage: false,
+      storageClientOptions: { writeMetadata: false },
     });
     // Silence the substrate's console log (workers emit their own event trail).
     crawleeLog.setLevel(crawleeLog.LEVELS.OFF);
@@ -226,7 +252,7 @@ export class CrawlerEngine {
         // Page-level retries/failures live in the validated fetcher; the
         // substrate's failure accounting surfaces through stats only.
       },
-    });
+    }, this.substrateConfig);
     crawlerRef = crawler;
 
     await crawler.run(seeds.map((seed) => ({ url: seed, userData: { depth: 0 } })));

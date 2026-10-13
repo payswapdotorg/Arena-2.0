@@ -4,6 +4,7 @@ import { stateView, type StateView } from "../states.js";
 import { WORKBENCH_DEMO_DISCLOSURE } from "../demo-fixtures.js";
 import type { FieldError } from "../requester-form.js";
 import type { EscalationSummary } from "../mock-client.js";
+import { LiveAnnouncer } from "./live-announcer.js";
 
 /**
  * AR2-003 slice 1 — 纯展示屏（无客户端调用、无 DOM 副作用；SSR 可冒烟）。
@@ -74,7 +75,15 @@ export function FieldErrorList(props: { errors: readonly FieldError[] }): ReactN
     return null;
   }
   return (
-    <ul className="arena-field-errors" aria-label="form validation errors">
+    // AR2-021 a11y fix: the typed error summary is programmatically focusable
+    // (tabIndex -1) so the composition layer can move focus to it on submit
+    // failure — screen readers then announce the per-field errors.
+    <ul
+      className="arena-field-errors"
+      aria-label="form validation errors"
+      tabIndex={-1}
+      data-error-count={props.errors.length}
+    >
       {props.errors.map((error) => (
         <li key={`${error.field}:${error.rule}`} data-field={error.field}>
           <span className="arena-field">{error.field}</span>: {error.rule}
@@ -84,7 +93,7 @@ export function FieldErrorList(props: { errors: readonly FieldError[] }): ReactN
   );
 }
 
-export function RequesterCockpit(props: {
+export interface RequesterCockpitProps {
   lens: WorkbenchLens;
   title: string;
   outcomeDescription: string;
@@ -95,7 +104,14 @@ export function RequesterCockpit(props: {
   onTitleChange: (value: string) => void;
   onOutcomeChange: (value: string) => void;
   onBudgetChange: (value: string) => void;
-}): ReactNode {
+  /** AR2-021 a11y: async submission in flight — disables the control and marks the form aria-busy. */
+  submitting?: boolean;
+  /** AR2-021 a11y: live-region message for async transitions (submitting → submitted). */
+  statusMessage?: string;
+}
+
+export function RequesterCockpit(props: RequesterCockpitProps): ReactNode {
+  const submitting = props.submitting === true;
   return (
     <section
       className="arena-requester-cockpit"
@@ -104,7 +120,11 @@ export function RequesterCockpit(props: {
     >
       <DemoBanner />
       <h2>Requester cockpit</h2>
-      <form className="arena-escalation-form" onSubmit={(event) => event.preventDefault()}>
+      <form
+        className="arena-escalation-form"
+        aria-busy={submitting}
+        onSubmit={(event) => event.preventDefault()}
+      >
         <label htmlFor="arena-task-title">Task title</label>
         <input
           id="arena-task-title"
@@ -125,10 +145,11 @@ export function RequesterCockpit(props: {
           onChange={(event) => props.onBudgetChange(event.target.value)}
         />
         <FieldErrorList errors={props.errors} />
-        <button type="submit" onClick={props.onSubmit}>
+        <button type="submit" onClick={props.onSubmit} aria-disabled={submitting}>
           Submit escalation
         </button>
       </form>
+      <LiveAnnouncer message={props.statusMessage ?? ""} />
       <h3>Tracking</h3>
       {props.tracking.length === 0 ? (
         <p className="arena-empty">No escalations yet (empty state)</p>

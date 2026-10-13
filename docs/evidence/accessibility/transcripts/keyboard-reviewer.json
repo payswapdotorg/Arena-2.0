@@ -1,0 +1,109 @@
+{
+  "kind": "keyboard-journey",
+  "journey": "reviewer",
+  "steps": [
+    {
+      "action": "Tab — reviewer lens button",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Reviewer screens",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Tab — evidence inspect trigger",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "evd_public001 — public",
+        "role": null,
+        "className": "arena-evidence-inspect"
+      }
+    },
+    {
+      "action": "Enter — dialog opened, focus moved inside (close control)",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Close evidence details",
+        "role": null,
+        "className": "arena-dialog-close"
+      }
+    },
+    {
+      "action": "Tab ×6 — focus stayed trapped inside the dialog",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Close evidence details",
+        "role": null,
+        "className": "arena-dialog-close"
+      }
+    },
+    {
+      "action": "Shift+Tab — wrap within dialog",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Close evidence details",
+        "role": null,
+        "className": "arena-dialog-close"
+      }
+    },
+    {
+      "action": "Escape — dialog closed, focus returned to trigger",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "evd_public001 — public",
+        "role": null,
+        "className": "arena-evidence-inspect"
+      }
+    },
+    {
+      "action": "Tab — adjudicator lens button",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Adjudicator screens",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "adjudication pending (live region)",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Adjudicator screens",
+        "role": null,
+        "className": null
+      },
+      "announcement": "No divergence detected"
+    },
+    {
+      "action": "Tab — divergent case selector",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Load divergent case (res_00000002)",
+        "role": null,
+        "className": null
+      }
+    },
+    {
+      "action": "Enter — adjudication resolved (same live-region node mutated)",
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Load divergent case (res_00000002)",
+        "role": null,
+        "className": null
+      },
+      "announcement": "Divergence detected"
+    }
+  ],
+  "inputMode": "keyboard-only (Playwright keyboard API; no mouse events)"
+}
