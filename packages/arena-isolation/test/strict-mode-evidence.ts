@@ -162,7 +162,7 @@ async function run(): Promise<void> {
       const denied = run !== null && run.kind === "EXECUTED_SANDBOXED" && /fork failed/.test(run.stdout);
       return denied ? "DENIED" : "FAIL";
     },
-    "fork bomb hit the RLIMIT_NPROC ceiling",
+    "fork bomb hit the child-side RLIMIT_NPROC ceiling (in-sandbox prlimit wrapper after the userns transition; ambient-aware computation per issue #64 — posture recorded in the environment report)",
   );
 
   await track(

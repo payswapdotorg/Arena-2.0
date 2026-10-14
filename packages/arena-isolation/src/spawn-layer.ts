@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { ProcfsStrategy } from "./capability.js";
 import type { ResourceCeilings } from "./execution-argv.js";
+import type { NprocCeilingPosture } from "./nproc-ceiling.js";
 
 /**
  * AR2-019 — typed spawn layer for the isolation runtime.
@@ -37,7 +38,12 @@ export interface SandboxIsolationEvidence {
   procfs_strategy: ProcfsStrategy;
   /** The exact bwrap argv that ran (audit: no shell interpolation). */
   bwrap_argv: readonly string[];
-  prlimit_ceiling: ResourceCeilings | null;
+  /** 本次运行的 rlimit 上限对象（cpu/as/fsize/nofile 为父侧前缀施加；
+   * nproc 为 child-side 生效上限——见 nproc_posture，issue #64）。 */
+  resource_ceilings: ResourceCeilings | null;
+  /** issue #64：child-side nproc 姿态证据（环境感知上限、环境计数、
+   * 常量与应用与否——审计记录，永不伪造）。 */
+  nproc_posture: NprocCeilingPosture;
 }
 
 export interface SandboxRunInput {
@@ -49,6 +55,8 @@ export interface SandboxRunInput {
   timeoutMs: number;
   seccompFilter: Buffer | null;
   procfsStrategy: ProcfsStrategy;
+  /** issue #64：本次执行的 child-side nproc 姿态（进入证据记录）。 */
+  nprocPosture: NprocCeilingPosture;
   /** Called with the spawned process group leader before the run resolves
    * (teardown can kill a live sandbox through the session child set). */
   onSpawn?: (child: ChildProcess) => void;
@@ -146,7 +154,8 @@ export async function runIsolatedCommand(input: SandboxRunInput): Promise<Sandbo
     seccomp_filter_installed: input.seccompFilter !== null,
     procfs_strategy: input.procfsStrategy,
     bwrap_argv: input.bwrapArgs,
-    prlimit_ceiling: input.prlimitPath === null ? null : input.ceilings,
+    resource_ceilings: input.prlimitPath === null ? null : input.ceilings,
+    nproc_posture: input.nprocPosture,
   };
 
   // Stage the seccomp filter file and pass its fd as child fd 4.

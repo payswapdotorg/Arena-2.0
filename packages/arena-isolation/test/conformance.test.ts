@@ -130,6 +130,40 @@ test("argv discipline: recorded bwrap argv is a pure argv array (no shell string
   const sizeIdx = argv.indexOf("--size");
   assert.ok(sizeIdx > 0);
   assert.ok(Number(argv[sizeIdx + 1]) > 0);
+  // MAINT-002 / issue #64 — child-side nproc posture: RLIMIT_NPROC is
+  // applied by the in-sandbox prlimit wrapper AFTER the user-namespace
+  // transition (never as a parent-side --nproc that the ambient uid count
+  // could collide with). The wrapper is auditable in the recorded argv.
+  const posture = outcome.evidence.nproc_posture;
+  const wrapperIdx = argv.indexOf("/usr/bin/prlimit");
+  if (posture.applied) {
+    assert.ok(wrapperIdx > 0, "applied posture must show the wrapper in the argv");
+    // prlimit resource options require the equals form (a space-separated
+    // value would be exec'd as the command).
+    assert.equal(argv[wrapperIdx + 1], `--nproc=${posture.effective_ceiling}`);
+    assert.equal(argv[wrapperIdx + 2], "--");
+    // The real command follows the wrapper verbatim.
+    assert.deepEqual(argv.slice(wrapperIdx + 3), ["sh", "-c", "true"]);
+    // The wrapper runs inside the sandbox: after bwrap's own separator.
+    assert.ok(argv.indexOf("--") < wrapperIdx);
+    assert.ok(
+      posture.effective_ceiling !== null &&
+        posture.effective_ceiling >= posture.floor &&
+        posture.effective_ceiling <= posture.hard_ceiling,
+    );
+  } else {
+    assert.equal(wrapperIdx, -1);
+    assert.ok(posture.detail.includes("NOT applied"));
+  }
+  // Ambient basis carried into the per-run evidence (issue #64 disclosure):
+  // the posture must mirror the SESSION's environment report (the provider's
+  // own probe), not a second probe invocation — counts drift between runs.
+  const sessionEnv = await fixture.provider.sessionEnvironmentReport(fixture.ref);
+  assert.ok(!("kind" in sessionEnv && sessionEnv.kind === "REFUSED"));
+  if (!("kind" in sessionEnv) || sessionEnv.kind !== "REFUSED") {
+    assert.equal(posture.ambient_uid_process_count, sessionEnv.environment.ambient_uid_process_count);
+    assert.equal(posture.visible_uid_process_count, sessionEnv.environment.visible_uid_process_count);
+  }
   await fixture.provider.teardown(fixture.ref);
 });
 

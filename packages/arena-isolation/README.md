@@ -28,7 +28,7 @@ Every sandboxed command (`executeCommand`) runs through:
 | IPC / UTS | `--unshare-ipc --unshare-uts` + `--hostname arena-<capsule>` | isolated IPC objects, namespace-local hostname |
 | Network namespace | `--unshare-net` (empty netns, loopback down) | **deny-by-default egress**: a live host listener on 127.0.0.1 and all private/metadata ranges are unreachable |
 | Syscall filter | `--seccomp <fd>` (hand-rolled BPF denylist, no libseccomp) | keyctl/add_key/request_key/init_module/finit_module/delete_module/bpf/kexec_load/kexec_file_load/perf_event_open → `SECCOMP_RET_KILL_PROCESS` → kernel SIGSYS; bwrap's supervisor propagates it as exit code 159 (128+31) |
-| Resource ceilings | `prlimit -- bwrap ...` (rlimits inherit into the sandbox) | `RLIMIT_AS`, `RLIMIT_FSIZE`, `RLIMIT_NPROC`, `RLIMIT_NOFILE`, `RLIMIT_CPU` |
+| Resource ceilings | `prlimit -- bwrap ...` (rlimits inherit into the sandbox) | `RLIMIT_AS`, `RLIMIT_FSIZE`, `RLIMIT_NOFILE`, `RLIMIT_CPU` parent-side; **`RLIMIT_NPROC` child-side** (see the nproc posture below) |
 | Wall clock | parent supervisor kills the sandbox process group + `--die-with-parent` | typed `EXEC_TIMEOUT` |
 | Secret hygiene | `--clearenv` + explicit `--setenv` allowlist only | the host environment never crosses the boundary; captured evidence records contain no secrets |
 | Hardening extras | `--new-session`, `--die-with-parent`, `--disable-userns` (bwrap ≥ 0.12 with a real procfs) | detached tty session; no nested userns creation when supported |
@@ -94,14 +94,60 @@ invariant directly (the host parent pid is absent from the sandbox's
 | `resource_policy.disk_limit_mb` | `RLIMIT_FSIZE` = MB × 1024², and the scratch tmpfs `--size` |
 | `resource_policy.cpu_limit` (cores) × execution wall-clock | `RLIMIT_CPU` seconds (`ceil`) |
 | `resource_policy.max_duration_seconds` | session expiry (typed `SESSION_DURATION_EXCEEDED`) + default per-exec wall clock |
-| (frozen manifest has no process-count field) | provider `profile.max_processes` → `RLIMIT_NPROC` (default 128) |
+| (frozen manifest has no process-count field) | provider `profile.max_processes` → **ambient-aware child-side `RLIMIT_NPROC`** (see below) |
+
+## nproc posture — ambient-count collision fix (issue #64 / MAINT-002)
+
+Historical defect: `DEFAULT_MAX_PROCESSES = 128` was applied as
+`prlimit --nproc=128` to the **bwrap parent**. On shared-host stations the
+kernel-level process count for the invoking uid (uid-global NPROC
+accounting on pre-5.15 kernels; the container's `/proc` shows only the pid
+namespace slice — ~36 visible vs ~170-199 kernel-level in the issue's
+evidence) exceeds the flat limit, and bwrap's own `clone()` fails with
+`EAGAIN` — `Creating new namespace failed: Resource temporarily
+unavailable` — making every sandboxed execution fail closed but unusable.
+
+The fix implements both registered directions, disclosed in every
+capability report and per-run evidence record:
+
+1. **Child-side application (direction 2)** — the parent-side prlimit
+   prefix never carries `--nproc`; bwrap's own clone is never gated by a
+   process ceiling. `RLIMIT_NPROC` is applied **after the user-namespace
+   transition**: the sandbox command is wrapped as
+   `bwrap ... -- /usr/bin/prlimit --nproc=<ceiling> -- <command>` — the
+   wrapper setrlimits itself then execs the real command (argv arrays
+   only; the full chain is recorded in `bwrap_argv` evidence). The wrapper
+   is the host's `/usr/bin/prlimit` (same file as the read-only `/usr`
+   bind); when the host runtime tree provides none, the ceiling is honestly
+   not applied and the per-run `nproc_posture` records the reason (other
+   rlimits and the wall clock remain enforced).
+2. **Ambient-aware ceiling (direction 1)** — the ceiling is
+   `clamp(ambient + budget, floor, hard_ceiling)` where `budget` =
+   `profile.max_processes` (default margin `128`, the historical default):
+   constants `NPROC_CEILING_FLOOR = 128`, `NPROC_HARD_CEILING = 4096`. The
+   **ambient kernel-level uid process count** is measured empirically at
+   probe time by escalating `prlimit --nproc=L -- bwrap <identical minimal
+   argv> /bin/true` over the ladder `[64 … 4096]` — the first succeeding
+   rung is a conservative estimate (`count < L`; the issue's exact failure
+   signature is the probe mechanism). A `/proc` scan of the pid namespace
+   slice is recorded alongside as the honest lower bound. Both values, the
+   computed default ceiling, and a human-readable posture line are fields
+   of `IsolationEnvironmentReport` (`ambient_uid_process_count`,
+   `visible_uid_process_count`, `nproc_ceiling`, `nproc_posture_detail`),
+   and every execution records the applied posture in
+   `SandboxIsolationEvidence.nproc_posture` (applied flag, effective
+   ceiling, ambient basis, constants).
 
 `RLIMIT_NPROC` accounting is kernel-version dependent (userns-scoped on
 5.15+, uid-global on older kernels); the battery asserts the declared
 ceiling is enforced (the fork bomb fails with EAGAIN), not the exact
-process count at which it trips. rlimit signal deaths are propagated by
-bwrap's supervisor as bash-compatible exit codes (SIGKILL→137,
-SIGXCPU→152, SIGSYS→159) — the outcome mapping accepts both forms.
+process count at which it trips. On userns-scoped kernels the ambient term
+over-provisions the workload budget (bounded by the hard ceiling and
+recorded); on uid-global kernels it is load-bearing — a flat ceiling below
+the ambient count would fail even the workload's first fork. rlimit signal
+deaths are propagated by bwrap's supervisor as bash-compatible exit codes
+(SIGKILL→137, SIGXCPU→152, SIGSYS→159) — the outcome mapping accepts both
+forms.
 
 ## Conformance + adversarial battery
 
@@ -201,6 +247,19 @@ cd packages/arena-isolation && ../../node_modules/.bin/tsx --test test/*.test.ts
 - Scratch is tmpfs-only by design: outcomes return through captured
   stdout/stderr (evidence records) and `push_scoped` artifact transfers,
   not through host-side writable scratch.
+- **nproc ambient snapshot (issue #64):** the ambient kernel-level uid count
+  is calibrated once per provider at probe time. On shared hosts the count
+  can drift between probe and execution; upward drift eats the workload's
+  fork budget (workload forks fail closed with EAGAIN — typed, recorded,
+  never converted) but can no longer break the sandbox spawn itself
+  (child-side posture). Stations whose uid count exceeds the hard ceiling
+  (4096) are recorded honestly (`ambient_uid_process_count = null`) and
+  fall back to the floor posture.
+- **The in-sandbox nproc wrapper requires the host runtime tree to provide
+  `/usr/bin/prlimit`** (the read-only `/usr` bind). Hosts without it run
+  with the child-side nproc ceiling honestly unapplied (`nproc_posture
+  .applied = false` + reason); split-usr hosts were already outside the
+  merged-usr rootfs contract of this runtime.
 
 ## Integration notes (TL-owned surfaces)
 
