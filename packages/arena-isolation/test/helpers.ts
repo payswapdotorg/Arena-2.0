@@ -200,6 +200,11 @@ export function syntheticPortLogicEnvironment(): IsolationEnvironmentReport {
     procfs_strategy: "unprobed",
     seccomp_filter_supported: null,
     prlimit_path: null,
+    ambient_uid_process_count: null,
+    visible_uid_process_count: null,
+    nproc_ceiling: null,
+    nproc_posture_detail:
+      "synthetic port-logic fixture: ambient nproc calibration not probed (no bwrap/prlimit run)",
     capability: "PARTIAL_ISOLATION",
     limitations: [
       "synthetic port-logic fixture environment: injected so pre-spawn typed-refusal " +

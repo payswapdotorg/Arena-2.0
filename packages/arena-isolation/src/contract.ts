@@ -9,6 +9,18 @@ export {
 } from "./capability.js";
 
 export {
+  // ambient-aware nproc ceiling (issue #64 / MAINT-002)
+  computeNprocCeiling,
+  readVisibleUidProcessCount,
+  NPROC_MARGIN,
+  NPROC_CEILING_FLOOR,
+  NPROC_HARD_CEILING,
+  NPROC_PROBE_LADDER,
+  type NprocCeilingComputed,
+  type NprocCeilingPosture,
+} from "./nproc-ceiling.js";
+
+export {
   // seccomp denylist (hand-rolled BPF; no libseccomp dependency)
   buildSeccompDenylistFilter,
   BLOCKED_SYSCALL_CLASSES,

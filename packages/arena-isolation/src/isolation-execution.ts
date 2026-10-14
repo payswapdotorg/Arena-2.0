@@ -7,13 +7,21 @@ import type { IsolationEnvironmentReport } from "./capability.js";
 import {
   buildBwrapArgs,
   buildPrlimitArgs,
+  hostnameForCapsule,
   isAbsoluteSafePath,
   isReservedPath,
   isUnderWritableRoot,
+  resolveCommandToken,
   type InputMount,
   type ResourceCeilings,
   type SandboxSpec,
 } from "./execution-argv.js";
+import {
+  buildNprocPosture,
+  computeNprocCeiling,
+  resolveNprocWrapper,
+  NPROC_MARGIN,
+} from "./nproc-ceiling.js";
 import { buildSeccompDenylistFilter, currentSandboxArch } from "./seccomp.js";
 import { runIsolatedCommand, type SandboxIsolationEvidence } from "./spawn-layer.js";
 
@@ -101,7 +109,6 @@ export interface ExecutionSessionView {
 
 const ENV_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
 const DEFAULT_SCRATCH = "/workspace";
-const DEFAULT_MAX_PROCESSES = 128;
 const DEFAULT_MAX_OPEN_FILES = 256;
 
 export async function runIsolationExecution(
@@ -155,6 +162,15 @@ export async function runIsolationExecution(
       }
     }
   }
+  // issue #64：max_processes 现在直接进入环境感知 ceiling 的算术，
+  // 非法值（非正整数）必须类型化拒绝而非被静默夹取成看似合法的上限
+  // （fail-closed 姿态；旧实现会把它夹成 1）。
+  if (
+    request.profile?.max_processes !== undefined &&
+    (!Number.isSafeInteger(request.profile.max_processes) || request.profile.max_processes < 1)
+  ) {
+    return invalidRequest(`profile.max_processes must be a positive integer: ${String(request.profile.max_processes)}`);
+  }
   const commandResolution = resolveCommandToken(attempted, scratchPath);
   if (commandResolution.invalid !== undefined) {
     return invalidRequest(commandResolution.invalid);
@@ -163,7 +179,21 @@ export async function runIsolationExecution(
   if (mountsOutcome !== null) {
     return mountsOutcome;
   }
-  const ceilings = ceilingsFor(session.manifest, request.profile, session.expiresAtMs - nowMs);
+  const ceilings = ceilingsFor(
+    session.manifest,
+    request.profile,
+    session.expiresAtMs - nowMs,
+    session.environment.ambient_uid_process_count,
+  );
+  // issue #64（方向 2）：child-side nproc 包装器——环境感知上限在
+  // 用户命名空间切换之后施加；父侧前缀不带 --nproc（buildPrlimitArgs）。
+  const nprocWrapper = resolveNprocWrapper(session.hostUsrPath, ceilings.nproc);
+  const nprocPosture = buildNprocPosture(
+    nprocWrapper,
+    ceilings.nproc,
+    session.environment,
+    request.profile?.max_processes ?? NPROC_MARGIN,
+  );
   const timeoutMs = Math.max(
     1,
     Math.min(
@@ -199,6 +229,7 @@ export async function runIsolationExecution(
     bwrapMinor: session.environment.bwrap.minor,
     infoFd: 3,
     seccompFd: seccompFilter !== null ? 4 : null,
+    nprocWrapper,
   };
 
   const bwrapArgs = buildBwrapArgs(spec);
@@ -214,6 +245,7 @@ export async function runIsolationExecution(
     timeoutMs,
     seccompFilter,
     procfsStrategy: session.environment.procfs_strategy,
+    nprocPosture,
     onSpawn: (child) => {
       spawnedChild = child;
       session.registerChild(child);
@@ -260,11 +292,17 @@ export async function runIsolationExecution(
   };
 }
 
-/** Manifest resource_policy → rlimit ceilings (documented mapping). */
+/** Manifest resource_policy → rlimit ceilings (documented mapping).
+ *
+ * issue #64：nproc 是环境感知上限 clamp(内核级 uid 计数 + 预算,
+ * floor, hard_ceiling)（computeNprocCeiling）——uid 全局记账的内核上
+ * 平坦 128 会让共享宿主机（内核计数 170-199）上的工作负载连第一个
+ * fork 都失败；环境计数不可读（null）时回退 clamp(budget) 并如实记录。 */
 function ceilingsFor(
   manifest: CapsuleManifest,
   profile: IsolationExecutionProfile | undefined,
   remainingSessionMs: number,
+  ambientUidProcessCount: number | null,
 ): ResourceCeilings {
   const wallSeconds = Math.max(
     1,
@@ -272,35 +310,14 @@ function ceilingsFor(
       Math.min(profile?.wall_clock_ceiling_ms ?? Number.MAX_SAFE_INTEGER, remainingSessionMs) / 1000,
     ),
   );
+  const nprocBudget = profile?.max_processes ?? NPROC_MARGIN;
   return {
     cpu_seconds: Math.max(1, Math.ceil(manifest.resource_policy.cpu_limit * wallSeconds)),
     as_bytes: manifest.resource_policy.memory_limit_mb * 1024 * 1024,
     fsize_bytes: manifest.resource_policy.disk_limit_mb * 1024 * 1024,
-    nproc: profile?.max_processes ?? DEFAULT_MAX_PROCESSES,
+    nproc: computeNprocCeiling(ambientUidProcessCount, nprocBudget).computed_ceiling,
     nofile: profile?.max_open_files ?? DEFAULT_MAX_OPEN_FILES,
   };
-}
-
-function resolveCommandToken(
-  token: string,
-  scratchPath: string,
-): { invalid?: string } {
-  if (token.includes("/")) {
-    if (!isAbsoluteSafePath(token)) {
-      return { invalid: `command path unsafe: ${token}` };
-    }
-    const allowed = ["/usr", "/bin", "/sbin", scratchPath, "/tmp", "/run"];
-    if (!allowed.some((root) => token === root || token.startsWith(`${root}/`))) {
-      return { invalid: `command path outside sandbox runtime/scratch: ${token}` };
-    }
-    return {};
-  }
-  try {
-    statSync(path.join("/usr/bin", token));
-    return {};
-  } catch {
-    return { invalid: `command not resolvable inside sandbox: ${token}` };
-  }
 }
 
 function validateInputMounts(
@@ -369,9 +386,4 @@ function validateInputMounts(
     };
   }
   return null;
-}
-
-function hostnameForCapsule(capsuleId: string): string {
-  const sanitized = capsuleId.replace(/[^a-zA-Z0-9-]/g, "-").replace(/^-+/, "").slice(0, 40);
-  return `arena-${sanitized.length > 0 ? sanitized : "capsule"}`;
 }
