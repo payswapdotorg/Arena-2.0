@@ -29,7 +29,7 @@ export function ReleasePosturePanel(): ReactNode {
       aria-label="release posture (recorded truth)"
       data-release-decision={vm.posture.releaseDecision}
     >
-      <h3>Release posture</h3>
+      <h2>Release posture</h2>
       <dl className="arena-trail-facts">
         <div><dt>Release decision</dt><dd data-posture-decision="true">{vm.posture.releaseDecision}</dd></div>
         <div><dt>Decision basis</dt><dd><code>{vm.posture.decisionBasis}</code></dd></div>
@@ -38,7 +38,7 @@ export function ReleasePosturePanel(): ReactNode {
         <div><dt>Isolation evidence</dt><dd><code>{vm.posture.isolationEvidence}</code></dd></div>
         <div><dt>Authorization instrument</dt><dd><code>{vm.posture.authorizationInstrument}</code></dd></div>
       </dl>
-      <h4>Restricted actions (truthfully disabled — never absent)</h4>
+      <h2>Restricted actions (truthfully disabled — never absent)</h2>
       <ul className="arena-restricted-actions" aria-label="restricted owner-gated actions">
         {vm.restrictedActions.map((restricted) => (
           <li key={restricted.action} data-restricted="true">
@@ -58,7 +58,7 @@ export function ProviderHealthPanel(): ReactNode {
   const vocabulary = providerHealthVocabulary();
   return (
     <section className="arena-ops-panel" aria-label="provider health vocabulary">
-      <h3>Provider health</h3>
+      <h2>Provider health</h2>
       <p className="arena-queue-fact">
         Typed statuses with evidence grades rendered verbatim (never inflated):
       </p>
@@ -81,14 +81,14 @@ export function StateVocabularyPanel(): ReactNode {
   const vocabulary = operationalStateVocabulary();
   return (
     <section className="arena-ops-panel" aria-label="operational state vocabulary">
-      <h3>Operational state vocabulary</h3>
+      <h2>Operational state vocabulary</h2>
       <p className="arena-queue-fact">
         The frozen state machines this surface operates on (1:1 from the typed vocabularies —
         queue/capacity panels derive from these states):
       </p>
       {vocabulary.map((machine) => (
         <div key={machine.machine} className="arena-vocab-machine" data-machine={machine.machine}>
-          <h4>{machine.machine} ({machine.states.length} states)</h4>
+          <h2>{machine.machine} ({machine.states.length} states)</h2>
           <ul className="arena-field-list">
             {machine.states.map((state) => (
               <li key={state}><code>{state}</code></li>
@@ -105,7 +105,7 @@ export function AuditTrailPanel(props: { trail: OperationsSnapshot["auditTrail"]
   const t = props.trail;
   return (
     <section className="arena-ops-panel" aria-label="audit and observability">
-      <h3>Audit trail</h3>
+      <h2>Audit trail</h2>
       <p className="arena-queue-fact">{AUDIT_TRAIL_BASIS}</p>
       {t.kind === "loading" ? <p className="arena-timeline-state" role="status">Loading the audit trail…</p> : null}
       {t.kind === "empty" ? <p className="arena-timeline-state">No recorded events for this escalation.</p> : null}

@@ -4,11 +4,17 @@
   "type": "module",
   "exports": {
     ".": "./src/contract.ts",
-    "./tokens.css": "./src/design/arena-tokens.css"
+    "./shell": "./src/shell/ArenaShell.tsx",
+    "./screens": "./src/screens.ts",
+    "./tokens.css": "./src/design/arena-tokens.css",
+    "./styles.css": "./src/styles.css",
+    "./identity": "./src/identity/productTitle.ts"
   },
   "scripts": {
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix --fix-suggestions"
+    "lint:fix": "oxlint --fix --fix-suggestions",
+    "a11y:install-browser": "playwright install chromium",
+    "a11y:test": "tsx --test test/a11y/journeys.test.ts"
   },
   "dependencies": {
     "@arena/contracts": "workspace:*",
@@ -18,6 +24,9 @@
   "devDependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "axe-core": "^4.11.3",
+    "esbuild": "^0.27.7",
+    "playwright": "^1.59.1",
     "react-dom": "^19.2.0",
     "typescript": "^6.0.2"
   }

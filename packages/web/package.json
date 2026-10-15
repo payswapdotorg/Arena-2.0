@@ -9,6 +9,8 @@
     "lint:fix": "oxlint --fix"
   },
   "dependencies": {
+    "@arena/shell": "workspace:*",
+    "@arena/workbench": "workspace:*",
     "@zcode/client": "workspace:*",
     "@zcode/shared": "workspace:*",
     "@zcode/ui": "workspace:*",

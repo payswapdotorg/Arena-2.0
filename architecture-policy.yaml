@@ -89,7 +89,15 @@ modules:
     roots: [packages/arena-shell/src]
     managed: true
     requires: [arena-contracts, arena-workbench]
-    publicEntrypoints: [packages/arena-shell/src/contract.ts]
+    publicEntrypoints:
+      [
+        packages/arena-shell/src/contract.ts,
+        packages/arena-shell/src/shell/ArenaShell.tsx,
+        packages/arena-shell/src/screens.ts,
+        packages/arena-shell/src/identity/productTitle.ts,
+        packages/arena-shell/src/styles.css,
+        packages/arena-shell/src/design/arena-tokens.css,
+      ]
     owner: arena-tl
   - id: arena-persistence
     roots: [packages/arena-persistence/src]

@@ -30,14 +30,14 @@ export function LensContext(props: { lens: ArenaScreenHost["lens"] }): ReactNode
 export function ContractReferencePanel(): ReactNode {
   return (
     <section className="arena-dev-panel" aria-label="typed request and result contract reference">
-      <h3>Typed contract reference</h3>
+      <h2>Typed contract reference</h2>
       <p className="arena-dev-note">
         Enumerated at runtime from the frozen CF1.0 schemas (never hand-mirrored) — the shapes your
         integration sends and receives:
       </p>
       <div className="arena-contract-shapes">
         <section data-contract="escalation_request">
-          <h4>Escalation request envelope ({REQUEST_ENVELOPE_FIELDS.length} fields)</h4>
+          <h2>Escalation request envelope ({REQUEST_ENVELOPE_FIELDS.length} fields)</h2>
           <ul className="arena-field-list">
             {REQUEST_ENVELOPE_FIELDS.map((field) => (
               <li key={field}><code>{field}</code></li>
@@ -45,7 +45,7 @@ export function ContractReferencePanel(): ReactNode {
           </ul>
         </section>
         <section data-contract="event_envelope">
-          <h4>Event envelope ({EVENT_ENVELOPE_FIELDS.length} fields)</h4>
+          <h2>Event envelope ({EVENT_ENVELOPE_FIELDS.length} fields)</h2>
           <ul className="arena-field-list">
             {EVENT_ENVELOPE_FIELDS.map((field) => (
               <li key={field}><code>{field}</code></li>
@@ -53,7 +53,7 @@ export function ContractReferencePanel(): ReactNode {
           </ul>
         </section>
         <section data-contract="result_status">
-          <h4>Result status vocabulary</h4>
+          <h2>Result status vocabulary</h2>
           <ul className="arena-field-list">
             {RESULT_STATUS_VOCABULARY.map((status) => (
               <li key={status}><code>{status}</code></li>
@@ -61,7 +61,7 @@ export function ContractReferencePanel(): ReactNode {
           </ul>
         </section>
         <section data-contract="delivery_preferences">
-          <h4>Delivery preferences ({DELIVERY_PREFERENCES_FIELDS.length} fields)</h4>
+          <h2>Delivery preferences ({DELIVERY_PREFERENCES_FIELDS.length} fields)</h2>
           <ul className="arena-field-list">
             {DELIVERY_PREFERENCES_FIELDS.map((field) => (
               <li key={field}><code>{field}</code></li>
@@ -76,7 +76,7 @@ export function ContractReferencePanel(): ReactNode {
 export function WebhookSetupPanel(): ReactNode {
   return (
     <section className="arena-dev-panel" aria-label="webhook and transport setup">
-      <h3>Webhook &amp; transport setup</h3>
+      <h2>Webhook &amp; transport setup</h2>
       <p className="arena-dev-note">
         Canonical transport headers (from the real binding's request path):
       </p>
@@ -108,7 +108,7 @@ export function WebhookSetupPanel(): ReactNode {
 export function KeysScopesPanel(): ReactNode {
   return (
     <section className="arena-dev-panel" aria-label="keys and scopes">
-      <h3>Keys &amp; scopes</h3>
+      <h2>Keys &amp; scopes</h2>
       <p className="arena-dev-note">{CREDENTIAL_PROVISIONING_DISCLOSURE}</p>
       <button type="button" className="arena-capsule-open" disabled aria-disabled="true">
         Provision credential (disabled — no live provider at this base)
@@ -121,7 +121,7 @@ export function DeliveryStatusPanel(): ReactNode {
   const rows = deliveryStatusFixtureRows();
   return (
     <section className="arena-dev-panel" aria-label="webhook delivery status (fixture)">
-      <h3>Delivery status</h3>
+      <h2>Delivery status</h2>
       <p className="arena-dev-note" data-fixture="true">
         FIXTURE rows (deterministic, labelled) — semantics verbatim from the CF1.0 idempotency law:
       </p>
@@ -143,7 +143,7 @@ export function DeliveryStatusPanel(): ReactNode {
 export function ProviderConfigurationPanel(): ReactNode {
   return (
     <section className="arena-dev-panel" aria-label="capability-provider configuration (read-only vocabulary)">
-      <h3>Capability-provider configuration</h3>
+      <h2>Capability-provider configuration</h2>
       <p className="arena-dev-note">{PROVIDER_CONFIGURATION_CONSTRAINT}</p>
       <ul className="arena-field-list" aria-label="routing vocabulary (spec 1.1)">
         <li><code>human expert</code></li>

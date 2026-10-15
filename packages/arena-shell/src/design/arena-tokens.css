@@ -36,7 +36,7 @@
   /* ---- 文本（界面字阶走 text-ui-*；此处只定色彩） ---- */
   --arena-text-primary: color-mix(in oklab, var(--arena-surface-app, #0f1115) 8%, #ffffff);
   --arena-text-secondary: color-mix(in oklab, var(--arena-surface-app, #0f1115) 45%, #ffffff);
-  --arena-text-muted: color-mix(in oklab, var(--arena-surface-app, #0f1115) 62%, #ffffff);
+  --arena-text-muted: color-mix(in oklab, var(--arena-surface-app, #0f1115) 40%, #ffffff);
   --arena-text-on-soft: #1d2b53;
 
   /* ---- 边界 ---- */
@@ -45,15 +45,15 @@
 
   /* ---- 状态色（逐字承载类型化词表，绝不升值） ---- */
   --arena-color-status-pass: #35a06b;
-  --arena-color-status-denied: #c0392b;
+  --arena-color-status-denied: #e06060;
   --arena-color-status-blocked: #b8860b;
-  --arena-color-status-pending: #6b7a8d;
-  --arena-color-status-info: #3f6df4;
+  --arena-color-status-pending: #d9a53f;
+  --arena-color-status-info: #6b8df9;
 
   /* ---- 证据等级模式（DEMO / FIXTURE / REAL —— 逐字展示，不混合） ---- */
-  --arena-evidence-demo: #8a6d3b;
-  --arena-evidence-fixture: #6d5a8a;
-  --arena-evidence-real: #2f7d4f;
+  --arena-evidence-demo: #b7a14f;
+  --arena-evidence-fixture: #9c86c9;
+  --arena-evidence-real: #4fae74;
 
   /* ---- 焦点与键盘可达（画在包装层；见 shell.css 的 :has() 用法） ---- */
   --arena-focus-ring-color: var(--arena-color-brand, #3f6df4);
@@ -102,4 +102,12 @@
   --arena-text-muted: #66707f;
   --arena-border-subtle: #e3e6ec;
   --arena-border-strong: #c9cfd9;
+  --arena-color-status-pass: #1c7a4a;
+  --arena-color-status-denied: #b02a20;
+  --arena-color-status-blocked: #8a6508;
+  --arena-color-status-pending: #8a6508;
+  --arena-color-status-info: #274eb0;
+  --arena-evidence-demo: #7a5c1e;
+  --arena-evidence-fixture: #5d4a85;
+  --arena-evidence-real: #1e6b40;
 }

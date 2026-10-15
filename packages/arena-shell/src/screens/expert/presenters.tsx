@@ -29,7 +29,7 @@ export function ExpertLoading(): ReactNode {
 export function ExpertEmpty(): ReactNode {
   return (
     <section className="arena-screen-state arena-state-empty" aria-label="no assignments">
-      <h3>No assignments</h3>
+      <h2>No assignments</h2>
       <p>
         When the routing loop assigns you an eligible task it appears here with its typed
         qualification and conflict facts.
@@ -41,7 +41,7 @@ export function ExpertEmpty(): ReactNode {
 export function ExpertError(props: { message: string; onRetry: () => void }): ReactNode {
   return (
     <section className="arena-screen-state arena-state-error" role="alert" aria-label="queue error">
-      <h3>Could not load the queue</h3>
+      <h2>Could not load the queue</h2>
       <p className="arena-typed-error">{props.message}</p>
       <button type="button" className="arena-retry" onClick={props.onRetry}>
         Retry queue load
@@ -102,7 +102,7 @@ export function TaskContextPanel(props: { attempt: AttemptDetailView }): ReactNo
   const posture = isolationPostureViewModel();
   return (
     <section className="arena-task-context" aria-label="task context" data-attempt={props.attempt.attempt_id}>
-      <h3>Task context</h3>
+      <h2>Task context</h2>
       <p className="arena-task-fact">
         Attempt <code>{props.attempt.attempt_id}</code> on escalation{" "}
         <code>{props.attempt.escalation_id}</code> — <StateChip machine="attempt" state={props.attempt.status} />
@@ -112,7 +112,7 @@ export function TaskContextPanel(props: { attempt: AttemptDetailView }): ReactNo
         {props.attempt.candidates} candidate{props.attempt.candidates === 1 ? "" : "s"} submitted
       </p>
       <div className="arena-capsule-entry" aria-label="privacy-bounded capsule entry">
-        <h4>Capsule entry (privacy-bounded workspace)</h4>
+        <h2>Capsule entry (privacy-bounded workspace)</h2>
         <p className="arena-capsule-posture" data-untrusted-execution={posture.untrustedExecution}>
           {posture.capsuleDisclosure}
         </p>
@@ -143,7 +143,7 @@ export function CandidateSubmissionPanel(props: {
         props.onSubmit();
       }}
     >
-      <h3>Candidate submission</h3>
+      <h2>Candidate submission</h2>
       <label htmlFor="arena-expert-manifest">Artifact manifest (content)</label>
       <textarea
         id="arena-expert-manifest"
@@ -188,7 +188,7 @@ export function SelfEvaluationPanelView(props: {
         props.onSubmit();
       }}
     >
-      <h3>Structured self-evaluation</h3>
+      <h2>Structured self-evaluation</h2>
       <p className="arena-self-eval-distinction">{SELF_EVALUATION_VISUAL_DISTINCTION}</p>
       <DemoDisclosure />
       {props.criteria.map((criterion) => {
@@ -256,7 +256,7 @@ export function InterventionPanel(props: {
         props.onSubmit();
       }}
     >
-      <h3>Intervention submission (canonical command path)</h3>
+      <h2>Intervention submission (canonical command path)</h2>
       <label htmlFor="arena-intervention-escalation">Escalation id</label>
       <input
         id="arena-intervention-escalation"
@@ -281,7 +281,7 @@ export function PayoutPanel(props: { attemptState: string | null }): ReactNode {
   const vm = payoutStatusViewModel(props.attemptState);
   return (
     <section className="arena-payout-panel" aria-label="payout and proof status">
-      <h3>Payout / proof status</h3>
+      <h2>Payout / proof status</h2>
       <p className="arena-payout-rule">{vm.rule}</p>
       <p className="arena-payout-finance" data-finance-mode={vm.financeMode}>
         Ledger mode: {vm.financeMode} (test-mode payments only — never live money in this posture)

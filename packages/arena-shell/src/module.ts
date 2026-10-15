@@ -15,5 +15,13 @@ export const arenaShellModule = {
     "shell-design-tokens",
     "shell-release-posture",
   ],
-  publicEntrypoints: ["contract.ts"],
+  // UIA-001 TL 集成：外壳/屏登记/样式桶加入公开面（挂接需要；语义变更走 ACR）。
+  publicEntrypoints: [
+    "contract.ts",
+    "shell/ArenaShell.tsx",
+    "screens.ts",
+    "identity/productTitle.ts",
+    "styles.css",
+    "design/arena-tokens.css",
+  ],
 } as const;

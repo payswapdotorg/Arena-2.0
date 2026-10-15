@@ -915,6 +915,15 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
+      axe-core:
+        specifier: ^4.11.3
+        version: 4.14.0
+      esbuild:
+        specifier: ^0.27.7
+        version: 0.27.7
+      playwright:
+        specifier: ^1.59.1
+        version: 1.64.0
       react-dom:
         specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
@@ -1619,6 +1628,12 @@ importers:
 
   packages/web:
     dependencies:
+      '@arena/shell':
+        specifier: workspace:*
+        version: link:../arena-shell
+      '@arena/workbench':
+        specifier: workspace:*
+        version: link:../arena-workbench
       '@zcode/client':
         specifier: workspace:*
         version: link:../client
