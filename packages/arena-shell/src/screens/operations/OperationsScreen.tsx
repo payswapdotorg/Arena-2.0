@@ -1,5 +1,5 @@
 /**
- * UIA-001 Lane C — 运维/治理屏容器（React 薄胶水）。
+ * UIA-001 Lane C — 运维/治理屏容器（React 薄胶水；UIA-003 扩展：真实 ops 挂接面）。
  */
 import { useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
@@ -7,8 +7,11 @@ import type { ArenaScreenHost } from "../../contract.js";
 import type { OperationsController } from "./controller.js";
 import {
   AuditTrailPanel,
+  CapacityPanel,
+  CustodianPanel,
+  DeadLetterPanel,
+  HealthReadinessPanel,
   LensContext,
-  OpsResolutionNote,
   ProviderHealthPanel,
   ReleasePostureNote,
   ReleasePosturePanel,
@@ -33,14 +36,34 @@ export function OperationsScreen(props: OperationsScreenProps): ReactNode {
       <LensContext lens={host.lens} />
       <h1>Operations</h1>
       <ReleasePostureNote />
-      <OpsResolutionNote />
 
       <div className="arena-operations-grid">
         <ReleasePosturePanel />
+        <HealthReadinessPanel readiness={snap.readiness} />
         <ProviderHealthPanel />
+        <CapacityPanel />
+        <DeadLetterPanel />
+        <CustodianPanel />
         <StateVocabularyPanel />
         <AuditTrailPanel trail={snap.auditTrail} />
       </div>
+
+      <form
+        className="arena-audit-lookup"
+        aria-label="run the readiness aggregate"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void controller.runReadiness();
+        }}
+      >
+        <button
+          type="submit"
+          className="arena-submit"
+          disabled={snap.readiness.kind === "unwired"}
+        >
+          Run readiness aggregate (explicit per-probe statuses; any non-UP fails closed)
+        </button>
+      </form>
 
       <form
         className="arena-audit-lookup"
