@@ -347,3 +347,62 @@ Remaining frontiers for successor WOs (recomputed): the production credential ad
 IdP decision), the arena-api deployment topology (operator infrastructure), and the desktop
 mounted-app browser-journey class (needs the Electron runtime class — station-disclosed
 limitation). The light-theme activation calibration frontier is CLOSED.
+
+## 14. UIA-006 — the desktop mounted-app browser-journey class (recorded 2026-10-16; issue #80 CLOSED completed)
+
+- **Registration** (issue #80; commit `f4dfdb4`): the TL pre-wired `packages/desktop`
+  devDeps (playwright ^1.64.0 + esbuild ^0.27.7 + lockfile intake — TL-owned manifests) and
+  verified the Electron runtime class at station (ELECTRON_BOOT_OK 41.0.3 under Xvfb :99 —
+  a BrowserWindow with the production security posture loads a page and exits cleanly; the
+  dbus socket warnings are harmless container noise).
+- **Dispatch + incident**: implementation-scoped as the UIA-003/004/005 lessons directed —
+  but the worker session hit the platform CONTEXT DEADLINE (the UIA-002 incident class,
+  second occurrence). The TL harvested the dead worker's tree (~95% of the in-fence lane:
+  11 files ~2040 lines + partial evidence — 10 axe scans, 1 violation, the configured
+  journey incomplete) and completed the recovery: a leftover TEMP fetch-patch diagnostic
+  removed (it crashed rebuilds via misordered references), the fallback disclosure landmark
+  fixed (`section` → `main`), everything re-run.
+- **The real find — MAINT-004 (issue #81, PR #82 squash `c246987`, landed FIRST)**: the
+  configured journey never completed (zero requests reached the local fixture) → a five-probe
+  TL diagnostic battery isolated the root cause: `ArenaApiClient` captured the global `fetch`
+  and called it as `this.doFetch(...)` — in browser runtimes the receiver is the client
+  instance → Chromium/Electron throw `TypeError: Failed to execute 'fetch' on 'Window':
+  Illegal invocation` → `raw()` swallowed it → every binding projection silently degraded.
+  **The production web app and the production desktop renderer's every real-bind network
+  call had failed silently since AR2-006** (node fetch is receiver-insensitive — all node
+  suites green; the browser journeys had never exercised a configured fetch until now).
+  Fix: `fetch.bind(globalThis)` + a WebIDL-law regression test (verified fail-pre-fix /
+  pass-post-fix).
+- **The lane** (PR #83, squash `eb713ed`): the harness — `electron-main.cjs` (production
+  posture: contextIsolation/nodeIntegration:false/sandbox/webviewTag:false, IPC-free); the
+  esbuild render host mounting the REAL `buildArenaDesktopComposition` inside the REAL
+  `ArenaShell` AS-IS (zero renderer src edits) with the UIA-005 theme law and the
+  `node:crypto` alias to the REAL renderer shim under fail-closed parity; the REAL
+  X11-handshake display probe (honest NOT_SUPPORTED); the CORS-postured local arena-api
+  fixture. The journey roster (12 tests): entry predicate both postures (the REAL
+  `parseDesktopEntryMode` on the loaded URL), the honest unconfigured sentinel (typed
+  TRANSPORT_ERROR/DOWN verbatim), **the configured-baseUrl REAL flow** (tracking/timeline/
+  result projections over real HTTP, the idempotent submit with the 64-hex digest through
+  the real shim, the fail-closed station probes with a real DOWN row), navigation/keyboard
+  (roving tabindex, Home/End/ArrowDown, hash deep-links), the presentation-invariant role
+  lens, theme light+dark computed surfaces, responsive 1440×900 + 390×844 zero-overflow,
+  branding (the title law, the wordmark, zero user-visible ZCode).
+- **Evidence**: 12 screenshots + 21 transcripts under `docs/evidence/ui/uia-006-desktop/**`;
+  aggregate 12 axe scans, 0 violations. Station battery: arch 0 / root typecheck 0 / oxlint
+  0 errors 74 warnings (the disclosed tree-state baseline — A/B-identical without the lane) /
+  desktop renderer 24/24 / arena-workbench 39+1 honest skip / journeys 12/12 under Xvfb; CI
+  green on the PR head.
+- **Disclosed limitations**: the browser's automatic typed-404 resource logs (the
+  result-view ARENA_RESULT_NOT_AVAILABLE stub — intentionally driven and asserted as visible
+  text) are the one excluded console-noise class (recorded verbatim in the transcripts; every
+  other console error and every uncaught page error fails the journey); the host `dist/`
+  bundle is gitignored (built at run time — the web a11y host precedent); the journeys stay a
+  station/TL-run gate (not a CI step — unchanged posture); the replay-dispatch capacity class
+  has now hit the platform context deadline twice (UIA-002, UIA-006) — both recovered by TL
+  harvest + completion; budget for the harvest-completion posture.
+
+Remaining frontiers for successor WOs (recomputed): the production credential adapter (owner
+IdP decision) and the arena-api deployment topology (operator infrastructure) — both OWNER/
+OPERATOR decisions, not TL-actionable implementation. **The desktop mounted-app
+browser-journey frontier is CLOSED; every TL-actionable recorded implementation frontier is
+now CLOSED.**
