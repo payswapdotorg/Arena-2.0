@@ -27,6 +27,8 @@
     "lint:fix": "oxlint --fix"
   },
   "dependencies": {
+    "@arena/shell": "workspace:*",
+    "@arena/workbench": "workspace:*",
     "@arms/rum-electron": "^0.0.3",
     "@babel/runtime": "^7.24.5",
     "@fiahfy/icns": "^0.0.7",

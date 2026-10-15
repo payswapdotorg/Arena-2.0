@@ -1005,6 +1005,12 @@ importers:
 
   packages/desktop:
     dependencies:
+      '@arena/shell':
+        specifier: workspace:*
+        version: link:../arena-shell
+      '@arena/workbench':
+        specifier: workspace:*
+        version: link:../arena-workbench
       '@arms/rum-electron':
         specifier: ^0.0.3
         version: 0.0.3(patch_hash=36855354851ea495bc47a03340b0484ff62836b739cad56904b8a69f18e2ae97)(@babel/runtime@7.29.7)(electron@41.0.3)
