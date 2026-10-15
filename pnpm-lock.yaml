@@ -630,6 +630,9 @@ importers:
       '@arena/identity':
         specifier: workspace:*
         version: link:../arena-identity
+      '@arena/ops':
+        specifier: workspace:*
+        version: link:../arena-ops
       '@arena/persistence':
         specifier: workspace:*
         version: link:../arena-persistence

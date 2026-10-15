@@ -70,7 +70,7 @@ modules:
   - id: arena-api
     roots: [packages/arena-api/src]
     managed: true
-    requires: [arena-contracts, arena-application, arena-persistence]
+    requires: [arena-contracts, arena-application, arena-persistence, arena-ops]
     publicEntrypoints: [packages/arena-api/src/contract.ts]
     owner: arena-tl
   - id: arena-capsule

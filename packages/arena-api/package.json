@@ -13,6 +13,7 @@
     "@arena/application": "workspace:*",
     "@arena/contracts": "workspace:*",
     "@arena/identity": "workspace:*",
+    "@arena/ops": "workspace:*",
     "@arena/persistence": "workspace:*",
     "zod": "4.6.5"
   },
