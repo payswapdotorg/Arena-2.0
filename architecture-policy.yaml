@@ -88,7 +88,7 @@ modules:
   - id: arena-shell
     roots: [packages/arena-shell/src]
     managed: true
-    requires: [arena-contracts, arena-workbench]
+    requires: [arena-contracts, arena-workbench, arena-sdk, arena-ops, arena-acquisition]
     publicEntrypoints:
       [
         packages/arena-shell/src/contract.ts,

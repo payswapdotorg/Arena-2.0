@@ -17,7 +17,10 @@
     "a11y:test": "tsx --test test/a11y/journeys.test.ts"
   },
   "dependencies": {
+    "@arena/acquisition": "workspace:*",
     "@arena/contracts": "workspace:*",
+    "@arena/ops": "workspace:*",
+    "@arena/sdk": "workspace:*",
     "@arena/workbench": "workspace:*",
     "react": "^19.2.0"
   },

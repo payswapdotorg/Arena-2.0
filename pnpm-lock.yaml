@@ -899,9 +899,18 @@ importers:
 
   packages/arena-shell:
     dependencies:
+      '@arena/acquisition':
+        specifier: workspace:*
+        version: link:../arena-acquisition
       '@arena/contracts':
         specifier: workspace:*
         version: link:../arena-contracts
+      '@arena/ops':
+        specifier: workspace:*
+        version: link:../arena-ops
+      '@arena/sdk':
+        specifier: workspace:*
+        version: link:../arena-sdk
       '@arena/workbench':
         specifier: workspace:*
         version: link:../arena-workbench
