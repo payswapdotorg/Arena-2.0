@@ -2,14 +2,27 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { renderToString } from "react-dom/server";
 import { createElement } from "react";
+import {
+  CAPACITY_DISCLOSURE,
+  CUSTODIAN_DISCLOSURE,
+  DEAD_LETTER_DISCLOSURE,
+  HEALTH_DISCLOSURE,
+} from "@arena/ops";
+import { providerStatusSchema } from "@arena/acquisition";
 import { OperationsScreen } from "../../src/screens/operations/OperationsScreen.js";
 import { operationsRegistration } from "../../src/screens/operations/registration.js";
-import { OperationsController, type OperationsAuditPort } from "../../src/screens/operations/controller.js";
+import {
+  OperationsController,
+  type OperationsAuditPort,
+} from "../../src/screens/operations/controller.js";
+import * as postureModel from "../../src/screens/operations/postureModel.js";
 import { DEMO_PRINCIPAL_TOKENS } from "@arena/workbench";
 import type { ArenaScreenHost } from "../../src/contract.js";
 
 /**
- * UIA-001 Lane C — 运维/治理渲染测试（RENDERED + posture 真相法断言）。
+ * UIA-003 — 运维/治理渲染测试（RENDERED；真实 ops/acquisition 挂接面 +
+ * posture 真相法断言 + 退役常量 GONE 断言）。
+ * 真实探针聚合（node:sqlite / bwrap 实测）覆盖见 operations-real.test.tsx。
  */
 
 function normalize(html: string): string {
@@ -65,11 +78,53 @@ test("restricted actions render truthfully disabled with their recorded bases (n
   assert.match(html, /basis: /);
 });
 
-test("provider health renders the typed statuses with evidence grades verbatim", () => {
+test("the HEALTH_DISCLOSURE renders verbatim and the unwired aggregate refuses to evaluate", () => {
   const html = render(makeController());
-  assert.match(html, /ACTIVE/);
-  assert.match(html, /SUSPENDED/);
+  assert.match(html, new RegExp(HEALTH_DISCLOSURE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(html, /no station probes wired at this composition root/);
+  assert.match(html, /the aggregate over zero probes would claim ready, which this surface refuses to render as truth/);
+  assert.match(html, /aria-label="run the readiness aggregate"/);
+  assert.match(html, /aria-label="run the readiness aggregate".*disabled/s);
+});
+
+test("provider health renders the REAL ACQ1.0 provider status vocabulary 1:1", () => {
+  const html = render(makeController());
+  assert.deepEqual([...postureModel.PROVIDER_STATUSES], [...providerStatusSchema.options]);
+  for (const status of providerStatusSchema.options) {
+    assert.match(html, new RegExp(`data-status="${status}"`));
+  }
   assert.match(html, /DEMO \/ FIXTURE \/ REAL/);
+  assert.match(html, /@arena\/acquisition providerStatusSchema/);
+  assert.doesNotMatch(html, /data-status="DEGRADED"/);
+});
+
+test("the retired ops fallback vocabulary is GONE (exports absent, copy absent)", () => {
+  assert.equal("OPS_RESOLUTION_CONSTRAINT" in postureModel, false);
+  assert.equal("PROVIDER_HEALTH_STATUSES" in postureModel, false);
+  const html = render(makeController());
+  assert.doesNotMatch(html, /is not resolvable\s+from @arena\/shell/);
+  assert.doesNotMatch(html, /mount at TL integration/);
+});
+
+test("the capacity panel renders CAPACITY_DISCLOSURE verbatim over an EMPTY-labeled gauge", () => {
+  const html = render(makeController());
+  assert.match(html, new RegExp(CAPACITY_DISCLOSURE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(html, /EMPTY input \(no live outbox\/capsule feed is wired to this surface/);
+  assert.match(html, /data-queue-lag-level="OK"/);
+});
+
+test("the dead-letter panel renders DEAD_LETTER_DISCLOSURE verbatim with the retained: true literal", () => {
+  const html = render(makeController());
+  assert.match(html, new RegExp(DEAD_LETTER_DISCLOSURE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(html, /data-dead-letter-retained="true"/);
+  assert.match(html, /flagged \(attempts ≥ 5\)/);
+});
+
+test("the custodian panel renders CUSTODIAN_DISCLOSURE verbatim over an empty ledger", () => {
+  const html = render(makeController());
+  assert.match(html, new RegExp(CUSTODIAN_DISCLOSURE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(html, /ledger entries/);
+  assert.match(html, /teardown drift/);
 });
 
 test("the operational state vocabulary renders 1:1 from the frozen machines", () => {
@@ -105,12 +160,6 @@ test("audit trail error state renders the typed NOT_FOUND envelope verbatim", as
   assert.match(html, /ARENA_ESCALATION_NOT_FOUND: no such escalation for this principal/);
 });
 
-test("the ops resolution constraint renders honestly", () => {
-  const html = render(makeController());
-  assert.match(html, /@arena\/ops .*is not resolvable/);
-  assert.match(html, /mount at TL integration/);
-});
-
 test("lens is presentation only — the operations surface renders identically under another lens", async () => {
   const controller = makeController();
   await controller.loadAuditTrail("esc_00000001");
@@ -125,7 +174,7 @@ test("lens is presentation only — the operations surface renders identically u
   );
 });
 
-test("registration wires the operations screen with zero ZCode branding", () => {
+test("registration keeps the { audit, principal } call shape working with zero ZCode branding", () => {
   const principal = DEMO_PRINCIPAL_TOKENS[0]?.principal ?? {
     tenant_id: "tnt_00000001",
     user_id: "usr_00000001",
@@ -146,6 +195,10 @@ test("structural a11y: the operations surface carries roles, labels, and disable
   assert.match(html, /aria-label="operations and governance"/);
   assert.match(html, /aria-label="release posture \(recorded truth\)"/);
   assert.match(html, /aria-label="restricted owner-gated actions"/);
+  assert.match(html, /aria-label="aggregate readiness \(real probe semantics\)"/);
+  assert.match(html, /aria-label="capacity \(quota fail-closed \+ queue lag gauge\)"/);
+  assert.match(html, /aria-label="dead letters \(visibility over the durable outbox\)"/);
+  assert.match(html, /aria-label="capsule custodian \(teardown drift \+ recovery\)"/);
   assert.match(html, /aria-disabled="true"/);
   assert.match(html, /<label for="arena-audit-escalation">/);
 });

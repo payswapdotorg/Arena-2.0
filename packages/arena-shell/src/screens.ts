@@ -18,6 +18,7 @@ export {
 } from "./screens/reviewer/registration.js";
 export type { ReviewerScreenDeps } from "./screens/reviewer/registration.js";
 export { developerRegistration } from "./screens/developer/registration.js";
+export type { DeveloperScreenDeps } from "./screens/developer/registration.js";
 export {
   operationsRegistration,
   bindingAuditAdapter,

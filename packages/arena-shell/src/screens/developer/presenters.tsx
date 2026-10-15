@@ -1,8 +1,11 @@
 /**
- * UIA-001 Lane C — 开发者门户展示层（纯 props；react-dom/server 可渲染）。
+ * UIA-001 Lane C — 开发者门户展示层（纯 props；react-dom/server 可渲染；UIA-003 扩展）。
  *
  * 展示纪律：契约参考逐字（真实 schema 枚举）；键/供给如实 pending；
  * 投递状态 FIXTURE 标注；test_mode/NOT_GO 姿态诚实；零 ZCode 品牌。
+ * UIA-003：提供方配置面板从手抄词表改为真实 ACQ1.0 词表
+ * （providerRegistry —— @arena/acquisition 公开 schema 运行时枚举）；
+ * SDK 回退约束披露（SdkResolutionNote）随真实挂接面退役。
  */
 import type { ReactNode } from "react";
 import { ARENA_PRODUCT_NAME, ARENA_RELEASE_POSTURE, type ArenaScreenHost } from "../../contract.js";
@@ -13,11 +16,10 @@ import {
   deliveryStatusFixtureRows,
   EVENT_ENVELOPE_FIELDS,
   IDEMPOTENCY_RULES,
-  PROVIDER_CONFIGURATION_CONSTRAINT,
   REQUEST_ENVELOPE_FIELDS,
   RESULT_STATUS_VOCABULARY,
-  SDK_OPS_RESOLUTION_CONSTRAINT,
 } from "./contractReference.js";
+import { providerRegistryViewModel } from "./providerRegistry.js";
 
 export function LensContext(props: { lens: ArenaScreenHost["lens"] }): ReactNode {
   return (
@@ -140,26 +142,67 @@ export function DeliveryStatusPanel(): ReactNode {
   );
 }
 
-export function ProviderConfigurationPanel(): ReactNode {
+/** 能力提供方注册表（真实 ACQ1.0 词表 —— @arena/acquisition 公开 schema 运行时枚举）。 */
+export function ProviderRegistryPanel(): ReactNode {
+  const vm = providerRegistryViewModel();
   return (
-    <section className="arena-dev-panel" aria-label="capability-provider configuration (read-only vocabulary)">
-      <h2>Capability-provider configuration</h2>
-      <p className="arena-dev-note">{PROVIDER_CONFIGURATION_CONSTRAINT}</p>
-      <ul className="arena-field-list" aria-label="routing vocabulary (spec 1.1)">
-        <li><code>human expert</code></li>
-        <li><code>scraper / data provider</code></li>
-        <li><code>approved external API</code></li>
-        <li><code>combination</code></li>
-      </ul>
+    <section className="arena-dev-panel" aria-label="capability-provider registry (read-only ACQ1.0 vocabulary)">
+      <h2>Capability-provider registry</h2>
+      <p className="arena-dev-note">
+        Read-only presentation of the ACQ1.0 routing vocabulary and provider-registration descriptor
+        shapes, enumerated at runtime from the real @arena/acquisition schemas (never hand-mirrored):
+      </p>
+      <div className="arena-contract-shapes">
+        <section data-contract="acquisition_route_modes">
+          <h3>Route modes</h3>
+          <ul className="arena-field-list">
+            {vm.routeModes.map((mode) => (
+              <li key={mode}><code>{mode}</code></li>
+            ))}
+          </ul>
+        </section>
+        <section data-contract="preferred_route">
+          <h3>Preferred route ({vm.preferredRouteFields.length} fields)</h3>
+          <ul className="arena-field-list">
+            {vm.preferredRouteFields.map((field) => (
+              <li key={field}><code>{field}</code></li>
+            ))}
+          </ul>
+          <p className="arena-dev-note">pinned reference fields: {vm.pinnedReferenceFields.map((field) => (
+            <code key={field}>{field} </code>
+          ))}</p>
+        </section>
+        <section data-contract="provider_descriptor">
+          <h3>Provider descriptor ({vm.descriptorFields.length} fields)</h3>
+          <ul className="arena-field-list">
+            {vm.descriptorFields.map((field) => (
+              <li key={field}><code>{field}</code></li>
+            ))}
+          </ul>
+        </section>
+        <section data-contract="provider_kinds_statuses">
+          <h3>Kinds · statuses · rights postures</h3>
+          <ul className="arena-field-list">
+            {vm.kinds.map((kind) => (
+              <li key={kind}><code>{kind}</code></li>
+            ))}
+            {vm.statuses.map((status) => (
+              <li key={status} data-provider-status={status}><code>{status}</code></li>
+            ))}
+            {vm.rightsPostures.map((posture) => (
+              <li key={posture}><code>{posture}</code></li>
+            ))}
+          </ul>
+          <p className="arena-dev-note">capability offer fields: {vm.capabilityOfferFields.map((field) => (
+            <code key={field}>{field} </code>
+          ))}</p>
+        </section>
+      </div>
+      <dl className="arena-trail-facts">
+        <div><dt>fallback rule</dt><dd>{vm.fallbackRule}</dd></div>
+        <div><dt>tenant rule</dt><dd>{vm.tenantRule}</dd></div>
+      </dl>
     </section>
-  );
-}
-
-export function SdkResolutionNote(): ReactNode {
-  return (
-    <p className="arena-dev-constraint" role="note">
-      {SDK_OPS_RESOLUTION_CONSTRAINT}
-    </p>
   );
 }
 
