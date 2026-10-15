@@ -5,6 +5,10 @@
     "rootDir": "src/renderer",
     "lib": ["es2025", "dom", "dom.iterable"],
     "jsx": "react-jsx",
+    // UIA-002（issue #71）：renderer 程序现在编译 @arena/workbench 源码（其表单层
+    // import node:crypto —— 运行时由 vite alias 指向纯 TS shim；类型程序需要
+    // node 类型；与 packages/web/tsconfig.json 的 UIA-001 集成同一手法）。
+    "types": ["node"],
     "noEmit": true
   },
   "include": ["src/renderer"],

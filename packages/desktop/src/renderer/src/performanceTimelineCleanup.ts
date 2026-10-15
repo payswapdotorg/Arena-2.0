@@ -1,6 +1,10 @@
 const PERFORMANCE_TIMELINE_CLEANUP_INTERVAL_MS = 10_000;
 
-let cleanupTimer: ReturnType<typeof window.setInterval> | undefined;
+// UIA-002（issue #71）：renderer 类型程序加 node 类型后（@arena/workbench 源码
+// 需要），`ReturnType<typeof window.setInterval>` 会被 node 的全局 setInterval
+// 签名劫持成 NodeJS.Timeout —— 显式写 number（DOM 面 window.setInterval 的
+// 真实返回），语义不变。
+let cleanupTimer: number | undefined;
 
 export function startPerformanceTimelineCleanup(): void {
   if (!import.meta.env.DEV || cleanupTimer != null) {
