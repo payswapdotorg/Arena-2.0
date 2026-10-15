@@ -198,3 +198,40 @@ Remaining frontiers for successor WOs: the desktop Arena-first mounting (rendere
 re-sequencing), the @arena/sdk/@arena/ops/@arena/acquisition surface mounts (module requires
 extension), the production credential adapter (owner IdP decision), the arena-api deployment
 topology, the light-theme activation calibration.
+
+## 10. UIA-002 — the desktop Arena-first mounting (recorded 2026-10-15; issue #71 CLOSED completed)
+
+The first successor work order from the UIA-001 recorded frontiers, executed under the
+resident TL watch loop (monitor → harvest → review → approve/require-changes → dispatch next):
+
+- **Registration** `ab05231`: issue #71 + the dispatch-record comment; ledger row + impl-plan
+  section; the desktop manifest pre-wire (`@arena/shell` + `@arena/workbench` workspace deps +
+  lockfile intake — TL-owned); station baseline green on the registration tree.
+- **Dispatch**: a subagent worker session (GLM, Full-Stack) via the resident TL session's
+  in-session Task tool — the replay-dispatch capacity class. The worker session delivered the
+  complete 8-file lane in-fence, then hit the platform CONTEXT DEADLINE before battery/commit/
+  push — the incident and the TL's completion are disclosed in the PR body (the dispatch-capacity
+  lesson: split implement / battery+PR into separate dispatches, or budget tighter scopes).
+- **Landed** PR #72 squash `a66a949`: the ArenaShell five-screen composition is the desktop
+  renderer's arena-first business-root render (`arenaDesktopMount.ts` — the pure decision +
+  composition module: entry-mode predicate mirroring the web `?workspace=1`/`app=workspace`
+  fallback semantics, the baseUrl law with the honest port-0 sentinel for the unconfigured
+  `VITE_ARENA_API_URL` posture — typed `TRANSPORT_ERROR`/`UNAUTHENTICATED` rendered verbatim);
+  the inherited workspace `Root` verbatim behind the fallback entry; the admission/update-status/
+  port lifecycles untouched; the renderer sha256 shim (correct `+9` padding) + the vite
+  `node:crypto` alias; 22 node tests (REAL composition + a real local `node:http` probe);
+  the TL type-program wiring (renderer `types:["node"]`, `env.d.ts`, the interval-handle typing).
+- **MAINT-003** (issue #73, `b84c70b`): a real defect the lane surfaced in the WEB shim — the
+  `+8` padding bug (wrong digest at message length ≡ 56 mod 64; FIPS 448-bit vector
+  station-verified mismatching node:crypto). Scoped TL-direct fix in the owning module;
+  `scripts/verify_sha256_shim.ts` now actually persisted (27/27 checks incl. the boundary sweep
+  and known-digest anchors — the UIA-001 record had claimed the script but it was absent, and
+  its 9-case verification had no boundary coverage, which is how the bug slipped).
+- **Integration**: the desktop-renderer CI battery step added; PROJECT-STATE / dispatch ledger /
+  implementation-plan reconciled in the same integration commit.
+
+Remaining frontiers for successor WOs (recomputed): the @arena/sdk/@arena/ops/@arena/acquisition
+surface mounts (module requires extension), the production credential adapter (owner IdP
+decision), the arena-api deployment topology (operator infrastructure), the light-theme
+activation calibration, and the desktop mounted-app browser-journey class (the web journeys
+precedent applied to the real desktop shell — needs the Electron runtime class).
