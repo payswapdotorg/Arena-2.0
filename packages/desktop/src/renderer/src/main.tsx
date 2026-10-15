@@ -17,6 +17,13 @@ import {
 } from "@zcode/ui";
 import "@zcode/ui/styles.css";
 import { connectViaMessagePort, createMessagePortServiceConnection } from "@zcode/client";
+import { ArenaShell } from "@arena/shell/shell";
+import "@arena/shell/styles.css";
+import {
+  buildArenaDesktopComposition,
+  parseDesktopEntryMode,
+  resolveArenaDesktopBaseUrl,
+} from "./arenaDesktopMount.js";
 import {
   InternalChannels,
   databaseStartupStateSchema,
@@ -42,6 +49,8 @@ import {
 
 type DesktopRendererImportMetaEnv = {
   VITE_ZCODE_E2E_STORE_BRIDGE?: string;
+  // UIA-002：Arena API 绑定的 baseUrl（与 web 同名变量；未配置 = 诚实未配置姿态）。
+  VITE_ARENA_API_URL?: string;
 };
 
 startPerformanceTimelineCleanup();
@@ -322,6 +331,33 @@ function initializeBusinessRoot(port: MessagePort): void {
   // 必须在 createRoot 之前注入 reporter：根级 AppErrorBoundary 的职责正是兜住 Root 自身
   // 渲染崩溃，若依赖 Root 的 effect 注入，则 Root 首帧就崩时上报会丢失。
   setReactErrorArmsReporter(desktopPlatform);
+
+  // UIA-002（issue #71）：Arena 外壳 = 桌面主窗口面（spec §1.2）。服务装配
+  // （消息端口连接 / 基础服务注册 / telemetry / stream clientId / 错误上报）
+  // 对两条入口完全一致 —— 这里只切换业务根的渲染目标。未配置
+  // VITE_ARENA_API_URL = 诚实未配置姿态：绑定指向不可达哨兵，屏面逐字渲染
+  // 类型化连接失败（无 mock 成功、无假成功；桌面暂无随包 arena-api）。
+  if (parseDesktopEntryMode(window.location.search) === "arena-first") {
+    const env = ((import.meta as ImportMeta & { env?: DesktopRendererImportMetaEnv }).env ??
+      {}) as DesktopRendererImportMetaEnv;
+    const composition = buildArenaDesktopComposition({
+      baseUrl: resolveArenaDesktopBaseUrl(env.VITE_ARENA_API_URL),
+    });
+    composition.applyTitle();
+    appRoot?.render(
+      <AppErrorBoundary isDesktop isMacDesktop={isMacDesktop} isWindowsDesktop={isWindowsDesktop}>
+        <ZCodeIntlProvider
+          settingService={settingService}
+          broadcastService={services.broadcastService}
+          resolveSystemLocale={desktopPlatform.getSystemLocale}
+        >
+          <StartupReadyNotifier />
+          <ArenaShell registry={composition.registry} announceKeyboardHints />
+        </ZCodeIntlProvider>
+      </AppErrorBoundary>,
+    );
+    return;
+  }
 
   appRoot?.render(
     <AppErrorBoundary isDesktop isMacDesktop={isMacDesktop} isWindowsDesktop={isWindowsDesktop}>

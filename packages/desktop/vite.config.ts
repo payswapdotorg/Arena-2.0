@@ -183,6 +183,11 @@ export default defineConfig(({ mode }) => {
         // 里可能残留 d3-shape/node_modules/d3-path@1.x，Vite 预构建会优先命中旧包并报 Missing export。
         // 这里把 d3-path 固定到根部 3.x 入口，确保桌面端依赖优化和运行时解析一致。
         "d3-path": resolve(__dirname, "../../node_modules/d3-path/src/index.js"),
+        // UIA-002（issue #71）：@arena/workbench 表单层的同步摘要默认走 node:crypto，
+        // Electron renderer（浏览器面）内替换为纯 TS sha256 shim（与 web 端同一
+        // 集成手法；node 套件对拍 node:crypto 逐字节一致，含 FIPS 180-4 向量；
+        // Node 侧运行不受影响 —— 域代码零改动）。
+        "node:crypto": resolve(__dirname, "src/renderer/src/arenaNodeCryptoShim.ts"),
       },
       dedupe: ["react", "react-dom", "lucide-react"],
     },
