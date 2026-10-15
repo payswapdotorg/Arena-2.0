@@ -1,0 +1,21 @@
+{
+  "kind": "axe-scan",
+  "journey": "light-theme",
+  "state": "reviewer",
+  "viewport": "desktop",
+  "ruleTags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa",
+    "best-practice"
+  ],
+  "violations": [],
+  "passesCount": 43,
+  "incomplete": [
+    "color-contrast"
+  ],
+  "inapplicableCount": 47,
+  "consoleErrors": [],
+  "pageErrors": []
+}

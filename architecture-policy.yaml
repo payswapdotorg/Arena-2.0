@@ -97,6 +97,7 @@ modules:
         packages/arena-shell/src/identity/productTitle.ts,
         packages/arena-shell/src/styles.css,
         packages/arena-shell/src/design/arena-tokens.css,
+        packages/arena-shell/src/design/arenaTheme.ts,
       ]
     owner: arena-tl
   - id: arena-persistence
