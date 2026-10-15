@@ -235,3 +235,37 @@ surface mounts (module requires extension), the production credential adapter (o
 decision), the arena-api deployment topology (operator infrastructure), the light-theme
 activation calibration, and the desktop mounted-app browser-journey class (the web journeys
 precedent applied to the real desktop shell — needs the Electron runtime class).
+
+## 11. UIA-003 — the SDK/ops/acquisition surface mounts (recorded 2026-10-15; issue #74 CLOSED completed)
+
+The second successor work order from the UIA-001 recorded frontiers, executed under the
+resident TL watch loop with the **implementation-scoped dispatch** refinement (the UIA-002
+deadline-incident lesson: the worker session implements in-fence; the TL runs the battery
+and the delivery mechanics — disclosed in the PR body):
+
+- **Registration** `4b4c2f6` + `d8a3a65`: issue #74 + the dispatch-record comment; the module
+  `requires` extension (arena-shell += arena-sdk, arena-ops, arena-acquisition) + package deps +
+  lockfile intake (TL-owned); the ledger/impl-plan rows amended after an anchor drift, disclosed.
+- **Landed** PR #75 squash `0081345`: the developer portal mounts the REAL SDK surfaces (the
+  `ArenaSdkClient`/`sdkQuickstart` typed outcomes over the configurable binding baseUrl, the MCP
+  facade vocabulary + the disclosure constants verbatim, `canonicalRequestDigest`, the ACQ1.0
+  provider-routing vocabulary) — both constraint constants retired + test-asserted gone; the
+  operations surface renders `HEALTH_DISCLOSURE` verbatim + REAL station probes (node:sqlite
+  resolvability, bwrap PATH detection mirroring arena-isolation's resolveBwrap law) + the
+  fail-closed aggregate readiness (the zero-probe edge guarded) + the capacity/dead-letter/
+  custodian disclosures verbatim.
+- **Evidence**: the full shell suite 145/145 at station (121 at base + 24 new) incl. the REAL
+  spawned-arena-api composition test (the quickstart flow, the idempotent REPLAYED replay, the
+  typed CONFLICT envelope rendered verbatim); consumed-package regressions sdk 10/10 · ops 4/4 ·
+  acquisition 77/77; desktop renderer 22/22; CI green on the PR head.
+- **CI coverage gap found and fixed at integration (pre-existing since UIA-001 Lane C):** the
+  arena-shell battery glob was missing `test/developer/*.test.tsx` — the Lane C developer screen
+  test had never run in CI. Fixed in the integration commit, disclosed.
+- **Remaining follow-up recorded:** the browser composition roots don't yet inject the station
+  probes (the node-side injection point exists; the web/desktop roots' wiring is the
+  TL-integration follow-up surface).
+
+Remaining frontiers for successor WOs (recomputed): the production credential adapter (owner
+IdP decision), the arena-api deployment topology (operator infrastructure), the light-theme
+activation calibration, the desktop mounted-app browser-journey class, the station-probe
+injection into the browser composition roots.

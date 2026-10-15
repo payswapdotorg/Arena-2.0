@@ -72,7 +72,7 @@ jobs:
 
       - name: Unit tests — arena-shell (node:test via tsx; UIA-001 shell + five-screen lanes incl. REAL arena-api compositions)
         working-directory: packages/arena-shell
-        run: ../../node_modules/.bin/tsx --test test/shell/*.test.ts test/shell/*.test.tsx test/identity/*.test.tsx test/nav/*.test.ts test/requester/*.test.ts test/requester/*.test.tsx test/expert/*.test.ts test/expert/*.test.tsx test/reviewer/*.test.ts test/reviewer/*.test.tsx test/developer/*.test.ts test/operations/*.test.ts test/operations/*.test.tsx
+        run: ../../node_modules/.bin/tsx --test test/shell/*.test.ts test/shell/*.test.tsx test/identity/*.test.tsx test/nav/*.test.ts test/requester/*.test.ts test/requester/*.test.tsx test/expert/*.test.ts test/expert/*.test.tsx test/reviewer/*.test.ts test/reviewer/*.test.tsx test/developer/*.test.ts test/developer/*.test.tsx test/operations/*.test.ts test/operations/*.test.tsx
 
       - name: Unit tests — desktop renderer (node:test via tsx; UIA-002 arena-first bootstrap decision + composition incl. real local HTTP probe + shim parity)
         working-directory: packages/desktop
