@@ -1,0 +1,14 @@
+{
+  "kind": "entry-predicate-journey",
+  "posture": "unconfigured (the honest shipped default — no arenaBaseUrl)",
+  "url": "http://127.0.0.1:38717/",
+  "mode": "arena-first",
+  "screensNavigated": [
+    "requester",
+    "expert",
+    "reviewer",
+    "developer",
+    "operations"
+  ],
+  "fiveScreenRegistry": true
+}

@@ -1,0 +1,79 @@
+{
+  "kind": "desktop-browser-journey-summary",
+  "scans": [
+    {
+      "journey": "entry",
+      "state": "arena-first-operations",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "entry",
+      "state": "fallback-disclosure",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "honest-states",
+      "state": "operations-posture",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "configured",
+      "state": "requester-real-flow",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "configured",
+      "state": "operations-probes",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "navigation",
+      "state": "rail-roving",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "role-lens",
+      "state": "expert-lens",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "theme-light",
+      "state": "operations",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "theme-light",
+      "state": "requester",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "theme-dark",
+      "state": "requester",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "responsive",
+      "state": "developer-narrow",
+      "viewport": "mobile",
+      "violations": 0
+    },
+    {
+      "journey": "branding",
+      "state": "fresh-launch",
+      "viewport": "desktop",
+      "violations": 0
+    }
+  ],
+  "totalScans": 12,
+  "totalViolations": 0
+}

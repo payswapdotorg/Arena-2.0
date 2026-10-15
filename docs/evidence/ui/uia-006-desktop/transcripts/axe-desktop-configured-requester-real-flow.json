@@ -1,0 +1,24 @@
+{
+  "kind": "axe-scan",
+  "journey": "configured",
+  "state": "requester-real-flow",
+  "viewport": "desktop",
+  "ruleTags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa",
+    "best-practice"
+  ],
+  "violations": [],
+  "passesCount": 46,
+  "incomplete": [
+    "color-contrast"
+  ],
+  "inapplicableCount": 44,
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "pageErrors": []
+}

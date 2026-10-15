@@ -1,0 +1,7 @@
+{
+  "kind": "branding-journey",
+  "documentTitle": "Arena — Requester cockpit",
+  "titleLaw": "applyDocumentTitle applied once at mount by the composition root (the real desktop law); the title stays Arena-prefixed across screens",
+  "zeroZcodeSweep": true,
+  "wordmarkPresent": true
+}

@@ -1,0 +1,21 @@
+{
+  "kind": "axe-scan",
+  "journey": "responsive",
+  "state": "developer-narrow",
+  "viewport": "mobile",
+  "ruleTags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa",
+    "best-practice"
+  ],
+  "violations": [],
+  "passesCount": 45,
+  "incomplete": [
+    "color-contrast"
+  ],
+  "inapplicableCount": 45,
+  "consoleErrors": [],
+  "pageErrors": []
+}

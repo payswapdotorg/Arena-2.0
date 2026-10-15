@@ -1,0 +1,22 @@
+{
+  "kind": "honest-states-journey",
+  "posture": "unconfigured baseUrl — the port-0 sentinel (http://127.0.0.1:0)",
+  "submitOutcomeVerbatim": "TRANSPORT_ERROR: network failure",
+  "auditTrailVerbatim": "TRANSPORT_ERROR — network failure",
+  "probeRows": [
+    "station-persistence-node-sqlite:DOWN",
+    "station-isolation-bwrap:DOWN"
+  ],
+  "aggregate": {
+    "ready": false,
+    "fail_closed": true
+  },
+  "consoleErrors": [
+    "Failed to load resource: net::ERR_UNSAFE_PORT",
+    "Failed to load resource: net::ERR_UNSAFE_PORT",
+    "Failed to load resource: net::ERR_UNSAFE_PORT",
+    "Failed to load resource: net::ERR_UNSAFE_PORT",
+    "Failed to load resource: net::ERR_UNSAFE_PORT"
+  ],
+  "pageErrors": []
+}

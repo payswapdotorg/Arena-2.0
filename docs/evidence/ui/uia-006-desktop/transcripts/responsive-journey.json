@@ -1,0 +1,30 @@
+{
+  "kind": "responsive-journey",
+  "windows": [
+    {
+      "window": "1440x900",
+      "screen": "requester",
+      "overflow": 0
+    },
+    {
+      "window": "1440x900",
+      "screen": "developer",
+      "overflow": 0
+    },
+    {
+      "window": "390x844",
+      "screen": "requester",
+      "overflow": 0
+    },
+    {
+      "window": "390x844",
+      "screen": "developer",
+      "overflow": 0
+    }
+  ],
+  "narrowWindowSize": {
+    "width": 390,
+    "height": 844,
+    "useContentSize": true
+  }
+}

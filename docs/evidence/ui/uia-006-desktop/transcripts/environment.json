@@ -1,0 +1,32 @@
+{
+  "kind": "desktop-browser-journey-environment",
+  "playwright": "1.64.0",
+  "electronPackage": "41.0.3",
+  "electronExecutable": "/home/z/my-project/arena2/node_modules/electron/dist/electron",
+  "electronRuntime": {
+    "electron": "41.0.3",
+    "chrome": "146.0.7680.80",
+    "node": "24.14.0"
+  },
+  "xDisplay": {
+    "chosen": ":99",
+    "source": "DISPLAY from the environment (alive)",
+    "candidates": [
+      {
+        "display": ":99",
+        "transport": "unix",
+        "alive": true,
+        "detail": "unix socket /tmp/.X11-unix/X99 — X11 handshake ok (server success reply)"
+      }
+    ]
+  },
+  "axeCore": "4.14.0",
+  "esbuild": "0.27.7",
+  "rendererShimParity": {
+    "ok": true,
+    "probes": 20
+  },
+  "nodeCryptoSeam": "node:crypto aliased to the REAL renderer shim (packages/desktop/src/renderer/src/arenaNodeCryptoShim.ts) — the same alias treatment packages/desktop/vite.config.ts applies to the production renderer bundle",
+  "chromiumSandbox": "Playwright Linux default: --no-sandbox at the Chromium OS level (container constraints — disclosed); the RENDERER webPreferences keep the production posture (contextIsolation/nodeIntegration:false/sandbox/webviewTag:false)",
+  "host": "arena desktop journey render host (buildArenaDesktopComposition + REAL ArenaShell in a REAL Electron renderer)"
+}
