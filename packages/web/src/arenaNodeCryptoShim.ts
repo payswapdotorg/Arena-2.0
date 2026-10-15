@@ -38,8 +38,11 @@ function sha256Hex(bytes: Uint8Array): string {
     0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
   ]);
   const bitLen = bytes.length * 8;
-  // 填充：0x80 + 零 + 8 字节大端位长（总长 ≡ 56 mod 64）。
-  const paddedLength = ((bytes.length + 8 + 63) >> 6) << 6;
+  // 填充：0x80 + 零 + 8 字节大端位长。注意 +9（0x80 一个字节 + 位长 8 个字节）：
+  // 写成 +8 会在 len ≡ 56 (mod 64) 时让位长字段覆写 0x80 字节（MAINT-003 /
+  // issue #73 修复的缺陷 —— FIPS 448-bit 向量曾给出错误摘要；证据与对拍见
+  // scripts/verify_sha256_shim.ts 的块边界扫掠）。
+  const paddedLength = ((bytes.length + 9 + 63) >> 6) << 6;
   const padded = new Uint8Array(paddedLength);
   padded.set(bytes);
   padded[bytes.length] = 0x80;
