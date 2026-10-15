@@ -1,0 +1,34 @@
+/*
+ * Arena 设计令牌命名空间（spec/ux/arena-native-ui.md §2.2，FROZEN namespace）。
+ * 所有 Arena 视觉身份令牌一律使用 --arena-* 前缀；继承的 DESIGN.md 纪律
+ * （text-ui-* 字阶、克制的运营型风格、明暗主题、i18n 长度容差）保持约束。
+ * Worker A 补全整套令牌（色彩、状态、证据模式、焦点、表面）；本种子层
+ * 只钉住命名空间与语义分组。
+ */
+
+:root {
+  /* 品牌与身份 */
+  --arena-color-brand: #3f6df4;
+  --arena-color-brand-strong: #2b50c8;
+  --arena-color-brand-soft: #e8eefc;
+
+  /* 表面层级（克制：无整面品牌填充） */
+  --arena-surface-app: var(--ui-bg-app, #0f1115);
+  --arena-surface-panel: var(--ui-bg-panel, #161a21);
+  --arena-surface-raised: var(--ui-bg-raised, #1d222b);
+
+  /* 状态色（逐字承载类型化词表，绝不升值） */
+  --arena-color-status-pass: #35a06b;
+  --arena-color-status-denied: #c0392b;
+  --arena-color-status-blocked: #b8860b;
+  --arena-color-status-pending: #6b7a8d;
+
+  /* 证据等级模式（DEMO / FIXTURE / REAL —— 逐字展示） */
+  --arena-evidence-demo: #8a6d3b;
+  --arena-evidence-fixture: #6d5a8a;
+  --arena-evidence-real: #2f7d4f;
+
+  /* 焦点与键盘可达 */
+  --arena-focus-ring: 2px solid var(--arena-color-brand);
+  --arena-focus-offset: 2px;
+}

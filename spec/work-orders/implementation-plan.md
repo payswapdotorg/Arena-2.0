@@ -159,6 +159,10 @@ AR2-019 through AR2-023 (issues #51–#55) are NEWLY REGISTERED post-completion 
 
 The table is a ceiling, not a mandate to dispatch all three. The TL recomputes readiness, branch drift, write-surface overlap, worker capacity and integration risk before each wave. Do not parallelize root manifests, lockfiles, migrations that touch the same ledger/schema, a state-machine contract and its implementation before the contract freezes, or tests that rewrite the same evidence files.
 
+## UIA-001 — Arena-native product UI (registered 2026-10-15, issue #66)
+
+Post-roadmap product work order: make the desktop and web experience unmistakably Arena, not ZCode. The TL froze the UX architecture and Wave 0 contracts at `spec/ux/arena-native-ui.md` with the new sibling package `packages/arena-shell` (@arena/shell; module `arena-shell` registered in `architecture-policy.yaml`; frozen public contract: screen vocabulary, navigation port with typed refusals, role lens law, product identity constants, honest release-posture constants, `--arena-*` design-token namespace). Three parallel lanes with disjoint write fences recorded in the dispatch ledger: A (design system/shell/identity/navigation + the enumerated user-visible branding files), B (requester + expert workbenches over the @arena/workbench public contract), C (reviewer/adjudicator + developer portal + operations surfaces). One issue = three lane branches = three PRs, merged by the TL and integrated (web/desktop mounting is TL-owned wiring). Safety: no live-money enablement, no release claims, no untrusted-execution enablement, no internal-identifier renames, no arena-* domain behavior changes; upstream license/NOTICE attribution preserved verbatim.
+
 ## WOs and acceptance are repo-owned
 
 Update status only with links to merged PRs, CI checks and retained evidence. Failed/deferred tests stay visible. Keep historical work order IDs; do not reassign a closed ID to another feature. The canonical registry is the table in this document plus spec/PROJECT-STATE.md and spec/work-orders/dependency-graph.md; update them in the same PR as the status-changing work.

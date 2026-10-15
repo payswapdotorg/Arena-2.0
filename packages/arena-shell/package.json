@@ -1,0 +1,24 @@
+{
+  "name": "@arena/shell",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/contract.ts",
+    "./tokens.css": "./src/design/arena-tokens.css"
+  },
+  "scripts": {
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix --fix-suggestions"
+  },
+  "dependencies": {
+    "@arena/contracts": "workspace:*",
+    "@arena/workbench": "workspace:*",
+    "react": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "react-dom": "^19.2.0",
+    "typescript": "^6.0.2"
+  }
+}
