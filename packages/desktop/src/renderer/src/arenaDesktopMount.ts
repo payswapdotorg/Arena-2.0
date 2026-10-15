@@ -23,6 +23,7 @@ import {
   mockAttemptsAdapter,
   mockDecksAdapter,
   operationsRegistration,
+  remoteStationProbes,
   requesterRegistration,
   reviewerRegistration,
 } from "@arena/shell/screens";
@@ -80,6 +81,12 @@ export function buildArenaDesktopComposition(options: {
   const binding = new RealWorkbenchBinding({
     baseUrl: options.baseUrl ?? UNCONFIGURED_ARENA_BASE_URL,
   });
+  // UIA-004：探针与绑定指向同一 ARENA RUNTIME 站点（配置的 baseUrl；
+  // 未配置时同为诚实哨兵 —— fetch 立即失败 → 类型化 DOWN fail-closed，
+  // 绝不退回伪造 ready，也绝不静默 unwired 冒充已测）。
+  const stationProbes = remoteStationProbes(
+    options.baseUrl ?? UNCONFIGURED_ARENA_BASE_URL,
+  );
   const requesterPrincipal = { tenant_id: "tnt_00000001", user_id: "usr_00000001" };
   // attempt/deck 投影（demo 标注）用专家种子租户；真实绑定命令通道按
   // principal 解析凭据（DEMO 注册表镜像）。
@@ -102,6 +109,7 @@ export function buildArenaDesktopComposition(options: {
     operationsRegistration({
       audit: bindingAuditAdapter(binding),
       principal: requesterPrincipal,
+      probes: stationProbes,
     }),
   ]);
 

@@ -17,6 +17,7 @@ import {
   type ArenaRuntime,
 } from "@arena/application";
 import { IDENTITY_CONTRACT_VERSION } from "@arena/identity";
+import { aggregateReadiness } from "@arena/ops";
 import {
   DEMO_AUTH_DISCLOSURE,
   createDemoAuthGateway,
@@ -24,6 +25,7 @@ import {
   type AuthGateway,
 } from "./auth.js";
 import { errorResponseBody } from "./errors-mapping.js";
+import { stationProbes } from "./stationProbes.js";
 
 /**
  * Arena API edge（AR2-002，TL-direct 执行；AR2-005 slice 2 起 durable 组装）。
@@ -130,6 +132,19 @@ async function handle(
             : {}),
         },
       },
+    });
+  }
+  // UIA-004：站点探针端点（health-class：无需认证 —— 测度的是站点本身，
+  // 与 runtime/persistence/auth 组装无关）。每次请求 **实测**（不缓存），
+  // 经 @arena/ops aggregateReadiness 聚合：任何非 UP → fail-closed，
+  // 逐依赖可见（绝不伪造 ready）。
+  if (method === "GET" && path === "/v1/ops/station-probes") {
+    const probes = await stationProbes();
+    const readiness = await aggregateReadiness({ probes });
+    return respondJson(response, 200, {
+      ...readiness,
+      process: "arena-api",
+      pid: process.pid,
     });
   }
   if (method === "GET" && path === "/v1/contract") {
