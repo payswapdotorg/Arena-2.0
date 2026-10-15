@@ -45,12 +45,12 @@ export function ReviewerScreen(props: ReviewerScreenProps): ReactNode {
   return (
     <section className="arena-screen arena-reviewer" data-arena-screen="reviewer" aria-label="reviewer adjudicator workbench">
       <LensContext lens={host.lens} />
-      <h2>Review</h2>
+      <h1>Review</h1>
       <ReleasePostureNote />
       <DemoDisclosure />
 
       <section className="arena-queue-section" aria-label="review queue">
-        <h3>Review queue</h3>
+        <h2>Review queue</h2>
         {snap.queue.kind === "loading" ? <ReviewerLoading /> : null}
         {snap.queue.kind === "empty" ? <ReviewerEmpty /> : null}
         {snap.queue.kind === "error" ? (
@@ -68,7 +68,7 @@ export function ReviewerScreen(props: ReviewerScreenProps): ReactNode {
       {deck !== null ? (
         <div className="arena-reviewer-grid">
           <section className="arena-deck-section" aria-label="review deck (evidence first)">
-            <h3>Review deck — {deck.result_id}</h3>
+            <h2>Review deck — {deck.result_id}</h2>
             <p className="arena-queue-fact">
               Result status <code>{deck.status}</code> · attempt <code>{deck.attempt_id}</code> ·
               escalation <code>{deck.escalation_id}</code>
@@ -83,7 +83,7 @@ export function ReviewerScreen(props: ReviewerScreenProps): ReactNode {
         </div>
       ) : (
         <section className="arena-reviewer-selection" aria-label="no deck selected">
-          <h3>Review deck</h3>
+          <h2>Review deck</h2>
           <p>Select a result from the queue to open its evidence-first review deck.</p>
           <p className="arena-queue-fact">
             The deck projection in this composition is demo-tagged (deterministic fixtures, never
@@ -93,7 +93,7 @@ export function ReviewerScreen(props: ReviewerScreenProps): ReactNode {
       )}
 
       <section className="arena-audit-section" aria-label="audit trail">
-        <h3>Audit trail (server-recorded)</h3>
+        <h2>Audit trail (server-recorded)</h2>
         <AuditTrailView trail={snap.auditTrail} />
       </section>
 

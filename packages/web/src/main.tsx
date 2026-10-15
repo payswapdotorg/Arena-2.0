@@ -11,6 +11,26 @@ import {
 } from "@zcode/ui";
 import "@zcode/ui/styles.css";
 import { connectViaWebSocket } from "@zcode/client";
+import {
+  ArenaShell,
+  shellFromRegistrations,
+} from "@arena/shell/shell";
+import { ARENA_DEFAULT_SCREEN } from "@arena/shell";
+import { applyDocumentTitle } from "@arena/shell/identity";
+import "@arena/shell/styles.css";
+import {
+  bindingAuditAdapter,
+  bindingCommandAdapter,
+  bindingReviewerAdapters,
+  developerRegistration,
+  expertRegistration,
+  mockAttemptsAdapter,
+  mockDecksAdapter,
+  operationsRegistration,
+  requesterRegistration,
+  reviewerRegistration,
+} from "@arena/shell/screens";
+import { DEMO_EXPERT_PRINCIPAL, MockArenaClient, RealWorkbenchBinding } from "@arena/workbench";
 import { WebCallbackPage } from "./auth/WebCallbackPage.js";
 import { createWebAuthService } from "./auth/webAuthService.js";
 import { WEB_ZAI_OAUTH_CONFIG, resolveWebAuthDevReturnTo } from "./auth/webZaiOAuthConfig.js";
@@ -95,8 +115,60 @@ function isWebOAuthCallback(params: URLSearchParams): boolean {
   );
 }
 
+/**
+ * UIA-001 TL 集成（spec/ux/arena-native-ui.md §1.1/§1.2）：Arena 外壳是
+ * 产品默认面（/ → requester 起步，#/<screenId> 深链）；继承的 ZCode 工作台
+ * 不是屏词汇成员 —— 经显式回退入口（?workspace=1）保留「集成落地期」的
+ * 可达性（spec：明确回退入口 + 仅在专家任务上下文内挂接的终局形态）。
+ */
+function isLegacyWorkspaceEntry(params: URLSearchParams): boolean {
+  return params.get("workspace") === "1" || params.get("app") === "workspace";
+}
+
+/**
+ * Arena 组合根（UIA-001）：真实绑定的 baseUrl 可配置（部署拓扑是运营方
+ * 基础设施决策）；principal 用披露的 demo 注册表（生产认证适配器属
+ * 所有者决策前沿）；attempt/deck 投影今日是 demo 标注（屏上如实披露）。
+ */
+function renderArenaShell(): void {
+  const baseUrl =
+    import.meta.env.VITE_ARENA_API_URL?.trim().replace(/\/+$/u, "") || window.location.origin;
+  const binding = new RealWorkbenchBinding({ baseUrl });
+  const requesterPrincipal = { tenant_id: "tnt_00000001", user_id: "usr_00000001" };
+  // attempt/deck 投影（demo 标注）用专家种子租户；真实绑定命令通道按
+  // principal 解析凭据（DEMO 注册表镜像）。
+  const expertPrincipal = DEMO_EXPERT_PRINCIPAL;
+  const demoWorkbenchClient = new MockArenaClient();
+
+  const registry = shellFromRegistrations([
+    requesterRegistration({ binding, principal: requesterPrincipal }),
+    expertRegistration({
+      attempts: mockAttemptsAdapter(demoWorkbenchClient),
+      commands: bindingCommandAdapter(binding, expertPrincipal),
+      principal: expertPrincipal,
+    }),
+    reviewerRegistration({
+      decks: mockDecksAdapter(demoWorkbenchClient),
+      ...bindingReviewerAdapters(binding, expertPrincipal),
+      principal: expertPrincipal,
+    }),
+    developerRegistration(),
+    operationsRegistration({
+      audit: bindingAuditAdapter(binding),
+      principal: requesterPrincipal,
+    }),
+  ]);
+
+  applyDocumentTitle(ARENA_DEFAULT_SCREEN);
+  root.render(
+    <AppErrorBoundary>
+      <ArenaShell registry={registry} announceKeyboardHints />
+    </AppErrorBoundary>,
+  );
+}
+
 function renderWebAuthCallbackPage(): void {
-  document.title = "ZCode - Sign In";
+  document.title = "Arena — Sign In";
   const callbackState = parseOAuthState(
     new URLSearchParams(window.location.search).get("state") ?? "",
   );
@@ -121,7 +193,7 @@ async function renderConversationSharePage(): Promise<void> {
   document.documentElement.lang = routeLocale;
   // 分享页必须设置 title：否则浏览器标签只显示 index.html 的通用标题。
   // 会话标题要等 preview 加载完，先给一个语言正确的兜底。
-  document.title = routeLocale === "zh-CN" ? "ZCode 会话分享" : "ZCode Conversation Share";
+  document.title = routeLocale === "zh-CN" ? "Arena 会话分享" : "Arena Conversation Share";
   const shareCode = resolveConversationShareCodeFromPath(window.location.pathname);
   if (!shareCode) {
     root.render(
@@ -416,7 +488,7 @@ function WebBootstrapErrorScreen({ message }: { message: string }) {
 }
 
 function renderWebBootstrapError(error: unknown): void {
-  document.title = "ZCode - Web";
+  document.title = "Arena — Web";
   root.render(
     <WebBootstrapErrorScreen message={error instanceof Error ? error.message : String(error)} />,
   );
@@ -434,6 +506,13 @@ async function bootstrapWebApp() {
     return;
   }
 
+  // UIA-001：Arena 外壳 = 产品默认首屏（spec §1.2「/ → shell 默认」）；
+  // 继承工作台经显式回退入口保留（集成落地期，非主导航/空态/首启身份）。
+  if (!isLegacyWorkspaceEntry(params)) {
+    renderArenaShell();
+    return;
+  }
+
   let bootstrap: WebBootstrapResult;
   try {
     bootstrap = await resolveWebBootstrap();
@@ -447,7 +526,7 @@ async function bootstrapWebApp() {
       onClose: () => {},
     });
     const platform = createWebPlatform();
-    document.title = "ZCode - Web + Server";
+    document.title = "Arena — solution workspace (inherited)";
 
     root.render(
       <AppErrorBoundary>

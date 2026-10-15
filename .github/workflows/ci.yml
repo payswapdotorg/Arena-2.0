@@ -70,6 +70,10 @@ jobs:
         working-directory: packages/arena-workbench
         run: ../../node_modules/.bin/tsx --test test/*.test.ts && ../../node_modules/.bin/tsx --test test/*.test.tsx
 
+      - name: Unit tests — arena-shell (node:test via tsx; UIA-001 shell + five-screen lanes incl. REAL arena-api compositions)
+        working-directory: packages/arena-shell
+        run: ../../node_modules/.bin/tsx --test test/shell/*.test.ts test/shell/*.test.tsx test/identity/*.test.tsx test/nav/*.test.ts test/requester/*.test.ts test/requester/*.test.tsx test/expert/*.test.ts test/expert/*.test.tsx test/reviewer/*.test.ts test/reviewer/*.test.tsx test/developer/*.test.ts test/operations/*.test.ts test/operations/*.test.tsx
+
       - name: Unit tests — arena-persistence (node:test via tsx, node:sqlite)
         working-directory: packages/arena-persistence
         run: ../../node_modules/.bin/tsx --test test/durable.test.ts test/jobs.test.ts

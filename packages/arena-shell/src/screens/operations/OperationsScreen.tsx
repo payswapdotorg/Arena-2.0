@@ -31,7 +31,7 @@ export function OperationsScreen(props: OperationsScreenProps): ReactNode {
   return (
     <section className="arena-screen arena-operations" data-arena-screen="operations" aria-label="operations and governance">
       <LensContext lens={host.lens} />
-      <h2>Operations</h2>
+      <h1>Operations</h1>
       <ReleasePostureNote />
       <OpsResolutionNote />
 

@@ -94,8 +94,17 @@ export class ReviewerController {
     return () => this.listeners.delete(listener);
   }
 
+  private cachedSnapshot: ReviewerSnapshot | null = null;
+
   snapshot(): ReviewerSnapshot {
-    const trail: ReviewerSnapshot["auditTrail"] =
+    // useSyncExternalStore 契约：状态未变时必须返回同一引用（否则 React
+    // 会判定 store 每次都变化 → 无限重渲 → Minified error #185）。
+    if (this.cachedSnapshot !== null) return this.cachedSnapshot;
+    this.cachedSnapshot = this.buildSnapshot();
+    return this.cachedSnapshot;
+  }
+
+  private buildSnapshot(): ReviewerSnapshot {    const trail: ReviewerSnapshot["auditTrail"] =
       this.trailOutcome === null
         ? { kind: "loading" }
         : this.trailOutcome.kind === "FOUND"
@@ -132,6 +141,7 @@ export class ReviewerController {
   }
 
   private emit(): void {
+    this.cachedSnapshot = null;
     for (const listener of this.listeners) listener();
   }
 

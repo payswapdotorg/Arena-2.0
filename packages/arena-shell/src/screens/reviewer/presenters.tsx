@@ -47,7 +47,7 @@ export function ReviewerLoading(): ReactNode {
 export function ReviewerEmpty(): ReactNode {
   return (
     <section className="arena-screen-state arena-state-empty" aria-label="no review decks">
-      <h3>No review decks</h3>
+      <h2>No review decks</h2>
       <p>When a result lands for evidence-first review it appears here with its typed rubric and verification trail.</p>
     </section>
   );
@@ -56,7 +56,7 @@ export function ReviewerEmpty(): ReactNode {
 export function ReviewerError(props: { message: string; onRetry: () => void }): ReactNode {
   return (
     <section className="arena-screen-state arena-state-error" role="alert" aria-label="review queue error">
-      <h3>Could not load the review queue</h3>
+      <h2>Could not load the review queue</h2>
       <p className="arena-typed-error">{props.message}</p>
       <button type="button" className="arena-retry" onClick={props.onRetry}>
         Retry queue load
@@ -148,7 +148,7 @@ export function RedactionPartitions(props: { deck: ReviewDeckView }): ReactNode 
   return (
     <div className="arena-redaction" aria-label="evidence redaction partitions">
       <section className="arena-redaction-shared" data-redaction-class="shared">
-        <h4>Shared evidence ({redaction.shared.length})</h4>
+        <h2>Shared evidence ({redaction.shared.length})</h2>
         <ul className="arena-evidence-ids">
           {redaction.shared.map((envelope) => (
             <li key={envelope.evidence_id}><code>{envelope.evidence_id}</code> · {envelope.redaction_class}</li>
@@ -156,7 +156,7 @@ export function RedactionPartitions(props: { deck: ReviewDeckView }): ReactNode 
         </ul>
       </section>
       <section className="arena-redaction-private" data-redaction-class="reviewer_private">
-        <h4>Reviewer-private evidence ({redaction.reviewer_private.length})</h4>
+        <h2>Reviewer-private evidence ({redaction.reviewer_private.length})</h2>
         <ul className="arena-evidence-ids">
           {redaction.reviewer_private.map((envelope) => (
             <li key={envelope.evidence_id}><code>{envelope.evidence_id}</code> · {envelope.redaction_class}</li>
@@ -175,7 +175,7 @@ export function VerificationTrailView(props: { deck: ReviewDeckView }): ReactNod
   const trail = props.deck.trail;
   return (
     <section className="arena-verification-trail" aria-label="verification trail (recorded facts)">
-      <h4>Verification trail</h4>
+      <h2>Verification trail</h2>
       <dl className="arena-trail-facts">
         <div><dt>Validators</dt><dd>{trail.validators.map((v) => `${v.validator_id}@${v.validator_version}`).join(", ") || "(none)"}</dd></div>
         <div><dt>Independent reviewers</dt><dd data-independent-count={trail.reviewer_ids.length}>{trail.reviewer_ids.join(", ") || "(none)"}</dd></div>
@@ -197,7 +197,7 @@ export function SelfEvaluationSection(props: { deck: ReviewDeckView }): ReactNod
       data-never-vote="true"
       data-self-eval="true"
     >
-      <h4>Author self-evaluation — side-by-side evidence, never a vote</h4>
+      <h2>Author self-evaluation — side-by-side evidence, never a vote</h2>
       <p className="arena-self-eval-distinction">{SELF_EVALUATION_DISTINCTION_TEXT}</p>
       {self === null ? (
         <p className="arena-queue-fact">(no self-evaluation recorded for this attempt)</p>
@@ -223,7 +223,7 @@ export function ReviewDecisionPanels(props: { deck: ReviewDeckView }): ReactNode
   return (
     <div className="arena-review-panels">
       <section className="arena-quorum-panel" aria-label="independent review quorum">
-        <h4>Quorum</h4>
+        <h2>Quorum</h2>
         <p data-independent-count={quorum.independentReviewCount}>
           {quorum.independentReviewCount} independent review{quorum.independentReviewCount === 1 ? "" : "s"}
           {quorum.minimumIndependentReviews !== null
@@ -233,7 +233,7 @@ export function ReviewDecisionPanels(props: { deck: ReviewDeckView }): ReactNode
         <p className="arena-queue-fact">{quorum.basis}</p>
       </section>
       <section className="arena-adjudication-panel" aria-label="adjudication state">
-        <h4>Adjudication</h4>
+        <h2>Adjudication</h2>
         <p data-divergent={adjudication.view.divergent ? "true" : "false"}>
           {adjudication.view.divergent
             ? "DIVERGENT — adjudication path triggered"
@@ -245,7 +245,7 @@ export function ReviewDecisionPanels(props: { deck: ReviewDeckView }): ReactNode
         ) : null}
       </section>
       <section className="arena-payout-panel" aria-label="payout eligibility (result-linked)">
-        <h4>Payout eligibility</h4>
+        <h2>Payout eligibility</h2>
         <p data-payout={payout.kind} data-result-status={payout.status}>
           {payout.kind === "eligible_pending_proof"
             ? `${payout.status} — eligible pending accepted proof evidence`
@@ -298,7 +298,7 @@ export function ReviewVotePanel(props: {
         props.onSubmit();
       }}
     >
-      <h3>Independent review vote (canonical command path)</h3>
+      <h2>Independent review vote (canonical command path)</h2>
       <p className="arena-queue-fact">
         An independent review vote is a server-side command (SubmitReviewerEvaluation) on the
         escalation — never a self-evaluation, never client-side tallying.

@@ -80,7 +80,7 @@ export function RequesterLoading(): ReactNode {
 export function RequesterEmpty(): ReactNode {
   return (
     <section className="arena-screen-state arena-state-empty" aria-label="no requests yet">
-      <h3>No requests yet</h3>
+      <h2>No requests yet</h2>
       <p>
         {ARENA_PRODUCT_NAME} submits your capability gap to the routing loop — compose your first
         request below and track its evidence-graded outcome here.
@@ -92,7 +92,7 @@ export function RequesterEmpty(): ReactNode {
 export function RequesterError(props: { message: string; onRetry: () => void }): ReactNode {
   return (
     <section className="arena-screen-state arena-state-error" role="alert" aria-label="tracking error">
-      <h3>Could not load requests</h3>
+      <h2>Could not load requests</h2>
       <p className="arena-typed-error">{props.message}</p>
       <button type="button" className="arena-retry" onClick={props.onRetry}>
         Retry tracking load
@@ -165,7 +165,7 @@ export function RoutingPanel(props: { timelineEvents: readonly TimelineEvent[] |
   const vm = routingPanelViewModel(props.timelineEvents);
   return (
     <section className="arena-routing-panel" aria-label="routing transparency">
-      <h3>Routing transparency</h3>
+      <h2>Routing transparency</h2>
       <p className="arena-routing-intro">
         The routing step of the {ARENA_PRODUCT_NAME} loop selects a provider class for your
         capability gap:
@@ -223,7 +223,7 @@ export function ResultPanel(props: { result: RequesterSnapshot["result"] }): Rea
   if (r.kind === "loading") return <p className="arena-result-state">Loading result view…</p>;
   return (
     <section className="arena-result-panel" aria-label="result inspection" data-result={r.kind}>
-      <h4>Result</h4>
+      <h2>Result</h2>
       <p className={`arena-result-message arena-result-${r.kind}`} role={r.kind === "error" ? "alert" : undefined}>
         {r.message}
       </p>
@@ -238,7 +238,7 @@ export function PaymentPanel(): ReactNode {
   const vm = paymentVocabularyPanel();
   return (
     <section className="arena-payment-panel" aria-label="payment state (test mode)">
-      <h4>Payment state</h4>
+      <h2>Payment state</h2>
       <p className="arena-payment-disclosure" data-finance-mode={vm.posture.financeMode}>
         {vm.disclosure}
       </p>

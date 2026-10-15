@@ -55,7 +55,7 @@ export function RequesterScreen(props: RequesterScreenProps): ReactNode {
   return (
     <section className="arena-screen arena-requester" data-arena-screen="requester" aria-label="requester cockpit">
       <LensContext lens={host.lens} />
-      <h2>Requests</h2>
+      <h1>Requests</h1>
       <ReleasePostureNote />
 
       <div className="arena-requester-grid">
@@ -67,7 +67,7 @@ export function RequesterScreen(props: RequesterScreenProps): ReactNode {
             void controller.submit();
           }}
         >
-          <h3>Compose a capability-gap request</h3>
+          <h2>Compose a capability-gap request</h2>
 
           <label htmlFor="arena-form-title">Task title</label>
           <input
@@ -218,7 +218,7 @@ export function RequesterScreen(props: RequesterScreenProps): ReactNode {
 
         <div className="arena-requester-side">
           <section className="arena-tracking-section" aria-label="request tracking">
-            <h3>Tracking</h3>
+            <h2>Tracking</h2>
             {snap.tracking.kind === "loading" ? <RequesterLoading /> : null}
             {snap.tracking.kind === "empty" ? <RequesterEmpty /> : null}
             {snap.tracking.kind === "error" ? (
@@ -239,7 +239,7 @@ export function RequesterScreen(props: RequesterScreenProps): ReactNode {
           <RoutingPanel timelineEvents={snap.timeline.kind === "ready" ? snap.timeline.data : null} />
 
           <section className="arena-inspection" aria-label="evidence and results inspection">
-            <h3>Evidence &amp; results</h3>
+            <h2>Evidence &amp; results</h2>
             <TimelineList timeline={snap.timeline} />
             <ResultPanel result={snap.result} />
           </section>

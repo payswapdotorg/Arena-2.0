@@ -45,12 +45,12 @@ export function ExpertScreen(props: ExpertScreenProps): ReactNode {
   return (
     <section className="arena-screen arena-expert" data-arena-screen="expert" aria-label="expert workbench">
       <LensContext lens={host.lens} />
-      <h2>Expert work</h2>
+      <h1>Expert work</h1>
       <ReleasePostureNote />
       <DemoDisclosure />
 
       <section className="arena-queue-section" aria-label="assignment queue">
-        <h3>Queue</h3>
+        <h2>Queue</h2>
         {snap.queue.kind === "loading" ? <ExpertLoading /> : null}
         {snap.queue.kind === "empty" ? <ExpertEmpty /> : null}
         {snap.queue.kind === "error" ? (
@@ -90,7 +90,7 @@ export function ExpertScreen(props: ExpertScreenProps): ReactNode {
           </>
         ) : (
           <section className="arena-expert-selection" aria-label="no attempt selected">
-            <h3>Workspace</h3>
+            <h2>Workspace</h2>
             <p>Select an assignment from the queue to open its workspace.</p>
             <p className="arena-expert-projection-note">
               The attempt-level projection in this composition is demo-tagged (deterministic

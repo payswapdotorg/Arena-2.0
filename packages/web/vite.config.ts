@@ -51,6 +51,10 @@ export default defineConfig(({ mode }) => {
         // hoisted node_modules 可能把 d3-shape 旁边的旧 d3-path@1.x 暴露给 Vite 预构建，
         // 导致桌面/Web dev 都在依赖优化阶段失败；显式指向根部 3.x 入口以固定解析边界。
         "d3-path": resolve(__dirname, "../../node_modules/d3-path/src/index.js"),
+        // UIA-001 TL 集成：@arena/workbench 表单层的同步摘要默认走 node:crypto，
+        // 浏览器包内替换为纯 TS sha256 shim（站点脚本对拍 node:crypto 逐字节一致，
+        // 含 FIPS 180-4 向量；Node 侧运行不受影响 —— 域代码零改动）。
+        "node:crypto": resolve(__dirname, "src/arenaNodeCryptoShim.ts"),
       },
     },
     server: {

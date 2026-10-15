@@ -107,19 +107,23 @@ export function ArenaShell(props: ArenaShellProps) {
   const resolvedInitial: ArenaScreenId = isArenaScreenId(initialScreen)
     ? initialScreen
     : ARENA_DEFAULT_SCREEN;
-  const [active, setActive] = useState<ArenaScreenId>(resolvedInitial);
-  const [lens, setLens] = useState<ArenaRoleLens>(
-    isArenaScreenLens(initialLens) ? initialLens : "requester",
-  );
   const [notice, setNotice] = useState<string | null>(null);
+  // 深链一次性解析（#/<screenId>）—— 未知 hash 诚实忽略，绝不猜测。
   const [hashInitial] = useState(() =>
     typeof window === "undefined" ? null : screenFromHash(window.location.hash),
+  );
+  // UIA-001 TL 集成修复：深链结果并入「活」导航态（浏览器旅程抓到的
+  // 缺陷 —— 此前 effectiveActive 是从不更新的第二 state：点击导航更新
+  // active 而渲染读 effectiveActive，深链只在挂载时生效、点击永不变屏；
+  // SSR 测试单帧渲染测不出该类缺陷）。
+  const [active, setActive] = useState<ArenaScreenId>(() => hashInitial ?? resolvedInitial);
+  const [lens, setLens] = useState<ArenaRoleLens>(
+    isArenaScreenLens(initialLens) ? initialLens : "requester",
   );
   const railRef = useRef<HTMLDivElement | null>(null);
   const hintsId = useId();
 
-  // 深链一次性解析（#/<screenId>）—— 未知 hash 诚实忽略，绝不猜测。
-  const [effectiveActive] = useState<ArenaScreenId>(() => hashInitial ?? resolvedInitial);
+  const effectiveActive = active;
 
   const port = createPort(effectiveActive, setActive, registry);
   const registration = registry.lookup(effectiveActive);
@@ -203,7 +207,7 @@ export function ArenaShell(props: ArenaShellProps) {
             {notice}
           </div>
         ) : null}
-        <main id="arena-main" className="arena-shell-main" aria-live="polite">
+        <main id="arena-main" className="arena-shell-main" aria-live="polite" tabIndex={0}>
           {registration ? (
             registration.render(host)
           ) : (
@@ -226,9 +230,8 @@ export function ArenaShell(props: ArenaShellProps) {
           <span className="arena-shell-product">{ARENA_PRODUCT_NAME}</span>
         </footer>
       </div>
-      <div
+      <aside
         className="arena-shell-role-switcher"
-        role="group"
         aria-label="Role lens (presentation only — never an authorization)"
       >
         {ARENA_ROLE_LENSES.map((role) => (
@@ -243,7 +246,7 @@ export function ArenaShell(props: ArenaShellProps) {
             {role}
           </button>
         ))}
-      </div>
+      </aside>
     </div>
   );
 }

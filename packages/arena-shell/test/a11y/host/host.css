@@ -1,0 +1,5 @@
+/*
+ * Render-host CSS entry: the shell's real style barrel (tokens + shell +
+ * the three lanes' screen styles) — the same files the web integration loads.
+ */
+@import "../../../src/styles.css";

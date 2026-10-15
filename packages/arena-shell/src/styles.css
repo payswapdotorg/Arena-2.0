@@ -1,0 +1,10 @@
+/*
+ * UIA-001 TL 集成 —— arena-shell 样式桶（vite 经 package.json exports 解析）。
+ * 令牌（--arena-* 命名空间）先落，外壳与三 lane 的屏样式随后；继承的宿主
+ * 主题面由 @zcode/ui/styles.css 提供（挂接方负责加载顺序）。
+ */
+@import "./design/arena-tokens.css";
+@import "./shell/shell.css";
+@import "./screens/requester/requester.css";
+@import "./screens/expert/expert.css";
+@import "./screens/reviewer/reviewer.css";

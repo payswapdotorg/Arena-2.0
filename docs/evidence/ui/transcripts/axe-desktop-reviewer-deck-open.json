@@ -1,0 +1,22 @@
+{
+  "kind": "axe-scan",
+  "journey": "reviewer",
+  "state": "deck-open",
+  "viewport": "desktop",
+  "ruleTags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa",
+    "best-practice"
+  ],
+  "violations": [],
+  "passesCount": 50,
+  "incomplete": [
+    "aria-prohibited-attr",
+    "color-contrast"
+  ],
+  "inapplicableCount": 40,
+  "consoleErrors": [],
+  "pageErrors": []
+}

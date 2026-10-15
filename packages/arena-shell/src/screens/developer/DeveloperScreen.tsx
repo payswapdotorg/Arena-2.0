@@ -18,7 +18,7 @@ export function DeveloperScreen(props: { host: ArenaScreenHost }): ReactNode {
   return (
     <section className="arena-screen arena-developer" data-arena-screen="developer" aria-label="developer portal">
       <LensContext lens={props.host.lens} />
-      <h2>Developer</h2>
+      <h1>Developer</h1>
       <ReleasePostureNote />
       <SdkResolutionNote />
       <div className="arena-developer-grid">

@@ -1,0 +1,21 @@
+{
+  "kind": "axe-scan",
+  "journey": "keyboard",
+  "state": "rail-roving",
+  "viewport": "desktop",
+  "ruleTags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa",
+    "best-practice"
+  ],
+  "violations": [],
+  "passesCount": 46,
+  "incomplete": [
+    "color-contrast"
+  ],
+  "inapplicableCount": 44,
+  "consoleErrors": [],
+  "pageErrors": []
+}

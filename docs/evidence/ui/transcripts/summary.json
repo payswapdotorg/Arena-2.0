@@ -1,0 +1,43 @@
+{
+  "kind": "browser-journey-summary",
+  "scans": [
+    {
+      "journey": "branding",
+      "state": "fresh-launch",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "navigation",
+      "state": "operations",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "keyboard",
+      "state": "rail-roving",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "honest-states",
+      "state": "operations-posture",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "reviewer",
+      "state": "deck-open",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "responsive",
+      "state": "developer-mobile",
+      "viewport": "mobile",
+      "violations": 0
+    }
+  ],
+  "totalScans": 6,
+  "totalViolations": 0
+}
