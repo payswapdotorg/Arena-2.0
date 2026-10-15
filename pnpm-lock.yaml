@@ -1165,12 +1165,18 @@ importers:
       electron-builder:
         specifier: ^26.8.1
         version: 26.8.1(electron-builder-squirrel-windows@26.8.1)
+      esbuild:
+        specifier: ^0.27.7
+        version: 0.27.7
       http-mitm-proxy:
         specifier: ^1.1.0
         version: 1.1.0
       istanbul-lib-instrument:
         specifier: ^6.0.3
         version: 6.0.3
+      playwright:
+        specifier: ^1.64.0
+        version: 1.64.0
       tailwindcss:
         specifier: ^4.2.2
         version: 4.2.2
