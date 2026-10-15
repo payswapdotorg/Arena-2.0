@@ -1,0 +1,28 @@
+/*
+ * Render-host CSS entry: the REAL arena-shell style barrel — the same files the
+ * real desktop renderer loads (main.tsx imports "@arena/shell/styles.css").
+ * The trailing rules style the honest fallback disclosure (arena tokens only).
+ */
+@import "@arena/shell/styles.css";
+
+/* ---- honest fallback disclosure (workspace-fallback entry; host-only) ---- */
+.arena-journey-fallback {
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: var(--arena-space-6, 2rem);
+  background: var(--arena-surface-app, #0f1115);
+  color: var(--arena-text-primary, #ffffff);
+  font-size: var(--text-ui-base, 14px);
+}
+
+.arena-journey-fallback h1 {
+  margin: 0 0 var(--arena-space-4, 1rem);
+  font-size: var(--text-ui-lg, 18px);
+}
+
+.arena-journey-fallback p {
+  margin: 0 0 var(--arena-space-3, 0.75rem);
+  max-width: 72ch;
+  color: var(--arena-text-secondary, #b9bec7);
+  line-height: 1.6;
+}

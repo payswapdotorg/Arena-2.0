@@ -1,0 +1,115 @@
+{
+  "kind": "configured-flow-journey",
+  "baseUrl": "http://127.0.0.1:33083",
+  "observedRequests": [
+    {
+      "method": "GET",
+      "path": "/v1/escalations",
+      "authorization": "Bearer demo-token-requester-alpha",
+      "idempotencyKey": null,
+      "requestDigest": null
+    },
+    {
+      "method": "GET",
+      "path": "/v1/escalations/esc_journey_0001/timeline",
+      "authorization": "Bearer demo-token-requester-alpha",
+      "idempotencyKey": null,
+      "requestDigest": null
+    },
+    {
+      "method": "GET",
+      "path": "/v1/escalations/esc_journey_0001/result",
+      "authorization": "Bearer demo-token-requester-alpha",
+      "idempotencyKey": null,
+      "requestDigest": null
+    },
+    {
+      "method": "POST",
+      "path": "/v1/escalations",
+      "authorization": "Bearer demo-token-requester-alpha",
+      "idempotencyKey": "arena-shell-requester-1",
+      "requestDigest": "4dcecc9000e75bfaee27ee0bc402ce7cb08386ccb403b2c70984069d88aa53ec"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/escalations",
+      "authorization": "Bearer demo-token-requester-alpha",
+      "idempotencyKey": null,
+      "requestDigest": null
+    },
+    {
+      "method": "GET",
+      "path": "/v1/escalations/esc_journey_0003/timeline",
+      "authorization": "Bearer demo-token-requester-alpha",
+      "idempotencyKey": null,
+      "requestDigest": null
+    },
+    {
+      "method": "GET",
+      "path": "/v1/escalations/esc_journey_0003/result",
+      "authorization": "Bearer demo-token-requester-alpha",
+      "idempotencyKey": null,
+      "requestDigest": null
+    },
+    {
+      "method": "GET",
+      "path": "/v1/ops/station-probes",
+      "authorization": null,
+      "idempotencyKey": null,
+      "requestDigest": null
+    },
+    {
+      "method": "GET",
+      "path": "/v1/ops/station-probes",
+      "authorization": null,
+      "idempotencyKey": null,
+      "requestDigest": null
+    },
+    {
+      "method": "GET",
+      "path": "/v1/escalations/esc_journey_0001/timeline",
+      "authorization": "Bearer demo-token-requester-alpha",
+      "idempotencyKey": null,
+      "requestDigest": null
+    }
+  ],
+  "stationProbeHits": 2,
+  "submittedEscalations": [
+    {
+      "escalation_id": "esc_journey_0001",
+      "status": "CREATED",
+      "updated_at": "2026-10-16T08:00:00Z"
+    },
+    {
+      "escalation_id": "esc_journey_0002",
+      "status": "VERIFYING",
+      "updated_at": "2026-10-16T08:30:00Z"
+    },
+    {
+      "escalation_id": "esc_journey_0003",
+      "status": "CREATED",
+      "updated_at": "2026-10-16T09:00:00Z"
+    }
+  ],
+  "consoleNoiseDisclosure": "the browser's automatic resource-load log for the two intentionally-driven typed 404s (the result-view ARENA_RESULT_NOT_AVAILABLE stub) is recorded verbatim below and excluded from the cleanliness assertion; every other console error and every uncaught page error fails the journey",
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "assertions": {
+    "trackingRows": [
+      "esc_journey_0001",
+      "esc_journey_0002",
+      "esc_journey_0003"
+    ],
+    "submitOutcome": "Submitted esc_journey_0003 — server status CREATED",
+    "probeRows": [
+      "station-persistence-node-sqlite:UP",
+      "station-isolation-bwrap:DOWN"
+    ],
+    "aggregate": {
+      "ready": false,
+      "fail_closed": true
+    }
+  }
+}

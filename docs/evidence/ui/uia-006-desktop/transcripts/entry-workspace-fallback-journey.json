@@ -1,0 +1,18 @@
+{
+  "kind": "entry-predicate-journey",
+  "fallbackEntries": [
+    {
+      "query": "?workspace=1",
+      "url": "http://127.0.0.1:38717/?workspace=1",
+      "mode": "workspace-fallback",
+      "shellCount": 0
+    },
+    {
+      "query": "?app=workspace",
+      "url": "http://127.0.0.1:38717/?app=workspace",
+      "mode": "workspace-fallback",
+      "shellCount": 0
+    }
+  ],
+  "honestDisclosure": "the inherited workspace is NOT mounted in the journey host (it requires the full host service wiring); the disclosure renders instead — no fake workspace"
+}

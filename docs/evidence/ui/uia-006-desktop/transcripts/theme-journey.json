@@ -1,0 +1,26 @@
+{
+  "kind": "theme-journey",
+  "activation": "host theme classes (dark / theme-zai-light / theme-zai-dark) toggled on documentElement — the REAL resolveArenaTheme + applyArenaTheme + observeArenaTheme recalibration path wired by the host (the UIA-005 recipe from the desktop renderer root)",
+  "computedSurfaces": {
+    "dark": "rgb(15, 17, 21)",
+    "light": "rgb(247, 248, 250)",
+    "darkAfterSwitchBack": "rgb(15, 17, 21)"
+  },
+  "scans": [
+    {
+      "theme": "light",
+      "screen": "operations",
+      "violations": 0
+    },
+    {
+      "theme": "light",
+      "screen": "requester",
+      "violations": 0
+    },
+    {
+      "theme": "dark",
+      "screen": "requester",
+      "violations": 0
+    }
+  ]
+}

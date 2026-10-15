@@ -1,0 +1,19 @@
+{
+  "kind": "axe-scan",
+  "journey": "entry",
+  "state": "fallback-disclosure",
+  "viewport": "desktop",
+  "ruleTags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa",
+    "best-practice"
+  ],
+  "violations": [],
+  "passesCount": 20,
+  "incomplete": [],
+  "inapplicableCount": 70,
+  "consoleErrors": [],
+  "pageErrors": []
+}
