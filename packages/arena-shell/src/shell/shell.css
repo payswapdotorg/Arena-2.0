@@ -1,0 +1,328 @@
+/*
+ * Arena 产品外壳样式（spec/ux/arena-native-ui.md §A3）。
+ * 令牌一律来自 --arena-*（arena-tokens.css）；排版一律 text-ui-*；
+ * 焦点法：全局 *:focus 重置之下，焦点环画在包装层（:has() 读内层
+ * :focus-visible），元素自身用背景/内描边表达焦点。
+ */
+
+.arena-shell {
+  display: grid;
+  grid-template-columns: 216px 1fr;
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    "nav body"
+    "nav lens";
+  height: 100dvh;
+  background: var(--arena-surface-app, #0f1115);
+  color: var(--arena-text-primary, #ffffff);
+  font-size: var(--text-ui-base, 14px);
+  overflow: hidden;
+}
+
+.arena-skip-link {
+  position: absolute;
+  left: var(--arena-space-3, 0.75rem);
+  top: var(--arena-space-2, 0.5rem);
+  z-index: 10;
+  transform: translateY(-200%);
+  background: var(--arena-surface-raised, #1d222b);
+  color: var(--arena-text-primary, #fff);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-2, 0.5rem) var(--arena-space-3, 0.75rem);
+  text-decoration: none;
+}
+
+.arena-skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ---- 导航轨 ---- */
+
+.arena-shell-nav {
+  grid-area: nav;
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-3, 0.75rem);
+  padding: var(--arena-space-4, 1rem) var(--arena-space-3, 0.75rem);
+  border-right: 1px solid var(--arena-border-subtle, #262b34);
+  background: var(--arena-surface-panel, #161a21);
+  min-width: 0;
+}
+
+.arena-shell-brand {
+  display: flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: var(--arena-space-1, 0.25rem) var(--arena-space-2, 0.5rem);
+  color: var(--arena-text-primary, #fff);
+}
+
+.arena-shell-rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-1, 0.25rem);
+}
+
+.arena-shell-nav-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--arena-text-secondary, #b9c0cc);
+  font-size: var(--text-ui-base, 14px);
+  line-height: 1.35;
+  padding: var(--arena-space-2, 0.5rem) var(--arena-space-3, 0.75rem);
+  border-radius: var(--arena-radius-md, 6px);
+  cursor: pointer;
+  transition: background-color var(--arena-motion-fast, 120ms) var(--arena-motion-ease, ease);
+  min-width: 0;
+}
+
+.arena-shell-nav-item:hover {
+  background: var(--arena-surface-hover, #232837);
+  color: var(--arena-text-primary, #fff);
+}
+
+.arena-shell-nav-item:focus-visible {
+  background: var(--arena-focus-surface, #232837);
+  color: var(--arena-text-primary, #fff);
+}
+
+/* 焦点环画在轨包装层（继承技法：全局重置杀元素 outline，不杀父层） */
+.arena-shell-rail:has(.arena-shell-nav-item:focus-visible) {
+  outline: var(--arena-focus-ring-width, 2px) solid
+    color-mix(in oklab, var(--arena-focus-ring-color, #3f6df4) 45%, transparent);
+  outline-offset: var(--arena-focus-ring-offset, 2px);
+  border-radius: var(--arena-radius-md, 6px);
+}
+
+.arena-shell-nav-item-active {
+  background: color-mix(
+    in oklab,
+    var(--arena-surface-raised, #1d222b) 88%,
+    var(--arena-color-brand, #3f6df4)
+  );
+  color: var(--arena-text-primary, #fff);
+  box-shadow: inset 2px 0 0 var(--arena-color-brand, #3f6df4);
+}
+
+.arena-shell-nav-unregistered {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-shell-nav-hint {
+  margin: var(--arena-space-2, 0.5rem) 0 0;
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+/* ---- 主体 ---- */
+
+.arena-shell-body {
+  grid-area: body;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.arena-shell-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--arena-space-5, 1.5rem);
+}
+
+.arena-shell-notice {
+  margin: 0 var(--arena-space-5, 1.5rem) var(--arena-space-2, 0.5rem);
+  padding: var(--arena-space-2, 0.5rem) var(--arena-space-3, 0.75rem);
+  border-radius: var(--arena-radius-md, 6px);
+  border: 1px solid color-mix(in oklab, var(--arena-color-status-blocked, #b8860b) 55%, transparent);
+  background: color-mix(
+    in oklab,
+    var(--arena-color-status-blocked, #b8860b) 12%,
+    var(--arena-surface-raised, #1d222b)
+  );
+  color: var(--arena-text-primary, #fff);
+  font-size: var(--text-ui-sm, 12px);
+}
+
+.arena-shell-refused {
+  max-width: 44rem;
+  color: var(--arena-text-secondary, #b9c0cc);
+}
+
+.arena-shell-refused h2 {
+  font-size: var(--text-ui-lg, 16px);
+  color: var(--arena-text-primary, #fff);
+  margin: 0 0 var(--arena-space-2, 0.5rem);
+}
+
+.arena-shell-footnote {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--arena-space-3, 0.75rem);
+  align-items: center;
+  padding: var(--arena-space-2, 0.5rem) var(--arena-space-5, 1.5rem);
+  border-top: 1px solid var(--arena-border-subtle, #262b34);
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-posture {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--arena-space-3, 0.75rem);
+}
+
+.arena-shell-product {
+  margin-left: auto;
+  color: var(--arena-text-secondary, #b9c0cc);
+}
+
+/* ---- 角色透镜（仅展示） ---- */
+
+.arena-shell-role-switcher {
+  grid-area: lens;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--arena-space-1, 0.25rem);
+  padding: var(--arena-space-2, 0.5rem) var(--arena-space-5, 1.5rem);
+  border-top: 1px solid var(--arena-border-subtle, #262b34);
+}
+
+.arena-lens {
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  background: transparent;
+  color: var(--arena-text-secondary, #b9c0cc);
+  font-size: var(--text-ui-xs, 10px);
+  padding: var(--arena-space-1, 0.25rem) var(--arena-space-2, 0.5rem);
+  border-radius: var(--arena-radius-sm, 4px);
+  cursor: pointer;
+}
+
+.arena-lens:hover,
+.arena-lens:focus-visible {
+  background: var(--arena-surface-hover, #232837);
+  color: var(--arena-text-primary, #fff);
+}
+
+.arena-lens-active {
+  border-color: color-mix(in oklab, var(--arena-color-brand, #3f6df4) 60%, transparent);
+  background: color-mix(
+    in oklab,
+    var(--arena-color-brand, #3f6df4) 14%,
+    var(--arena-surface-raised, #1d222b)
+  );
+  color: var(--arena-text-primary, #fff);
+}
+
+/* ---- 状态模式套件 ---- */
+
+.arena-state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-2, 0.5rem);
+  max-width: 40rem;
+  color: var(--arena-text-secondary, #b9c0cc);
+}
+
+.arena-state-title {
+  font-size: var(--text-ui-xl, 18px);
+  color: var(--arena-text-primary, #fff);
+  margin: 0;
+}
+
+.arena-state-body {
+  font-size: var(--text-ui-base, 14px);
+  margin: 0;
+}
+
+.arena-state-posture {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-loading-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--arena-color-brand, #3f6df4);
+  animation: arena-pulse var(--arena-motion-base, 180ms) var(--arena-motion-ease, ease) infinite
+    alternate;
+}
+
+@keyframes arena-pulse {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.arena-button {
+  align-self: flex-start;
+  border: 1px solid var(--arena-border-strong, #3a414e);
+  background: var(--arena-surface-raised, #1d222b);
+  color: var(--arena-text-primary, #fff);
+  font-size: var(--text-ui-sm, 12px);
+  padding: var(--arena-space-2, 0.5rem) var(--arena-space-4, 1rem);
+  border-radius: var(--arena-radius-md, 6px);
+  cursor: pointer;
+}
+
+.arena-button:hover,
+.arena-button:focus-visible {
+  background: var(--arena-surface-hover, #232837);
+}
+
+/* ---- 响应式（<960px：轨收成顶部紧凑条；390x844 无横向溢出） ---- */
+
+@media (max-width: 959px) {
+  .arena-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "nav"
+      "body"
+      "lens";
+  }
+
+  .arena-shell-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--arena-space-2, 0.5rem);
+    border-right: none;
+    border-bottom: 1px solid var(--arena-border-subtle, #262b34);
+    padding: var(--arena-space-2, 0.5rem) var(--arena-space-3, 0.75rem);
+  }
+
+  .arena-shell-rail {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--arena-space-1, 0.25rem);
+  }
+
+  .arena-shell-nav-item {
+    padding: var(--arena-space-1, 0.25rem) var(--arena-space-2, 0.5rem);
+    box-shadow: none;
+  }
+
+  .arena-shell-nav-item-active {
+    box-shadow: inset 0 -2px 0 var(--arena-color-brand, #3f6df4);
+  }
+
+  .arena-shell-main {
+    padding: var(--arena-space-3, 0.75rem);
+    overflow-y: auto;
+  }
+
+  .arena-shell-nav-hint {
+    display: none;
+  }
+}

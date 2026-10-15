@@ -1,34 +1,105 @@
 /*
  * Arena 设计令牌命名空间（spec/ux/arena-native-ui.md §2.2，FROZEN namespace）。
- * 所有 Arena 视觉身份令牌一律使用 --arena-* 前缀；继承的 DESIGN.md 纪律
- * （text-ui-* 字阶、克制的运营型风格、明暗主题、i18n 长度容差）保持约束。
- * Worker A 补全整套令牌（色彩、状态、证据模式、焦点、表面）；本种子层
- * 只钉住命名空间与语义分组。
+ *
+ * 纪律（继承 DESIGN.md，全部保持约束）：
+ *   - 界面排版一律 text-ui-*（--ui-font-size 派生）；禁止 text-base/text-sm/
+ *     任意像素字号。
+ *   - 克制的运营型风格：无整面品牌填充、无营销间距；身份由 wordmark +
+ *     令牌点缀 + 信息架构承载。
+ *   - 明暗主题：令牌跟随宿主主题表面（--ui-bg-* 不存在时回退到记录值），
+ *     Zai 变体不被覆盖。
+ *   - 焦点法（继承 styles.css 的全局 focus 重置）：焦点环画在包装层
+ *     （:has() 读内层元素的 :focus-visible），或用背景/内描边变化表达，
+ *     绝不依赖被全局重置吞掉的元素直连 outline。
+ *
+ * 令牌分组（全部 --arena-* 前缀；TS 镜像见 src/design/tokens.ts）：
+ *   brand / surface / status / evidence / focus / spacing / radius / motion
  */
 
 :root {
-  /* 品牌与身份 */
+  /* ---- 品牌（低饱和、可长期注视） ---- */
   --arena-color-brand: #3f6df4;
   --arena-color-brand-strong: #2b50c8;
   --arena-color-brand-soft: #e8eefc;
+  --arena-color-on-brand: #ffffff;
 
-  /* 表面层级（克制：无整面品牌填充） */
+  /* ---- 表面层级（继承宿主主题表面；无宿主时用记录回退值） ---- */
   --arena-surface-app: var(--ui-bg-app, #0f1115);
   --arena-surface-panel: var(--ui-bg-panel, #161a21);
   --arena-surface-raised: var(--ui-bg-raised, #1d222b);
+  --arena-surface-hover: color-mix(
+    in oklab,
+    var(--arena-surface-raised, #1d222b) 88%,
+    var(--arena-color-brand, #3f6df4)
+  );
 
-  /* 状态色（逐字承载类型化词表，绝不升值） */
+  /* ---- 文本（界面字阶走 text-ui-*；此处只定色彩） ---- */
+  --arena-text-primary: color-mix(in oklab, var(--arena-surface-app, #0f1115) 8%, #ffffff);
+  --arena-text-secondary: color-mix(in oklab, var(--arena-surface-app, #0f1115) 45%, #ffffff);
+  --arena-text-muted: color-mix(in oklab, var(--arena-surface-app, #0f1115) 62%, #ffffff);
+  --arena-text-on-soft: #1d2b53;
+
+  /* ---- 边界 ---- */
+  --arena-border-subtle: color-mix(in oklab, var(--arena-surface-panel, #161a21) 82%, #ffffff);
+  --arena-border-strong: color-mix(in oklab, var(--arena-surface-panel, #161a21) 62%, #ffffff);
+
+  /* ---- 状态色（逐字承载类型化词表，绝不升值） ---- */
   --arena-color-status-pass: #35a06b;
   --arena-color-status-denied: #c0392b;
   --arena-color-status-blocked: #b8860b;
   --arena-color-status-pending: #6b7a8d;
+  --arena-color-status-info: #3f6df4;
 
-  /* 证据等级模式（DEMO / FIXTURE / REAL —— 逐字展示） */
+  /* ---- 证据等级模式（DEMO / FIXTURE / REAL —— 逐字展示，不混合） ---- */
   --arena-evidence-demo: #8a6d3b;
   --arena-evidence-fixture: #6d5a8a;
   --arena-evidence-real: #2f7d4f;
 
-  /* 焦点与键盘可达 */
-  --arena-focus-ring: 2px solid var(--arena-color-brand);
-  --arena-focus-offset: 2px;
+  /* ---- 焦点与键盘可达（画在包装层；见 shell.css 的 :has() 用法） ---- */
+  --arena-focus-ring-color: var(--arena-color-brand, #3f6df4);
+  --arena-focus-ring-width: 2px;
+  --arena-focus-ring-offset: 2px;
+  --arena-focus-surface: color-mix(
+    in oklab,
+    var(--arena-surface-raised, #1d222b) 84%,
+    var(--arena-color-brand, #3f6df4)
+  );
+
+  /* ---- 间距（运营型密度：紧凑但不局促） ---- */
+  --arena-space-1: 0.25rem;
+  --arena-space-2: 0.5rem;
+  --arena-space-3: 0.75rem;
+  --arena-space-4: 1rem;
+  --arena-space-5: 1.5rem;
+  --arena-space-6: 2rem;
+
+  /* ---- 圆角（克制） ---- */
+  --arena-radius-sm: 4px;
+  --arena-radius-md: 6px;
+  --arena-radius-lg: 8px;
+
+  /* ---- 动效（短、无弹性、可关闭） ---- */
+  --arena-motion-fast: 120ms;
+  --arena-motion-base: 180ms;
+  --arena-motion-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --arena-motion-fast: 0ms;
+    --arena-motion-base: 0ms;
+  }
+}
+
+/* 浅色主题下校准（宿主明主题或 Zai-light 时表面变量来自宿主；
+ * 无宿主变量时 :root 记录值是深色 —— 这里提供浅色回退组）。 */
+:root[data-arena-theme="light"] {
+  --arena-surface-app: #f7f8fa;
+  --arena-surface-panel: #ffffff;
+  --arena-surface-raised: #eef0f4;
+  --arena-text-primary: #10131a;
+  --arena-text-secondary: #3d4654;
+  --arena-text-muted: #66707f;
+  --arena-border-subtle: #e3e6ec;
+  --arena-border-strong: #c9cfd9;
 }
