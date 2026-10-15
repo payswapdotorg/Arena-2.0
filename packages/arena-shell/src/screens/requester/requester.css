@@ -1,0 +1,303 @@
+/*
+ * UIA-001 Lane B — 请求方驾驶舱样式（令牌一律 --arena-*；排版 text-ui-*；
+ * 焦点环画在包装层（全局 *:focus 重置之下的继承技法）；响应式 1440/390。
+ * TL 集成提交负责把本文件与 shell.css/tokens 一起挂入真实应用。
+ */
+
+.arena-requester {
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-3, 0.75rem);
+  min-width: 0;
+  font-size: var(--text-ui-base, 14px);
+}
+
+.arena-lens-context {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-posture-note {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-requester-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 5fr) minmax(320px, 7fr);
+  gap: var(--arena-space-4, 1rem);
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .arena-requester-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.arena-escalation-form,
+.arena-requester-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-2, 0.5rem);
+  background: var(--arena-surface-panel, #161a21);
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  border-radius: var(--arena-radius-md, 6px);
+  padding: var(--arena-space-4, 1rem);
+  min-width: 0;
+}
+
+.arena-requester-side > section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-2, 0.5rem);
+  padding: var(--arena-space-3, 0.75rem);
+  background: var(--arena-surface-raised, #1d222b);
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  border-radius: var(--arena-radius-sm, 4px);
+}
+
+.arena-escalation-form label,
+.arena-requester-side label {
+  font-size: var(--text-ui-caption, 13px);
+  color: var(--arena-text-secondary, #b9c0cc);
+}
+
+.arena-escalation-form input,
+.arena-escalation-form textarea,
+.arena-escalation-form select {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--arena-surface-app, #0f1115);
+  color: var(--arena-text-primary, #fff);
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-2, 0.5rem);
+  font-size: var(--text-ui-base, 14px);
+  font-family: inherit;
+}
+
+.arena-form-pair {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--arena-space-2, 0.5rem);
+}
+
+.arena-form-modes {
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-2, 0.5rem);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--arena-space-2, 0.5rem);
+}
+
+.arena-form-modes legend {
+  font-size: var(--text-ui-caption, 13px);
+  color: var(--arena-text-secondary, #b9c0cc);
+  padding: 0 var(--arena-space-2, 0.5rem);
+}
+
+.arena-form-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--arena-space-1, 0.25rem);
+  font-size: var(--text-ui-caption, 13px);
+  color: var(--arena-text-primary, #fff);
+}
+
+.arena-submit {
+  align-self: flex-start;
+  background: color-mix(in oklab, var(--arena-color-brand, #3f6df4) 18%, var(--arena-surface-raised, #1d222b));
+  color: var(--arena-text-primary, #fff);
+  border: 1px solid color-mix(in oklab, var(--arena-color-brand, #3f6df4) 55%, transparent);
+  border-radius: var(--arena-radius-md, 6px);
+  padding: var(--arena-space-2, 0.5rem) var(--arena-space-4, 1rem);
+  font-size: var(--text-ui-base, 14px);
+  cursor: pointer;
+}
+
+.arena-submit:hover {
+  background: color-mix(in oklab, var(--arena-color-brand-strong, #5a83f7) 26%, var(--arena-surface-raised, #1d222b));
+}
+
+.arena-submit[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* 焦点环画在包装层（继承技法） */
+.arena-escalation-form:has(.arena-submit:focus-visible) {
+  outline: var(--arena-focus-ring-width, 2px) solid
+    color-mix(in oklab, var(--arena-focus-ring-color, #3f6df4) 45%, transparent);
+  outline-offset: var(--arena-focus-ring-offset, 2px);
+  border-radius: var(--arena-radius-md, 6px);
+}
+
+.arena-live-status {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+  min-height: 1em;
+}
+
+.arena-submit-outcome {
+  font-size: var(--text-ui-caption, 13px);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-2, 0.5rem);
+  border: 1px solid var(--arena-border-subtle, #262b34);
+}
+
+.arena-submit-ok {
+  color: var(--arena-color-status-pass, #3fb96f);
+}
+
+.arena-submit-rejected,
+.arena-submit-conflict,
+.arena-submit-transport_error,
+.arena-submit-unauthenticated {
+  color: var(--arena-color-status-denied, #e2546a);
+}
+
+.arena-typed-error {
+  color: var(--arena-color-status-denied, #e2546a);
+  font-size: var(--text-ui-caption, 13px);
+  word-break: break-word;
+}
+
+.arena-retry {
+  align-self: flex-start;
+  background: transparent;
+  color: var(--arena-text-secondary, #b9c0cc);
+  border: 1px solid var(--arena-border-strong, #39414e);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-1, 0.25rem) var(--arena-space-2, 0.5rem);
+  font-size: var(--text-ui-caption, 13px);
+  cursor: pointer;
+}
+
+.arena-tracking-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-1, 0.25rem);
+}
+
+.arena-tracking-select {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--arena-space-2, 0.5rem);
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  background: var(--arena-surface-app, #0f1115);
+  color: var(--arena-text-primary, #fff);
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-2, 0.5rem);
+  font-size: var(--text-ui-base, 14px);
+  cursor: pointer;
+}
+
+.arena-tracking-select:hover {
+  background: var(--arena-surface-hover, #232837);
+}
+
+li[data-selected="true"] .arena-tracking-select {
+  border-color: color-mix(in oklab, var(--arena-color-brand, #3f6df4) 60%, transparent);
+}
+
+.arena-tracking-title {
+  font-size: var(--text-ui-base, 14px);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.arena-tracking-updated {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-routing-concepts {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-2, 0.5rem);
+}
+
+.arena-routing-concept dt {
+  font-size: var(--text-ui-caption, 13px);
+  color: var(--arena-text-primary, #fff);
+  font-weight: 600;
+}
+
+.arena-routing-concept dd {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-secondary, #b9c0cc);
+}
+
+.arena-routing-not-recorded {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+  border-top: 1px dashed var(--arena-border-subtle, #262b34);
+  padding-top: var(--arena-space-2, 0.5rem);
+}
+
+.arena-timeline {
+  margin: 0;
+  padding-left: var(--arena-space-4, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-1, 0.25rem);
+  font-size: var(--text-ui-caption, 13px);
+}
+
+.arena-timeline time {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+  margin: 0 var(--arena-space-2, 0.5rem);
+}
+
+.arena-timeline-actor {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-secondary, #b9c0cc);
+}
+
+.arena-payment-disclosure,
+.arena-payment-rule,
+.arena-payment-vocab-label {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-payment-chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--arena-space-1, 0.25rem);
+}
+
+.arena-state-badge {
+  font-size: var(--text-ui-xs, 10px);
+  padding: 1px var(--arena-space-2, 0.5rem);
+  border-radius: var(--arena-radius-sm, 4px);
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  color: var(--arena-text-secondary, #b9c0cc);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arena-submit,
+  .arena-tracking-select {
+    transition: none;
+  }
+}

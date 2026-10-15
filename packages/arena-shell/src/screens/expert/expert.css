@@ -1,0 +1,189 @@
+/*
+ * UIA-001 Lane B — 专家工位样式（令牌 --arena-*；排版 text-ui-*；
+ * 焦点环画在包装层；响应式 1440/390；DEMO 标注与自评区分的克制表达）。
+ */
+
+.arena-expert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-3, 0.75rem);
+  min-width: 0;
+  font-size: var(--text-ui-base, 14px);
+}
+
+.arena-queue-section,
+.arena-expert-grid > section,
+.arena-expert-grid > form {
+  background: var(--arena-surface-panel, #161a21);
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  border-radius: var(--arena-radius-md, 6px);
+  padding: var(--arena-space-4, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-2, 0.5rem);
+  min-width: 0;
+}
+
+.arena-expert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--arena-space-4, 1rem);
+  align-items: start;
+}
+
+.arena-queue {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-1, 0.25rem);
+}
+
+.arena-queue-select {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--arena-space-2, 0.5rem);
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  background: var(--arena-surface-app, #0f1115);
+  color: var(--arena-text-primary, #fff);
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-2, 0.5rem);
+  font-size: var(--text-ui-base, 14px);
+  cursor: pointer;
+}
+
+.arena-queue-select:hover {
+  background: var(--arena-surface-hover, #232837);
+}
+
+.arena-queue-select[data-selected="true"] {
+  border-color: color-mix(in oklab, var(--arena-color-brand, #3f6df4) 60%, transparent);
+}
+
+.arena-queue-fact,
+.arena-queue-demo {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-queue-demo {
+  color: var(--arena-evidence-demo, #b7a14f);
+}
+
+.arena-task-fact,
+.arena-expert-projection-note {
+  font-size: var(--text-ui-caption, 13px);
+  color: var(--arena-text-secondary, #b9c0cc);
+}
+
+.arena-expert-projection-note {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-capsule-entry {
+  border: 1px dashed var(--arena-border-strong, #39414e);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-3, 0.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-2, 0.5rem);
+}
+
+.arena-capsule-posture {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-capsule-open {
+  align-self: flex-start;
+  background: transparent;
+  color: var(--arena-text-muted, #8b95a3);
+  border: 1px solid var(--arena-border-strong, #39414e);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-2, 0.5rem) var(--arena-space-3, 0.75rem);
+  font-size: var(--text-ui-caption, 13px);
+  cursor: not-allowed;
+}
+
+.arena-expert-grid label {
+  font-size: var(--text-ui-caption, 13px);
+  color: var(--arena-text-secondary, #b9c0cc);
+}
+
+.arena-expert-grid input,
+.arena-expert-grid textarea,
+.arena-expert-grid select {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--arena-surface-app, #0f1115);
+  color: var(--arena-text-primary, #fff);
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-2, 0.5rem);
+  font-size: var(--text-ui-base, 14px);
+  font-family: inherit;
+}
+
+.arena-self-eval-form {
+  border-left: 3px solid var(--arena-color-status-pending, #d9a53f);
+}
+
+.arena-self-eval-distinction {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-color-status-pending, #d9a53f);
+}
+
+.arena-self-eval-criterion {
+  border: 1px solid var(--arena-border-subtle, #262b34);
+  border-radius: var(--arena-radius-sm, 4px);
+  padding: var(--arena-space-2, 0.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-1, 0.25rem);
+}
+
+.arena-self-eval-criterion legend {
+  font-size: var(--text-ui-caption, 13px);
+  color: var(--arena-text-primary, #fff);
+  padding: 0 var(--arena-space-2, 0.5rem);
+}
+
+.arena-self-eval-statement {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-intervention-form {
+  border-left: 3px solid color-mix(in oklab, var(--arena-color-brand, #3f6df4) 70%, transparent);
+}
+
+.arena-typed-command {
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-secondary, #b9c0cc);
+  word-break: break-word;
+}
+
+.arena-payout-rule,
+.arena-payout-finance {
+  font-size: var(--text-ui-xs, 10px);
+  color: var(--arena-text-muted, #8b95a3);
+}
+
+.arena-payout-attempt {
+  font-size: var(--text-ui-caption, 13px);
+  color: var(--arena-text-secondary, #b9c0cc);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arena-queue-select,
+  .arena-submit {
+    transition: none;
+  }
+}
