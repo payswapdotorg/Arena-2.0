@@ -27,6 +27,7 @@ import {
   mockAttemptsAdapter,
   mockDecksAdapter,
   operationsRegistration,
+  remoteStationProbes,
   requesterRegistration,
   reviewerRegistration,
 } from "@arena/shell/screens";
@@ -156,6 +157,11 @@ function renderArenaShell(): void {
     operationsRegistration({
       audit: bindingAuditAdapter(binding),
       principal: requesterPrincipal,
+      // UIA-004 TL 集成：注入远端站点探针（浏览器安全、check 时实测）——
+      // 探针测度的是 ARENA RUNTIME 站点（绑定 baseUrl 目标；部署拓扑是
+      // 记录在案的运营方前沿）。端点不可达 → 类型化 DOWN fail-closed，
+      // 绝不退回伪造 ready。
+      probes: remoteStationProbes(baseUrl),
     }),
   ]);
 

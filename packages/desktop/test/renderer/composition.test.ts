@@ -249,3 +249,107 @@ test("applyTitle 遵守 identity law（Arena 屏标题 + 恢复语义）", () =>
     }
   }
 });
+
+/**
+ * UIA-004 TL 集成 —— 组合根注入远端站点探针（REAL 端到端）：
+ * 组合 → operationsRegistration(probes) → runReadiness() → check() fetch
+ * → /v1/ops/station-probes 行映射 → aggregateReadiness 聚合。
+ * 未配置 baseUrl（哨兵端口 0）→ fetch 立即失败 → 类型化 DOWN fail-closed
+ * —— 绝不伪造 ready、也绝不静默 unwired 冒充已测。
+ */
+test("UIA-004：探针注入 + 真实本地 HTTP 端点行映射（fail-closed 聚合）", async () => {
+  const stationRows = {
+    ready: false,
+    fail_closed: true,
+    dependencies: [
+      {
+        id: "station-persistence-node-sqlite",
+        kind: "persistence",
+        status: "UP",
+        detail: "node:sqlite resolvable — the arena-persistence sqlite_reference_engine class",
+        checked_at: "2026-10-16T00:00:00Z",
+      },
+      {
+        id: "station-isolation-bwrap",
+        kind: "capsule_provider",
+        status: "DOWN",
+        detail: "bwrap not detected (fixture row — real measurement lives server-side)",
+        checked_at: "2026-10-16T00:00:00Z",
+      },
+    ],
+    not_up: [
+      {
+        id: "station-isolation-bwrap",
+        kind: "capsule_provider",
+        status: "DOWN",
+        detail: "bwrap not detected (fixture row — real measurement lives server-side)",
+        checked_at: "2026-10-16T00:00:00Z",
+      },
+    ],
+  };
+  const hits: string[] = [];
+  const server = http.createServer((request, response) => {
+    hits.push(request.url ?? "");
+    response.statusCode = 200;
+    response.setHeader("content-type", "application/json");
+    response.end(JSON.stringify(stationRows));
+  });
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const address = server.address();
+  const port = typeof address === "object" && address !== null ? address.port : null;
+  assert.ok(port, "station probe server must be listening on an ephemeral port");
+  try {
+    const composition = buildArenaDesktopComposition({ baseUrl: `http://127.0.0.1:${port}` });
+    const operations = realController(composition, "operations") as unknown as {
+      runReadiness(): Promise<void>;
+      snapshot(): { readiness: { kind: string; report?: unknown } };
+    };
+    await operations.runReadiness();
+    // check() 逐探针实测（两行各一次 fetch —— per-dependency 可见性法）。
+    assert.deepEqual(hits, ["/v1/ops/station-probes", "/v1/ops/station-probes"]);
+    const readiness = operations.snapshot().readiness;
+    assert.equal(readiness.kind, "ready");
+    const report = readiness.report as {
+      ready: boolean;
+      fail_closed?: boolean;
+      dependencies: { id: string; status: string; detail: string }[];
+      not_up?: { id: string }[];
+    };
+    // 行逐字透传 + fail-closed 聚合（bwrap DOWN ⇒ not ready）。
+    assert.equal(report.ready, false);
+    assert.equal(report.fail_closed, true);
+    assert.deepEqual(
+      report.dependencies.map((row) => `${row.id}:${row.status}`),
+      ["station-persistence-node-sqlite:UP", "station-isolation-bwrap:DOWN"],
+    );
+    assert.match(
+      report.dependencies[0].detail,
+      /sqlite_reference_engine class$/,
+    );
+    assert.deepEqual(report.not_up?.map((row) => row.id), ["station-isolation-bwrap"]);
+  } finally {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  }
+});
+
+test("UIA-004：未配置 baseUrl（诚实哨兵）→ 探针类型化 DOWN fail-closed，绝不伪造 ready", async () => {
+  const composition = buildArenaDesktopComposition({ baseUrl: undefined });
+  const operations = realController(composition, "operations") as unknown as {
+    runReadiness(): Promise<void>;
+    snapshot(): { readiness: { kind: string; report?: unknown } };
+  };
+  await operations.runReadiness();
+  const readiness = operations.snapshot().readiness;
+  assert.equal(readiness.kind, "ready");
+  const report = readiness.report as {
+    ready: boolean;
+    fail_closed?: boolean;
+    dependencies: { id: string; status: string; detail: string }[];
+  };
+  assert.equal(report.ready, false);
+  assert.equal(report.fail_closed, true);
+  for (const row of report.dependencies) {
+    assert.equal(row.status, "DOWN");
+    assert.match(row.detail, /station probe endpoint unreachable: http:\/\/127\.0\.0\.1:0\//);
+  }
+});

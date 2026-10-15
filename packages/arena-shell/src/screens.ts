@@ -24,3 +24,9 @@ export {
   bindingAuditAdapter,
 } from "./screens/operations/registration.js";
 export type { OperationsScreenDeps } from "./screens/operations/registration.js";
+// UIA-004 TL 集成：浏览器安全的远端站点探针加入公开面（组合根挂接需要；
+// 与 node 专属的 stationProbes.ts 相对 —— 该模块仍不得被浏览器根引入）。
+export {
+  remoteStationProbes,
+  STATION_PROBE_ENDPOINT_PATH,
+} from "./screens/operations/remoteStationProbes.js";
