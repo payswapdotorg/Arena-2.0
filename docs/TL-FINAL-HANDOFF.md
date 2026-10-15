@@ -311,3 +311,39 @@ Remaining frontiers for successor WOs (recomputed): the production credential ad
 IdP decision), the arena-api deployment topology (operator infrastructure), the light-theme
 activation calibration, and the desktop mounted-app browser-journey class (needs the Electron
 runtime class). The station-probe frontier is CLOSED.
+
+## 13. UIA-005 — the light-theme activation calibration (recorded 2026-10-16; issue #78 CLOSED completed)
+
+The fourth successor work order from the UIA-001 recorded frontiers, executed under the resident
+TL watch loop with the implementation-scoped dispatch refinement:
+
+- **Registration** `b2f49c5`: issue #78 + the dispatch record; ledger row + impl-plan section;
+  no pre-wiring (arena-shell-internal + root wiring); station baseline green.
+- **Worker lane** (GLM, Full-Stack, in-session Task tool — the replay-dispatch capacity class):
+  `design/arenaTheme.ts` (pure/total `resolveArenaTheme` over the host theme classes both roots
+  maintain — precedence dark → theme-zai-light → theme-zai-dark → system fallback; the applier;
+  the observer factory; ZERO DOM globals — all surfaces injected, node-testable, 9 unit tests)
+  + the calibration (the pre-calibration light sweep found exactly one failing pair:
+  `--arena-text-muted #66707f` on raised = 4.39:1 → `#5f6873` = 4.96:1, disclosed; all five
+  screens 0 axe violations post-calibration) + the light browser journey (transcripts +
+  screenshots under `docs/evidence/ui/uia-005-light/**`).
+- **TL integration** (PR #79, squash `6be4cde1`): the public surface extended
+  (`exports["./theme"]` + the policy publicEntrypoints entry); the web `renderArenaShell()` and
+  the desktop arena-first branch wire the documented recipe (resolve at mount +
+  MutationObserver runtime re-calibration on host class changes); the CI glob gap fixed
+  (`test/design/*.test.ts` — the UIA-001 Lane C gap class); one TS2345 readonly-vs-mutable
+  cast fixed at integration.
+- **Evidence**: arch 0 violations / root typecheck 0 / oxlint 0 errors (73 pre-existing
+  warnings) / arena-shell unit glob 162/162 (153 + 9) / desktop renderer 24/24 / a11y journeys
+  12/12 incl. the light journey (playwright 1.64.0 / chromium 156.0.8078.4 / axe-core 4.14.0);
+  CI battery green on the PR head.
+- **Disclosed limitations**: evidence-refresh side-effects (the journeys harness writes
+  unconditionally — summary now aggregates 11 scans; 4 UIA-001 screenshots re-rendered with
+  byte diffs on the chromium-1248 rebuild); the root glue is browser-only (typechecked, not
+  node-unit-tested — the module logic is fully unit-tested and journey-verified); the journeys
+  suite remains a station/TL-run gate (not a CI step — unchanged posture).
+
+Remaining frontiers for successor WOs (recomputed): the production credential adapter (owner
+IdP decision), the arena-api deployment topology (operator infrastructure), and the desktop
+mounted-app browser-journey class (needs the Electron runtime class — station-disclosed
+limitation). The light-theme activation calibration frontier is CLOSED.
