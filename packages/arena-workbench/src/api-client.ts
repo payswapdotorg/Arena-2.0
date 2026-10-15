@@ -89,7 +89,15 @@ export class ArenaApiClient {
 
   constructor(options: ArenaApiClientOptions) {
     this.base = options.baseUrl.replace(/\/$/, "");
-    this.doFetch = options.fetchImpl ?? fetch;
+    // MAINT-004 (issue #81): bind the captured global fetch to globalThis —
+    // calling the bare reference as `this.doFetch(...)` passes the CLIENT
+    // INSTANCE as the receiver, and browser runtimes (Chromium/Electron
+    // renderer — the production web + desktop apps both mount this client)
+    // enforce the WebIDL receiver law: "TypeError: Failed to execute 'fetch'
+    // on 'Window': Illegal invocation". Node's fetch is receiver-insensitive,
+    // which is why the AR2-006 node suites never caught it. The injected
+    // fetchImpl path is unchanged (node tests pass closures, not globals).
+    this.doFetch = options.fetchImpl ?? fetch.bind(globalThis);
   }
 
   /** 组合根就绪面（无需认证）。 */
