@@ -269,3 +269,45 @@ Remaining frontiers for successor WOs (recomputed): the production credential ad
 IdP decision), the arena-api deployment topology (operator infrastructure), the light-theme
 activation calibration, the desktop mounted-app browser-journey class, the station-probe
 injection into the browser composition roots.
+
+## 12. UIA-004 — the station-probe injection into the browser composition roots (recorded 2026-10-16; issue #76 CLOSED completed)
+
+The third successor work order from the UIA-001 recorded frontiers — the UIA-003 recorded
+follow-up — executed under the resident TL watch loop with the implementation-scoped dispatch
+refinement (the worker session implements in-fence; the TL runs the battery and the delivery
+mechanics — disclosed in the PR body):
+
+- **Registration** `c8131a5`: issue #76 + the dispatch record; ledger row + impl-plan section;
+  the arena-api `requires` extension (+= arena-ops) + package dep + lockfile intake (TL-owned;
+  the UIA-003 requires-extension precedent); station baseline verified green on the
+  registration tree (arch 0 / tsc 0 / oxlint 0 errors 73 warnings / api 14/14 / shell-ops 14/14).
+- **Worker lane** (GLM, Full-Stack, in-session Task tool — the replay-dispatch capacity class):
+  `packages/arena-api/src/stationProbes.ts` (the node-side REAL station capability probes —
+  node:sqlite resolvability + bwrap detection mirroring arena-isolation's resolveBwrap law,
+  disclosed) + the `GET /v1/ops/station-probes` health-class route (per-request live
+  measurement, `aggregateReadiness` fail-closed, the `/readyz` shape precedent) + the endpoint
+  test on a REAL spawned arena-api; `packages/arena-shell/src/screens/operations/remoteStationProbes.ts`
+  (browser-safe — zero node imports, MAY be statically imported from browser roots; LIVE
+  fetch-per-check; rows VERBATIM; every failure mode typed DOWN fail-closed) + its test on a
+  REAL local node:http server (8 cases).
+- **TL integration** (PR #77, squash `649e573`): the shell public surface extended
+  (`remoteStationProbes` + `STATION_PROBE_ENDPOINT_PATH`); the web `renderArenaShell()` and the
+  desktop `buildArenaDesktopComposition()` inject `remoteStationProbes(baseUrl)` — the probes
+  measure the ARENA RUNTIME station (the binding baseUrl target; the deployment topology
+  remains the recorded operator frontier); the unconfigured port-0 sentinel posture renders the
+  typed DOWN rows honestly (never fake-ready, never silently-unwired-pretending-measured);
+  +2 REAL desktop composition integration tests (the real local HTTP row mapping + the honest
+  sentinel DOWN posture).
+- **Evidence**: arch 0 violations / root typecheck 0 / oxlint 0 errors (73 pre-existing
+  warnings) / arena-shell 153/153 (145 + 8) / desktop renderer 24/24 (22 + 2) / arena-api
+  25/25 / ops 11/11 / sdk 24/24 (incl. the e2e that spawns the real arena-api) /
+  acquisition 77/77 / workbench 52-0-1 honest skip; CI battery green on the PR head.
+- **Disclosed limitations**: the a11y host fixture stays uninjected by design (fixture
+  posture); at this station the endpoint honestly reports `ready: false, fail_closed: true`
+  (persistence UP via real node:sqlite; bwrap DOWN — no executable on PATH) — the typed truth
+  per the recorded posture.
+
+Remaining frontiers for successor WOs (recomputed): the production credential adapter (owner
+IdP decision), the arena-api deployment topology (operator infrastructure), the light-theme
+activation calibration, and the desktop mounted-app browser-journey class (needs the Electron
+runtime class). The station-probe frontier is CLOSED.
