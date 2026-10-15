@@ -165,3 +165,36 @@ This handoff is operationally complete when the TL has:
 6. Kept CI, tests, docs and issue statuses synchronized on `main`.
 
 Do not declare Arena production-ready because the core E2E profiles pass. Do not claim the scraper/capability-acquisition extension works until its own runtime, security, rights, integration and before/after capability-evaluation gates pass.
+
+## 9. UIA-001 — the Arena-native UI wave (recorded 2026-10-15; issue #66 CLOSED completed)
+
+The post-roadmap product-identity work order completed end-to-end under the AR2-015 TL-direct
+precedent (the platform generation window stayed closed through the wave — every execution
+surface disclosed it):
+
+- **Wave 0** `e310a81`: the frozen UX architecture (`spec/ux/arena-native-ui.md`) + the
+  `@arena/shell` skeleton + the three lane write fences.
+- **Lane A** `fc49cb2`: the design system (38 `--arena-*` tokens, bidirectional CSS/TS coverage),
+  the product shell (ARIA tablist rail, roving tabindex, posture footer), the identity kit
+  (wordmark, honest state patterns, document-title ownership), the nav model, the branding sweep.
+- **Lane B** `b8f8e74`: the requester cockpit (typed selects from the CF1.0 zod enums,
+  server-projection tracking, routing transparency with the honest not-recorded disclosure,
+  test-mode payment) + the expert workbench (capsule entry truthfully disabled per the recorded
+  posture, criteria-driven never-a-vote self-evaluation, the canonical escalation command path
+  with typed 409/404 verbatim).
+- **Lane C** `ab934eb`: the reviewer/adjudicator deck (buildReviewDeck frozen product, redaction
+  partitions with operator count-only withholding), the developer portal (contract shapes
+  enumerated at runtime from the real frozen schemas), the operations surface (the FROZEN truth
+  law: NOT_GO/test_mode/disabled verbatim with all recorded bases).
+- **TL integration** `e1c0b24`: the web mounting (ArenaShell as the default first screen; the
+  inherited workspace behind the explicit `?workspace=1` fallback entry), Arena titles, the
+  public-surface extension, the browser digest shim (byte-identical sha256), the AR2-021-class
+  browser journeys (11/11 green, axe 0 violations, screenshots + transcripts in
+  `docs/evidence/ui/**`), the arena-shell CI battery step, and the defects the journeys caught
+  (the effectiveActive navigation defect, snapshot caching, contrast recalibration, the heading
+  cascade, the demo-tenant composition).
+
+Remaining frontiers for successor WOs: the desktop Arena-first mounting (renderer bootstrap
+re-sequencing), the @arena/sdk/@arena/ops/@arena/acquisition surface mounts (module requires
+extension), the production credential adapter (owner IdP decision), the arena-api deployment
+topology, the light-theme activation calibration.
