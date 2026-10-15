@@ -17,6 +17,7 @@ import {
 } from "@arena/shell/shell";
 import { ARENA_DEFAULT_SCREEN } from "@arena/shell";
 import { applyDocumentTitle } from "@arena/shell/identity";
+import { applyArenaTheme, observeArenaTheme, resolveArenaTheme } from "@arena/shell/theme";
 import "@arena/shell/styles.css";
 import {
   bindingAuditAdapter,
@@ -166,6 +167,30 @@ function renderArenaShell(): void {
   ]);
 
   applyDocumentTitle(ARENA_DEFAULT_SCREEN);
+  // UIA-005 TL 集成：Arena 明暗主题激活 —— 从宿主主题 class（bootstrap 块
+  // 维护的 dark/theme-zai-light/theme-zai-dark）解析 + 落 data-arena-theme
+  // （激活 arena-tokens.css 浅色回退组）；MutationObserver 监听宿主 class
+  // 变更实时重解析（运行时切主题同步重校准）。模块零 DOM 全局 —— 组合根
+  // 按其 docblock 接线配方注入（resolve/apply/observe 均其导出）。
+  {
+    const rootEl = document.documentElement;
+    const systemDark = () =>
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const reapply = () =>
+      applyArenaTheme(
+        rootEl,
+        resolveArenaTheme({ classList: rootEl.classList, systemDark: systemDark() }),
+      );
+    const observer = new MutationObserver(reapply);
+    observeArenaTheme({
+      target: rootEl,
+      systemDark,
+      observe: (target, options) => {
+        observer.observe(target as Element, options as MutationObserverInit);
+        return observer;
+      },
+    });
+  }
   root.render(
     <AppErrorBoundary>
       <ArenaShell registry={registry} announceKeyboardHints />

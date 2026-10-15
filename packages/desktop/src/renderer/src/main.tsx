@@ -18,6 +18,7 @@ import {
 import "@zcode/ui/styles.css";
 import { connectViaMessagePort, createMessagePortServiceConnection } from "@zcode/client";
 import { ArenaShell } from "@arena/shell/shell";
+import { applyArenaTheme, observeArenaTheme, resolveArenaTheme } from "@arena/shell/theme";
 import "@arena/shell/styles.css";
 import {
   buildArenaDesktopComposition,
@@ -344,6 +345,29 @@ function initializeBusinessRoot(port: MessagePort): void {
       baseUrl: resolveArenaDesktopBaseUrl(env.VITE_ARENA_API_URL),
     });
     composition.applyTitle();
+    // UIA-005 TL 集成：Arena 明暗主题激活 —— 从宿主主题 class（bootstrap 块
+    // 维护的 dark/theme-zai-light/theme-zai-dark，与 web 同一词表）解析 + 落
+    // data-arena-theme（激活浅色回退组）；MutationObserver 监听宿主 class 变更
+    // 实时重解析。模块零 DOM 全局 —— 组合根按其 docblock 接线配方注入。
+    {
+      const rootEl = document.documentElement;
+      const systemDark = () =>
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const reapply = () =>
+        applyArenaTheme(
+          rootEl,
+          resolveArenaTheme({ classList: rootEl.classList, systemDark: systemDark() }),
+        );
+      const observer = new MutationObserver(reapply);
+      observeArenaTheme({
+        target: rootEl,
+        systemDark,
+        observe: (target, options) => {
+          observer.observe(target as Element, options as MutationObserverInit);
+          return observer;
+        },
+      });
+    }
     appRoot?.render(
       <AppErrorBoundary isDesktop isMacDesktop={isMacDesktop} isWindowsDesktop={isWindowsDesktop}>
         <ZCodeIntlProvider

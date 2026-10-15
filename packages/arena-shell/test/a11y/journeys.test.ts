@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
+import { mkdirSync, writeFileSync } from "node:fs";
 import test from "node:test";
 import type { TestContext } from "node:test";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
+  AXE_RULE_TAGS,
   JourneyHarness,
   formatViolations,
   probeEnvironment,
@@ -15,9 +19,46 @@ import {
  * navigation, keyboard, role lens, truthful posture, honest states,
  * responsive, axe) — the AR2-021 precedent applied to the shell, closing the
  * lanes' PENDING-station browser item at TL integration.
+ *
+ * UIA-005 EXTENSION — the light-theme calibration journey: activates the
+ * :root[data-arena-theme="light"] token group on the real mounted shell and
+ * axe-scans every key screen in light mode (evidence under
+ * docs/evidence/ui/uia-005-light/**; the runtime activation module is
+ * src/design/arenaTheme.ts — the web/desktop composition roots wire it at TL
+ * integration, so this journey sets the attribute directly, right after
+ * mount).
  */
 
 const SCREENS = ["requester", "expert", "reviewer", "developer", "operations"] as const;
+
+// ---- UIA-005: light-theme journey evidence (docs/evidence/ui/uia-005-light) ----
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = resolve(HERE, "..", "..", "..", "..");
+const LIGHT_EVIDENCE_DIR = join(REPO_ROOT, "docs", "evidence", "ui", "uia-005-light");
+const LIGHT_TRANSCRIPTS_DIR = join(LIGHT_EVIDENCE_DIR, "transcripts");
+const LIGHT_SCREENSHOTS_DIR = join(LIGHT_EVIDENCE_DIR, "screenshots");
+/** 浅色组 --arena-surface-app 的计算样式（激活校验用；若令牌值校准则同步更新）。 */
+const LIGHT_SURFACE_APP = "rgb(247, 248, 250)";
+
+/** 与 harness.writeTranscript 同形，但落在 UIA-005 的证据子目录。 */
+function writeLightTranscript(filename: string, payload: unknown): void {
+  mkdirSync(LIGHT_TRANSCRIPTS_DIR, { recursive: true });
+  writeFileSync(
+    join(LIGHT_TRANSCRIPTS_DIR, filename),
+    `${JSON.stringify(payload, null, 2)}\n`,
+    "utf8",
+  );
+}
+
+/** 与 harness.screenshot 同形（fullPage PNG），但落在 UIA-005 的证据子目录。 */
+async function lightScreenshot(hostPage: HostPage, name: string): Promise<void> {
+  mkdirSync(LIGHT_SCREENSHOTS_DIR, { recursive: true });
+  await hostPage.page.screenshot({
+    path: join(LIGHT_SCREENSHOTS_DIR, `${name}.png`),
+    fullPage: true,
+  });
+}
 
 async function navigateTo(hostPage: HostPage, screen: string): Promise<void> {
   await hostPage.page.click(`[data-arena-nav-item="${screen}"]`);
@@ -233,6 +274,85 @@ export async function registerBrowserJourneys(parent: TestContext): Promise<void
       assert.equal(axe.violations.length, 0, `axe violations:\n${formatViolations(axe)}`);
     });
 
+    await parent.test("light-theme journey (UIA-005): data-arena-theme=light activates the light token group — axe clean on every screen", async () => {
+      const page = await harness.newPage({ width: 1440, height: 900 });
+      // load() 等待 html[data-arena-host-ready='true']（挂载后由 HostApp 的
+      // useEffect 落盘）—— 随后立刻 page.evaluate 落浅色属性（工作单法：
+      // BEFORE or right after mount）。属性一落，:root[data-arena-theme="light"]
+      // 令牌组即时重算，后续全部扫描/截图都在浅色态（运行时激活模块
+      // src/design/arenaTheme.ts 由 TL 在组合根接线 —— 首帧前落属性；此处
+      // 等价激活浅色组，差异仅为首帧的深→浅切换，不影响扫描态）。
+      await page.load(harness.url);
+      await page.page.waitForSelector("[data-arena-screen='requester']", { timeout: 5_000 });
+      await page.page.evaluate(() => {
+        document.documentElement.setAttribute("data-arena-theme", "light");
+      });
+      const applied = await page.page.evaluate(() =>
+        document.documentElement.getAttribute("data-arena-theme"),
+      );
+      assert.equal(applied, "light", "the light-theme attribute must be set on the documentElement");
+      const lightScans: Array<{ screen: string; violations: number }> = [];
+      for (const screen of SCREENS) {
+        await navigateTo(page, screen);
+        // 激活校验：浅色表面令牌确实进入计算样式（不只是属性落盘）。
+        const surface = await page.page.evaluate(() => {
+          const shell = document.querySelector(".arena-shell");
+          return shell instanceof HTMLElement
+            ? window.getComputedStyle(shell).backgroundColor
+            : null;
+        });
+        assert.equal(
+          surface,
+          LIGHT_SURFACE_APP,
+          `the light --arena-surface-app must be the computed app background on ${screen}`,
+        );
+        const axe = await harness.runAxe(page, {
+          journey: "light-theme",
+          state: screen,
+          viewport: "desktop",
+        });
+        lightScans.push({ screen, violations: axe.violations.length });
+        // 与 harness 的 axe transcript 同形，落在 UIA-005 证据子目录。
+        writeLightTranscript(`axe-desktop-light-theme-${screen}.json`, {
+          kind: "axe-scan",
+          journey: "light-theme",
+          state: screen,
+          viewport: "desktop",
+          ruleTags: AXE_RULE_TAGS,
+          violations: axe.violations,
+          passesCount: axe.passes.length,
+          incomplete: axe.incomplete,
+          inapplicableCount: axe.inapplicable.length,
+          consoleErrors: page.probe.consoleErrors,
+          pageErrors: page.probe.pageErrors,
+        });
+        await lightScreenshot(page, `light-desktop-${screen}`);
+        assert.equal(
+          axe.violations.length,
+          0,
+          `axe violations (light, ${screen}):\n${formatViolations(axe)}`,
+        );
+      }
+      assert.equal(
+        page.probe.consoleErrors.length,
+        0,
+        `console errors: ${page.probe.consoleErrors.join("; ")}`,
+      );
+      assert.equal(
+        page.probe.pageErrors.length,
+        0,
+        `page errors: ${page.probe.pageErrors.join("; ")}`,
+      );
+      writeLightTranscript("light-theme-journey.json", {
+        kind: "light-theme-journey-summary",
+        activation:
+          'documentElement[data-arena-theme="light"] set right after mount (page.evaluate; load() awaits the host-ready marker)',
+        viewport: "desktop (1440x900)",
+        screens: lightScans,
+        totalViolations: lightScans.reduce((sum, scan) => sum + scan.violations, 0),
+      });
+    });
+
     await parent.test("summary: aggregate scan transcript (transcripts/summary.json)", async () => {
       writeTranscript("summary.json", {
         kind: "browser-journey-summary",
@@ -251,6 +371,6 @@ export async function registerBrowserJourneys(parent: TestContext): Promise<void
   }
 }
 
-test("UIA-001 browser journeys (Arena branding + navigation + keyboard + lens + posture + responsive + axe)", async (t) => {
+test("UIA-001 browser journeys (Arena branding + navigation + keyboard + lens + posture + responsive + axe) + UIA-005 light-theme axe calibration", async (t) => {
   await registerBrowserJourneys(t);
 });

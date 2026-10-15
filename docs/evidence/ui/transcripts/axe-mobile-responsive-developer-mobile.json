@@ -11,11 +11,11 @@
     "best-practice"
   ],
   "violations": [],
-  "passesCount": 42,
+  "passesCount": 45,
   "incomplete": [
     "color-contrast"
   ],
-  "inapplicableCount": 48,
+  "inapplicableCount": 45,
   "consoleErrors": [],
   "pageErrors": []
 }

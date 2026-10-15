@@ -36,8 +36,38 @@
       "state": "developer-mobile",
       "viewport": "mobile",
       "violations": 0
+    },
+    {
+      "journey": "light-theme",
+      "state": "requester",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "light-theme",
+      "state": "expert",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "light-theme",
+      "state": "reviewer",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "light-theme",
+      "state": "developer",
+      "viewport": "desktop",
+      "violations": 0
+    },
+    {
+      "journey": "light-theme",
+      "state": "operations",
+      "viewport": "desktop",
+      "violations": 0
     }
   ],
-  "totalScans": 6,
+  "totalScans": 11,
   "totalViolations": 0
 }

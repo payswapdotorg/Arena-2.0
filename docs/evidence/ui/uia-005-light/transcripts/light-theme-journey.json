@@ -1,0 +1,28 @@
+{
+  "kind": "light-theme-journey-summary",
+  "activation": "documentElement[data-arena-theme=\"light\"] set right after mount (page.evaluate; load() awaits the host-ready marker)",
+  "viewport": "desktop (1440x900)",
+  "screens": [
+    {
+      "screen": "requester",
+      "violations": 0
+    },
+    {
+      "screen": "expert",
+      "violations": 0
+    },
+    {
+      "screen": "reviewer",
+      "violations": 0
+    },
+    {
+      "screen": "developer",
+      "violations": 0
+    },
+    {
+      "screen": "operations",
+      "violations": 0
+    }
+  ],
+  "totalViolations": 0
+}

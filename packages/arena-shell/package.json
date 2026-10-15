@@ -8,7 +8,8 @@
     "./screens": "./src/screens.ts",
     "./tokens.css": "./src/design/arena-tokens.css",
     "./styles.css": "./src/styles.css",
-    "./identity": "./src/identity/productTitle.ts"
+    "./identity": "./src/identity/productTitle.ts",
+    "./theme": "./src/design/arenaTheme.ts"
   },
   "scripts": {
     "lint": "oxlint",
