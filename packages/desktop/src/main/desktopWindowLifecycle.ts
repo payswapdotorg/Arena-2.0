@@ -78,6 +78,7 @@ export function createWindow(options: {
       initialWorkspacePath: options.bootstrap?.initialWorkspacePath,
       initialWorkspacePurpose: options.bootstrap?.initialWorkspacePurpose,
       unavailableWorkspacePath: options.bootstrap?.unavailableWorkspacePath,
+      arenaApiUrl: options.bootstrap?.arenaApiUrl,
     },
     logger: options.logger,
     deviceMid: options.deviceMid,

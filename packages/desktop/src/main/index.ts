@@ -1,4 +1,11 @@
 import { createLocalTtftExporter } from "./localTtftExporter.js";
+import {
+  createDefaultArenaStationDependencies,
+  shouldStartArenaLocalStation,
+  startArenaLocalStation,
+  trimBakedArenaApiUrl,
+  type ArenaLocalStation,
+} from "./arenaLocalStation.js";
 /* eslint-disable max-lines */
 import "./desktopEarlyDataBaseDirBootstrap.js";
 import "./desktopEarlyChromiumHardwareAccelerationBootstrap.js";
@@ -46,6 +53,7 @@ import {
 import type { UtilityProcess as ElectronUtilityProcess } from "electron";
 import { spawn } from "node:child_process";
 import { join, resolve } from "node:path";
+import { existsSync } from "node:fs";
 import { homedir, hostname } from "node:os";
 import {
   createCredentialService,
@@ -635,6 +643,21 @@ const windowsCuaOperationIndicator = createWindowsCuaOperationIndicator({
 
 // 常驻 cron scheduler 进程句柄；app ready 后拉起，退出前销毁。
 let cronScheduler: CronSchedulerHandle | null = null;
+// DIST-001（issue #84）：随包本地 test-mode arena station 句柄；主窗口创建前拉起，
+// app 退出时优雅停止（SIGTERM → 5s → SIGKILL 兜底 —— arenaLocalStation.stop 契约）。
+let arenaLocalStation: ArenaLocalStation | null = null;
+let arenaLocalStationStopInFlight = false;
+
+function getArenaLocalStationBaseUrl(): string | undefined {
+  return arenaLocalStation?.baseUrl;
+}
+
+/** 打包态：extraResources 落盘的 station 单文件入口（asar 之外 —— ELECTRON_RUN_AS_NODE 可读）。 */
+function resolveArenaStationBundlePath(): string | undefined {
+  if (!app.isPackaged) return undefined;
+  const candidate = join(process.resourcesPath, "arena-api", "arena-api.cjs");
+  return existsSync(candidate) ? candidate : undefined;
+}
 // host → main 的定时任务派发结果，转交给 scheduler 结算。经模块变量转发以避免 spawn 顺序耦合。
 function forwardCronRunResult(
   result: Parameters<CronSchedulerHandle["handleCronRunResult"]>[0],
@@ -1838,6 +1861,8 @@ function createWindowInstance(startupBootstrap: StartupWindowBootstrap = {}) {
       initialWorkspacePath: startupBootstrap.initialWorkspacePath,
       initialWorkspacePurpose: startupBootstrap.initialWorkspacePurpose,
       unavailableWorkspacePath: startupBootstrap.unavailableWorkspacePath,
+      // DIST-001：随包本地 test-mode station 的 baseUrl（启动期拉起成功时非空）。
+      arenaApiUrl: getArenaLocalStationBaseUrl(),
     },
     agentWarmupTargets: startupBootstrap.agentWarmupTargets,
     // startupBootstrap 只标记 active workspace 是否不可用，但 local Host 会为所有
@@ -2273,6 +2298,45 @@ app.whenReady().then(async () => {
   }
   if (forceUpdateGuardResult.blocked) {
     return;
+  }
+
+  // DIST-001（issue #84）：Arena 随包本地 test-mode station —— 仅打包态 + 未显式关闭 +
+  // 未烘焙远端 baseUrl（ARENA_DESKTOP_BAKED_API_URL）时拉起；失败/超时 → null，应用照常
+  // 启动并落回 UIA-002 未配置哨兵姿态（类型化失败逐字上屏，绝不伪造 ready）。
+  if (
+    shouldStartArenaLocalStation(process.env, {
+      isPackaged: app.isPackaged,
+      bakedArenaApiUrl: trimBakedArenaApiUrl(process.env.ARENA_DESKTOP_BAKED_API_URL),
+    })
+  ) {
+    arenaLocalStation = await startArenaLocalStation(
+      {
+        execPath: process.execPath,
+        bundlePath: resolveArenaStationBundlePath(),
+        dataDir: join(app.getPath("userData"), "arena-station"),
+      },
+      createDefaultArenaStationDependencies(),
+      logger,
+    );
+    if (arenaLocalStation) {
+      logger.info(
+        `[arena-station] bundled test-mode station active at ${arenaLocalStation.baseUrl}`,
+      );
+      // 优雅停止：will-quit 拦一次 → stop()（SIGTERM → 5s → SIGKILL）→ 再 quit。
+      app.on("will-quit", (event) => {
+        if (!arenaLocalStation || arenaLocalStationStopInFlight) return;
+        arenaLocalStationStopInFlight = true;
+        event.preventDefault();
+        void arenaLocalStation
+          .stop()
+          .catch((error: unknown) => {
+            logger.warn("[arena-station] stop failed", error);
+          })
+          .finally(() => {
+            app.quit();
+          });
+      });
+    }
   }
 
   logger.info("[startup] 创建主窗口");

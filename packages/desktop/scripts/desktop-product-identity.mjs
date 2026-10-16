@@ -5,6 +5,24 @@
  */
 export const ZCODE_PREVIEW_IDENTITY_ENV = "ZCODE_PREVIEW_IDENTITY";
 
+/**
+ * DIST-001（issue #84）：Arena 产品身份 —— 与 ZCode 正式/Preview 完全并排的第三个 flavor。
+ * 开关拼写沿用 ZCODE_PREVIEW_IDENTITY 的严格语义（仅 `1` 开启，`0`/空关闭，其它拼写构建期失败）。
+ * 构建入口（release workflow）显式 `ARENA_DESKTOP_IDENTITY=1`，产物身份为 Arena
+ * （appName/executable/deb 包名全部 `arena`），后端身份轴 ZCODE_ENV 不再适用 ——
+ * Arena 安装包绑定的是随包本地 test-mode station（demo auth 披露），不吃 ZCode 后端。
+ */
+export const ARENA_DESKTOP_IDENTITY_ENV = "ARENA_DESKTOP_IDENTITY";
+
+const ARENA_IDENTITY = Object.freeze({
+  flavor: "arena",
+  appId: "org.payswap.arena",
+  productName: "Arena",
+  linuxExecutableName: "arena",
+  linuxPackageName: "arena",
+  cuaHelperInstallVariant: null,
+});
+
 const PRODUCTION_IDENTITY = Object.freeze({
   flavor: "production",
   appId: "dev.zcode.app",
@@ -26,6 +44,7 @@ const PREVIEW_IDENTITY = Object.freeze({
 export const desktopProductIdentities = Object.freeze({
   production: PRODUCTION_IDENTITY,
   preview: PREVIEW_IDENTITY,
+  arena: ARENA_IDENTITY,
 });
 
 function normalizeDesktopZCodeEnv(env) {
@@ -57,10 +76,30 @@ export function isPreviewIdentityRequested(env = process.env) {
  * 未知 `ZCODE_ENV` 继续按 test 处理，和共享层 normalizeZCodeEnv 的 fail-safe 默认值一致。
  */
 export function resolveDesktopProductFlavor(env = process.env) {
+  if (isArenaIdentityRequested(env)) {
+    return "arena";
+  }
   if (isPreviewIdentityRequested(env)) {
     return "preview";
   }
   return normalizeDesktopZCodeEnv(env) === "production" ? "production" : "preview";
+}
+
+/**
+ * DIST-001：Arena 身份开关。仅接受 `1`（开）/ `0`、空（关）；其它拼写构建期直接失败 ——
+ * 与 isPreviewIdentityRequested 同一套严格语义，防止 YAML 路由层把 `true` 之类漏成开启。
+ */
+export function isArenaIdentityRequested(env = process.env) {
+  const value = env[ARENA_DESKTOP_IDENTITY_ENV]?.trim() ?? "";
+  if (value === "1") {
+    return true;
+  }
+  if (value === "" || value === "0") {
+    return false;
+  }
+  throw new Error(
+    `invalid ${ARENA_DESKTOP_IDENTITY_ENV}=${env[ARENA_DESKTOP_IDENTITY_ENV]}; expected 1 or 0`,
+  );
 }
 
 export function resolveDesktopProductIdentity(env = process.env) {
@@ -72,6 +111,9 @@ export function resolveDesktopProductIdentity(env = process.env) {
  * 生产后端的 Preview 包靠 productName（`ZCode Preview-<version>-...`）与正式包区分。
  */
 export function resolveDesktopArtifactSuffix(env = process.env) {
+  if (isArenaIdentityRequested(env)) {
+    return "";
+  }
   return normalizeDesktopZCodeEnv(env) === "test" ? "_TEST" : "";
 }
 
@@ -86,7 +128,7 @@ export function resolveWindowsAppUserModelIdForFlavor(flavor, runtime = { isPack
   if (runtime.isPackaged === false) {
     return "cn.aminer.zcode";
   }
-  return desktopProductIdentities[flavor === "preview" ? "preview" : "production"].appId;
+  return desktopProductIdentities[flavor === "preview" ? "preview" : flavor === "arena" ? "arena" : "production"].appId;
 }
 
 export function resolveWindowsAppUserModelId(env = process.env, runtime = { isPackaged: true }) {

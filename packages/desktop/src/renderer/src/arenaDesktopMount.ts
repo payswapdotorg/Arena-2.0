@@ -55,6 +55,22 @@ export function resolveArenaDesktopBaseUrl(envValue: string | undefined): string
 }
 
 /**
+ * DIST-001（issue #84）station baseUrl 法则：烘焙 env（VITE_ARENA_API_URL，运营方拓扑）
+ * 优先于窗口 query 注入（主进程随包本地 test-mode station 的 `arenaApiUrl` 参数）。
+ * 两层判定同向：烘焙 env 有值时主进程本就不启动 station（ARENA_DESKTOP_BAKED_API_URL
+ * 探针）—— 这里是渲染侧同一优先级的收口。query 值同样过 trim 法则；两者皆空 →
+ * undefined = 未配置哨兵姿态（UIA-002 法则不变）。
+ */
+export function resolveArenaStationBaseUrl(
+  envValue: string | undefined,
+  queryValue: string | undefined,
+): string | undefined {
+  const fromEnv = resolveArenaDesktopBaseUrl(envValue);
+  if (fromEnv !== undefined) return fromEnv;
+  return resolveArenaDesktopBaseUrl(queryValue);
+}
+
+/**
  * 诚实未配置哨兵：RealWorkbenchBinding 的公共契约要求 baseUrl: string，
  * 未配置时传端口 0（`http://127.0.0.1:0`）—— 一个无法意外命中任何服务
  * 的地址：任何连接尝试立即失败 → 类型化 TRANSPORT_ERROR 逐字上屏。

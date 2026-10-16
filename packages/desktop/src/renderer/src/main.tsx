@@ -23,7 +23,7 @@ import "@arena/shell/styles.css";
 import {
   buildArenaDesktopComposition,
   parseDesktopEntryMode,
-  resolveArenaDesktopBaseUrl,
+  resolveArenaStationBaseUrl,
 } from "./arenaDesktopMount.js";
 import {
   InternalChannels,
@@ -341,8 +341,13 @@ function initializeBusinessRoot(port: MessagePort): void {
   if (parseDesktopEntryMode(window.location.search) === "arena-first") {
     const env = ((import.meta as ImportMeta & { env?: DesktopRendererImportMetaEnv }).env ??
       {}) as DesktopRendererImportMetaEnv;
+    // DIST-001（issue #84）：主进程随包本地 test-mode station 经窗口 query 注入 baseUrl
+    // （烘焙 env 优先 —— resolveArenaStationBaseUrl 法则）。
     const composition = buildArenaDesktopComposition({
-      baseUrl: resolveArenaDesktopBaseUrl(env.VITE_ARENA_API_URL),
+      baseUrl: resolveArenaStationBaseUrl(
+        env.VITE_ARENA_API_URL,
+        readStringFlag("arenaApiUrl"),
+      ),
     });
     composition.applyTitle();
     // UIA-005 TL 集成：Arena 明暗主题激活 —— 从宿主主题 class（bootstrap 块

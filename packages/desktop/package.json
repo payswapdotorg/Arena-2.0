@@ -18,13 +18,15 @@
     "prepare:native-search": "node ../../scripts/prepare-native-search-tools.mjs",
     "prepare:browser-import-helper": "node scripts/build-windows-browser-import-helper.mjs",
     "prepare:macos-window-bounds": "node scripts/build-macos-window-bounds.mjs",
-    "build:no-runtime-assets": "pnpm prepare:build-meta && node scripts/run-production-build.mjs",
+    "build:no-runtime-assets": "pnpm prepare:build-meta && node scripts/run-production-build.mjs && pnpm build:arena-api",
     "build": "pnpm prepare:runtime-assets && pnpm run build:no-runtime-assets",
     "bundle": "node scripts/bundle.mjs",
     "audit:bundle-size": "node scripts/audit-bundle-size.mjs",
     "postinstall": "node scripts/node-pty-rebuild.mjs",
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix"
+    "lint:fix": "oxlint --fix",
+    "build:arena-api": "node scripts/bundle-arena-api.mjs",
+    "build:arena-icon": "node scripts/generate-arena-icon.mjs"
   },
   "dependencies": {
     "@arena/shell": "workspace:*",

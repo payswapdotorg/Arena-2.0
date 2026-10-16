@@ -76,7 +76,7 @@ jobs:
 
       - name: Unit tests — desktop renderer (node:test via tsx; UIA-002 arena-first bootstrap decision + composition incl. real local HTTP probe + shim parity)
         working-directory: packages/desktop
-        run: ../../node_modules/.bin/tsx --test test/renderer/*.test.ts
+        run: ../../node_modules/.bin/tsx --test test/renderer/*.test.ts test/station/*.test.ts
 
       - name: Unit tests — arena-persistence (node:test via tsx, node:sqlite)
         working-directory: packages/arena-persistence

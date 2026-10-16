@@ -459,11 +459,14 @@ export default {
   extraMetadata: {
     version: buildMetadata.appVersion,
     zcodeProductFlavor: desktopProductIdentity.flavor,
-    homepage: "https://zcode.z.ai",
-    author: {
-      name: "ZCode",
-      email: "dev@zcode.z.ai",
-    },
+    homepage:
+      desktopProductIdentity.flavor === "arena"
+        ? "https://github.com/payswapdotorg/arena-2.0"
+        : "https://zcode.z.ai",
+    author:
+      desktopProductIdentity.flavor === "arena"
+        ? { name: "payswapdotorg", email: "ekontetevi@gmail.com" }
+        : { name: "ZCode", email: "dev@zcode.z.ai" },
   },
   // macOS 签名阶段会对 Electron Framework 下每个语言包逐个 codesign。
   // 默认全量语言会产生大量 locale.pak 签名调用，显著拉长打包时长。
@@ -488,6 +491,9 @@ export default {
   },
   files: [
     "out/**/*",
+    // DIST-001：随包 station 单文件入口走 extraResources（asar 之外 —— ELECTRON_RUN_AS_NODE
+    // 的纯 Node 进程没有 asar 支持），不进 app.asar。
+    "!out/arena-api/**",
     "package.json",
     // app.asar 会把桌面端运行时 node_modules 一并打进去，依赖包自带的 .map / README
     // 默认也会原样进入安装包。这里统一在主包层做一次裁剪，只移除非运行时文件，LICENSE 继续保留。
@@ -595,14 +601,18 @@ export default {
     },
     {
       // 应用图标：打包后放入 resources 目录，主进程通过 process.resourcesPath 加载
-      from: "build/icon.png",
+      // DIST-001：Arena flavor 用 identity-kit 几何生成的 Arena 图标。
+      from: desktopProductIdentity.flavor === "arena" ? "build/arena/icon.png" : "build/icon.png",
       to: "icon.png",
     },
     ...(targetPlatform.os === "linux"
       ? [
           {
             // AppImage 用户级 hicolor 图标安装使用真实 512x512 资源，避免目录标称尺寸和 PNG IHDR 不一致。
-            from: "build/icons/512x512.png",
+            from:
+              desktopProductIdentity.flavor === "arena"
+                ? "build/arena/icons/512x512.png"
+                : "build/icons/512x512.png",
             to: "icon_512x512.png",
           },
         ]
@@ -612,6 +622,18 @@ export default {
       from: "build/icon_windows.png",
       to: "icon_windows.png",
     },
+    ...(desktopProductIdentity.flavor === "arena"
+      ? [
+          {
+            // DIST-001（issue #84）：随包本地 test-mode arena station 单文件入口。
+            // 落在 resources/arena-api/arena-api.cjs（asar 之外）：主进程以
+            // ELECTRON_RUN_AS_NODE 拉起（glm/zcode.cjs 的同一先例），node:sqlite
+            // 参考引擎在 Electron 41 内嵌 Node 上验证可用（实验性告警披露）。
+            from: "out/arena-api/arena-api.cjs",
+            to: "arena-api/arena-api.cjs",
+          },
+        ]
+      : []),
     ...(targetPlatform.os === "win32"
       ? [
           {
@@ -695,7 +717,12 @@ export default {
     artifactName: buildDesktopArtifactName("win"),
   },
   linux: {
-    target: ["AppImage", "deb", "rpm", "pacman"],
+    // DIST-001：Arena flavor 只产 AppImage + deb（Ubuntu 交付面）；rpm/pacman 依赖
+    // 构建机 fpm/rpmbuild，留给 ZCode flavor 的既有 CI 面不变。
+    target:
+      desktopProductIdentity.flavor === "arena"
+        ? ["AppImage", "deb"]
+        : ["AppImage", "deb", "rpm", "pacman"],
     artifactName: buildDesktopArtifactName("linux"),
     // desktop 包名是 scoped package（@zcode/desktop），electron-builder 默认会把
     // Linux executable/Icon 推成 @zcodedesktop。部分桌面环境无法按这个 icon name 命中
@@ -703,7 +730,12 @@ export default {
     // 与 /usr/share/icons/hicolor/*/apps/zcode.png 保持一致。
     executableName: desktopProductIdentity.linuxExecutableName,
     category: "Development",
-    maintainer: "ZCode <dev@zcode.z.ai>",
+    // DIST-001：Arena flavor 的 linux icon 指向 identity-kit 几何生成的图标目录。
+    icon: desktopProductIdentity.flavor === "arena" ? "build/arena" : undefined,
+    maintainer:
+      desktopProductIdentity.flavor === "arena"
+        ? "payswapdotorg <ekontetevi@gmail.com>"
+        : "ZCode <dev@zcode.z.ai>",
   },
   deb: {
     // 生产版与 Preview 必须是两个 dpkg package；只改可执行名仍会让安装器把另一版本当成升级替换。

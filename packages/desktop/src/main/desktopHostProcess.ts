@@ -63,6 +63,8 @@ export interface WindowBootstrapOptions {
   unavailableWorkspacePath?: string;
   windowKind?: "main" | "update-status";
   locale?: string;
+  /** DIST-001：随包本地 test-mode station baseUrl（主进程启动期拉起成功时非空；渲染端 arenaApiUrl query 覆盖法则消费）。 */
+  arenaApiUrl?: string;
 }
 
 export interface HostInitMessage {
@@ -122,6 +124,7 @@ export function loadWindow(
       unavailableWorkspacePath: bootstrap?.unavailableWorkspacePath,
       windowKind: bootstrap?.windowKind,
       locale: bootstrap?.locale,
+      arenaApiUrl: bootstrap?.arenaApiUrl,
     }).filter((entry): entry is [string, string] => entry[1] != null),
   );
 
