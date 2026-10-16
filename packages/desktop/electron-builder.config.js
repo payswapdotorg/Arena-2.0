@@ -459,6 +459,11 @@ export default {
   extraMetadata: {
     version: buildMetadata.appVersion,
     zcodeProductFlavor: desktopProductIdentity.flavor,
+    // DIST-001：desktop-entry Comment（应用菜单里用户可见）跟随分发身份。
+    description:
+      desktopProductIdentity.flavor === "arena"
+        ? "Arena — capability escalation and acquisition for AI automation"
+        : "ZCode Desktop App",
     homepage:
       desktopProductIdentity.flavor === "arena"
         ? "https://github.com/payswapdotorg/arena-2.0"
@@ -731,6 +736,8 @@ export default {
     executableName: desktopProductIdentity.linuxExecutableName,
     category: "Development",
     // DIST-001：Arena flavor 的 linux icon 指向 identity-kit 几何生成的图标目录。
+    // （desktop-entry 的 Comment 走 extraMetadata.description 覆盖 —— 26.x 的
+    // linux.desktop 选项只接受 desktopActions/entry。）
     icon: desktopProductIdentity.flavor === "arena" ? "build/arena" : undefined,
     maintainer:
       desktopProductIdentity.flavor === "arena"

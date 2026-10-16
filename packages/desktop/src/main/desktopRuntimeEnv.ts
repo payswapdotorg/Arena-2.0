@@ -42,6 +42,12 @@ const isLocalDevelopmentRuntime = !isElectronAppPackaged();
 export const desktopRuntimeEnv: ZCodeRuntimeEnv = isLocalDevelopmentRuntime
   ? "development"
   : "production";
+// DIST-001（issue #84）：Arena 分发身份 —— 编译期注入（tsup define
+// __ARENA_DESKTOP_IDENTITY__）。运行时名/数据目录/单实例锁身份全部归一到
+// "Arena"，不在用户机器上留下任何 ZCode 品牌痕迹。
+declare const __ARENA_DESKTOP_IDENTITY__: string;
+const isArenaDesktopIdentityRuntime =
+  typeof __ARENA_DESKTOP_IDENTITY__ !== "undefined" && __ARENA_DESKTOP_IDENTITY__ === "1";
 // 身份看编译期 flavor 而不是 ZCODE_ENV：ZCODE_PREVIEW_IDENTITY=1 的生产后端构建同样是 Preview，
 // 需要独立的应用名、Electron 数据目录和 Helper 安装子目录才能与正式版并排运行。
 const isPreviewPackagedRuntime = !isLocalDevelopmentRuntime && ZCODE_PRODUCT_FLAVOR === "preview";
@@ -60,7 +66,13 @@ function isTruthyRuntimeEnvOverride(name: string): boolean {
 // 这里允许测试显式隔离运行时身份，正常桌面/远控路径保持原来的默认值。
 export const runtimeApplicationName =
   readRuntimeEnvOverride("ZCODE_DESKTOP_APPLICATION_NAME") ??
-  (isLocalDevelopmentRuntime ? "ZCode Dev" : isPreviewPackagedRuntime ? "ZCode Preview" : "ZCode");
+  (isArenaDesktopIdentityRuntime
+    ? "Arena"
+    : isLocalDevelopmentRuntime
+      ? "ZCode Dev"
+      : isPreviewPackagedRuntime
+        ? "ZCode Preview"
+        : "ZCode");
 // Electron 的 app.getPath("home") 不一定跟随测试进程里的 HOME 覆盖。
 // e2e 默认工作区依赖 home 路径，因此提供显式覆盖，避免测试写到开发者真实 ~/ZCodeProject。
 export const runtimeHomePath = readRuntimeEnvOverride("ZCODE_DESKTOP_HOME_DIR");
