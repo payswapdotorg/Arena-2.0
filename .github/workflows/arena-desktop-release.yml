@@ -1,0 +1,127 @@
+name: arena-desktop-release
+
+# DIST-001 (issue #84) — Ubuntu desktop distribution for Arena.
+# Builds the Arena-flavored Linux desktop package (AppImage + deb) with the bundled
+# local test-mode arena station, smoke-tests the unpacked app under Xvfb, and attaches
+# the artifacts to a GitHub prerelease.
+#
+# Safety posture: this artifact is a DEV/LIMITED prerelease — NOT an owner-signed
+# release under the AR2-023 RDR instrument. Live-money payments and untrusted
+# expert/scraper execution remain disabled by code; the bundled station uses demo auth.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. arena-v0.1.0)"
+        required: false
+        default: ""
+  push:
+    tags:
+      - "arena-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  linux-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install pinned pnpm
+        run: npm install -g pnpm@10.33.2
+
+      - name: Install dependencies (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      - name: Bundle + package Arena desktop (linux x64)
+        env:
+          ARENA_DESKTOP_IDENTITY: "1"
+          # 注意：不设 ZCODE_ENV=production —— shared 层的 flavor 归一化会把 arena
+          # define 映射为 production，进而启用 ZCode 更新通道。保持缺省（test）→
+          # 运行时 flavor=preview → initAutoUpdater enabled=false 的 fail-closed 路径
+          # （autoUpdaterDisabledForProductFlavor），Arena 安装包绝不触碰 ZCode feed。
+          # Linux 包只引用 linux-x64 的本地 runtime 资产（agent bundle + native-search
+          # 归档解包）；跨平台远端资产按 Windows CI 先例显式跳过。
+          ZCODE_SKIP_REMOTE_ASSETS: "1"
+        run: node scripts/bundle.mjs --os linux --arch x64
+        working-directory: packages/desktop
+
+      - name: Smoke-test the packaged app under Xvfb (station boots, Arena-first)
+        env:
+          ELECTRON_ENABLE_LOGGING: "1"
+        run: |
+          set -euo pipefail
+          cd packages/desktop/dist/linux-unpacked
+          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb >/dev/null
+          set +e
+          timeout 60s xvfb-run -a ./arena --no-sandbox > /tmp/arena-smoke.log 2>&1 &
+          SMOKE_PID=$!
+          # 等待主进程把随包 station 拉起来（健康探测 + 窗口加载）。
+          for i in $(seq 1 45); do
+            if grep -q "arena-station] bundled test-mode station active" /tmp/arena-smoke.log; then
+              echo "[smoke] station active line found:"
+              grep "arena-station" /tmp/arena-smoke.log | head -3
+              set -e
+              kill $SMOKE_PID 2>/dev/null || true
+              sleep 3
+              pkill -f "linux-unpacked" 2>/dev/null || true
+              exit 0
+            fi
+            if ! kill -0 $SMOKE_PID 2>/dev/null; then
+              echo "[smoke] app process exited early — full log:"
+              cat /tmp/arena-smoke.log
+              set -e
+              exit 1
+            fi
+            sleep 1
+          done
+          echo "[smoke] station-active line not found within timeout — full log:"
+          cat /tmp/arena-smoke.log
+          kill $SMOKE_PID 2>/dev/null || true
+          set -e
+          exit 1
+
+      - name: Resolve release tag
+        id: tag
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            VERSION=$(node -p "require('./packages/desktop/out/metadata/build-meta.json').appVersion")
+            TAG="arena-v${VERSION}"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "releasing ${TAG}"
+
+      - name: Create GitHub prerelease with artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          set -euo pipefail
+          cd packages/desktop/dist
+          sha256sum *.AppImage *.deb > SHA256SUMS.txt
+          gh release create "$TAG" \
+            --title "Arena Desktop ${TAG#arena-v} (Linux, limited-scope dev prerelease)" \
+            --notes "Arena desktop for Ubuntu (DIST-001, issue #84).
+
+          - AppImage + deb built from main by the arena-desktop-release workflow.
+          - Bundled LOCAL test-mode arena station (demo auth, loopback-only; SQLite reference engine under the user data dir).
+          - Live-money payments and untrusted expert/scraper execution remain DISABLED.
+          - This is NOT an owner-signed release under the AR2-023 RDR instrument; it is a limited-scope dev prerelease.
+          - Install: \`sudo dpkg -i Arena-*.deb\` (or make the .AppImage executable and run it). Ubuntu 22.04+ x64." \
+            --prerelease \
+            --target "${{ github.sha }}" \
+            *.AppImage *.deb SHA256SUMS.txt || \
+          gh release upload "$TAG" *.AppImage *.deb SHA256SUMS.txt --clobber
