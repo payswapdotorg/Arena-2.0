@@ -45,7 +45,10 @@ jobs:
       - name: Bundle + package Arena desktop (linux x64)
         env:
           ARENA_DESKTOP_IDENTITY: "1"
-          ZCODE_ENV: production
+          # 注意：不设 ZCODE_ENV=production —— shared 层的 flavor 归一化会把 arena
+          # define 映射为 production，进而启用 ZCode 更新通道。保持缺省（test）→
+          # 运行时 flavor=preview → initAutoUpdater enabled=false 的 fail-closed 路径
+          # （autoUpdaterDisabledForProductFlavor），Arena 安装包绝不触碰 ZCode feed。
           # Linux 包只引用 linux-x64 的本地 runtime 资产（agent bundle + native-search
           # 归档解包）；跨平台远端资产按 Windows CI 先例显式跳过。
           ZCODE_SKIP_REMOTE_ASSETS: "1"

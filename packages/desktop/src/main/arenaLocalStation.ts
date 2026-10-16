@@ -17,6 +17,7 @@
  * （不触碰任何启用面）。
  */
 import { spawn, type ChildProcess } from "node:child_process";
+import { mkdirSync } from "node:fs";
 import { createServer } from "node:net";
 import { request as httpRequest } from "node:http";
 
@@ -180,6 +181,13 @@ export async function startArenaLocalStation(
 ): Promise<ArenaLocalStation | null> {
   if (inputs.bundlePath === undefined) {
     logger?.warn("[arena-station] bundle not found; falling back to unconfigured posture");
+    return null;
+  }
+  // SQLite 无法在缺失父目录时建库 —— 数据目录先落盘（userData/arena-station）。
+  try {
+    mkdirSync(inputs.dataDir, { recursive: true });
+  } catch (error) {
+    logger?.warn("[arena-station] data dir unavailable; falling back to unconfigured posture", error);
     return null;
   }
   const port = await dependencies.pickFreePort();
